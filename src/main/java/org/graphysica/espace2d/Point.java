@@ -30,11 +30,11 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  * @author Marc-Antoine Ouimet
  */
 public class Point extends Forme {
-
+    
     /**
      * La couleur par défaut d'un point.
      */
-    private static final Color COULEUR_PAR_DEFAUT = Color.BLUE;
+    static final Color COULEUR_PAR_DEFAUT = Color.BLUE;
 
     /**
      * La couleur de la bordure du point.
@@ -61,7 +61,7 @@ public class Point extends Forme {
      * @see Point#taille
      * @see Point#setTaille(int)
      */
-    private static final int TAILLE_MINIMALE = 1;
+    static final int TAILLE_MINIMALE = 1;
 
     /**
      * La taille maximale d'un point. Doit être positive et supérieure à
@@ -70,13 +70,54 @@ public class Point extends Forme {
      * @see Point#taille
      * @see Point#setTaille(int)
      */
-    private static final int TAILLE_MAXIMALE = 10;
+    static final int TAILLE_MAXIMALE = 10;
 
     /**
      * La taille du point sur l'écran, variant de 1 à 10.
      */
     private final IntegerProperty taille = new SimpleIntegerProperty(
             TAILLE_PAR_DEFAUT);
+
+    public Point() {
+    }
+    
+    public Point(final int taille) throws IllegalArgumentException {
+        setTaille(taille);
+    }
+
+    public Point(@NotNull final Color couleur) {
+        super(couleur);
+    }
+    
+    public Point(final int taille, @NotNull final Color couleur) 
+            throws IllegalArgumentException {
+        super(couleur);
+        setTaille(taille);
+    }
+
+    public Point(@NotNull final Color couleur,
+            final double abscisse, final double ordonnee) {
+        super(couleur);
+        position.setValue(new Vector2D(abscisse, ordonnee));
+    }
+    
+    public Point(final int taille, @NotNull final Color couleur,
+            final double abscisse, final double ordonnee) 
+            throws IllegalArgumentException {
+        this(couleur, abscisse, ordonnee);
+        setTaille(taille);
+    }
+
+    public Point(@NotNull final Color couleur, @NotNull Vector2D position) {
+        super(couleur);
+        this.position.setValue(position);
+    }
+    
+    public Point(final int taille, @NotNull final Color couleur, 
+            @NotNull Vector2D position) throws IllegalArgumentException {
+        this(couleur, position);
+        setTaille(taille);
+    }
 
     @Override
     public void dessiner(@NotNull final GraphicsContext contexteGraphique) {
@@ -118,7 +159,8 @@ public class Point extends Forme {
      * @throws IllegalArgumentException si {@code taille} est inférieure à
      * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}.
      */
-    public void setTaille(final int taille) throws IllegalArgumentException {
+    public final void setTaille(final int taille) 
+            throws IllegalArgumentException {
         if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
             throw new IllegalArgumentException(
                     "Taille spécifiée non-comprise entre " + TAILLE_MINIMALE 
