@@ -48,12 +48,17 @@ public class Point extends Forme {
             = new SimpleObjectProperty<>(new Vector2D(0, 0));
 
     /**
+     * La taille de la bordure du dessin du point exprimée en pixels.
+     */
+    private static final int TAILLE_BORDURE = 1;
+    
+    /**
      * La taille par défaut d'un point. Doit être comprise entre
      * {@code TAILLE_MINIMALE} et {@code TAILLE_MAXIMALE} inclusivement.
      *
      * @see Point#taille
      */
-    private static final int TAILLE_PAR_DEFAUT = 5;
+    private static final int TAILLE_PAR_DEFAUT = 4;
 
     /**
      * La taille minimale d'un point. Doit être positive.
@@ -121,7 +126,20 @@ public class Point extends Forme {
 
     @Override
     public void dessiner(@NotNull final GraphicsContext contexteGraphique) {
-        throw new UnsupportedOperationException();
+        contexteGraphique.setFill(COULEUR_BORDURE);
+        contexteGraphique.fillOval(
+                getAbscisse() - getTaille() - TAILLE_BORDURE, 
+                getOrdonnee() - getTaille() - TAILLE_BORDURE, 
+                2 * (getTaille() + TAILLE_BORDURE), 
+                2 * (getTaille() + TAILLE_BORDURE)
+        );
+        contexteGraphique.setFill(getCouleur());
+        contexteGraphique.fillOval(
+                getAbscisse() - getTaille(), 
+                getOrdonnee() - getTaille(), 
+                2 * getTaille(), 
+                2 * getTaille()
+        );
     }
 
     public ObjectProperty<Vector2D> positionProperty() {
