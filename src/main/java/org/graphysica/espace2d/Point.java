@@ -142,6 +142,7 @@ public class Point extends Forme {
     private void dessinerRond(@NotNull final GraphicsContext contexteGraphique, 
             @NotNull final Vector2D positionVirtuelle) {
         contexteGraphique.setFill(COULEUR_BORDURE);
+        //TODO: Déterminer la position graphique de l'objet dans l'espace
         contexteGraphique.fillOval(
                 positionVirtuelle.getX() - getTaille() - TAILLE_BORDURE,
                 positionVirtuelle.getY() - getTaille() - TAILLE_BORDURE,
@@ -155,6 +156,10 @@ public class Point extends Forme {
                 2 * getTaille(),
                 2 * getTaille()
         );
+    }
+    
+    public void deplacer(@NotNull final Vector2D deplacement) {
+        setPosition(getPosition().add(deplacement));
     }
 
     public ObjectProperty<Vector2D> positionProperty() {
