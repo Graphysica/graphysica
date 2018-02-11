@@ -42,17 +42,35 @@ public class Point extends Forme {
     private static final Color COULEUR_BORDURE = Color.BLACK;
 
     /**
-     * La taille par défaut d'un point.
+     * La position du point selon la base canonique dans l'espace 2D.
+     */
+    private final ObjectProperty<Vector2D> position
+            = new SimpleObjectProperty<>(new Vector2D(0, 0));
+
+    /**
+     * La taille par défaut d'un point. Doit être comprise entre
+     * {@code TAILLE_MINIMALE} et {@code TAILLE_MAXIMALE} inclusivement.
      *
      * @see Point#taille
      */
     private static final int TAILLE_PAR_DEFAUT = 5;
 
     /**
-     * La position du point selon la base canonique dans l'espace 2D.
+     * La taille minimale d'un point. Doit être positive.
+     *
+     * @see Point#taille
+     * @see Point#setTaille(int)
      */
-    private final ObjectProperty<Vector2D> position
-            = new SimpleObjectProperty<>(new Vector2D(0, 0));
+    private static final int TAILLE_MINIMALE = 1;
+
+    /**
+     * La taille maximale d'un point. Doit être positive et supérieure à
+     * {@code TAILLE_MINIMALE}.
+     *
+     * @see Point#taille
+     * @see Point#setTaille(int)
+     */
+    private static final int TAILLE_MAXIMALE = 10;
 
     /**
      * La taille du point sur l'écran, variant de 1 à 10.
@@ -93,10 +111,18 @@ public class Point extends Forme {
         return taille.getValue();
     }
 
+    /**
+     * Modifie la taille du point.
+     *
+     * @param taille la nouvelle taille du point.
+     * @throws IllegalArgumentException si {@code taille} est inférieure à
+     * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}.
+     */
     public void setTaille(final int taille) throws IllegalArgumentException {
-        if (taille < 1 ^ taille > 10) {
+        if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
             throw new IllegalArgumentException(
-                    "Taille spécifiée non-comprise entre 1 et 10: " + taille);
+                    "Taille spécifiée non-comprise entre " + TAILLE_MINIMALE 
+                            + " et " + TAILLE_MAXIMALE +  ": " + taille);
         }
         this.taille.setValue(taille);
     }
