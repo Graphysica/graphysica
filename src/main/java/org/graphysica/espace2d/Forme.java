@@ -21,6 +21,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
  * Une forme peut être dessinée à l'écran dans un espace avec une couleur
@@ -47,7 +48,9 @@ public abstract class Forme implements Dessinable {
 
     @Override
     public abstract void dessiner(
-            @NotNull final GraphicsContext contexteGraphique);
+            @NotNull final GraphicsContext contexteGraphique,
+            @NotNull final Vector2D echelleVirtuelle,
+            @NotNull Vector2D origineVirtuelle);
 
     public final Color getCouleur() {
         return couleur.getValue();

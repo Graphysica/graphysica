@@ -16,9 +16,13 @@
  */
 package org.graphysica.espace2d;
 
+import com.sun.istack.internal.NotNull;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.GraphicsContext;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
  * Une toile permettant d'afficher un ensemble de formes.
@@ -37,6 +41,20 @@ public class ToileFormes extends ToileRedimensionnable {
      */
     private final ObservableList<Forme> formes
             = FXCollections.observableArrayList();
+    
+    /**
+     * L'échelle de l'espace exprimée en pixels par mètre.
+     */
+    private final ObjectProperty<Vector2D> echelle
+            = new SimpleObjectProperty<>(new Vector2D(100, 100));
+
+    /**
+     * L'origine virtuelle de l'espace exprimée en pixels selon l'origine de
+     * l'écran. Par défaut, l'origine de l'espace est au centre du panneau.
+     */
+    private final ObjectProperty<Vector2D> origine
+            = new SimpleObjectProperty<>(
+                    new Vector2D(getWidth() / 2, getHeight() / 2));
 
     public ToileFormes(final double largeur, final double hauteur) {
         super(largeur, hauteur);
@@ -45,10 +63,41 @@ public class ToileFormes extends ToileRedimensionnable {
     @Override
     public void actualiser() {
         effacerAffichage();
+        formes.forEach((forme) -> {
+            forme.dessiner(contexteGraphique, getEchelle(), getOrigine());
+        });
     }
 
     private void effacerAffichage() {
         contexteGraphique.clearRect(0, 0, getWidth(), getHeight());
+    }
+    
+    public void ajouter(@NotNull final Forme forme) {
+        formes.add(forme);
+    }
+    
+        public ObjectProperty<Vector2D> echelleProperty() {
+        return echelle;
+    }
+
+    public Vector2D getEchelle() {
+        return echelle.getValue();
+    }
+
+    public void setEchelle(@NotNull final Vector2D echelle) {
+        this.echelle.setValue(echelle);
+    }
+
+    public ObjectProperty<Vector2D> origineProperty() {
+        return origine;
+    }
+
+    public Vector2D getOrigine() {
+        return origine.getValue();
+    }
+
+    public void setOrigine(@NotNull final Vector2D origine) {
+        this.origine.setValue(origine);
     }
 
 }

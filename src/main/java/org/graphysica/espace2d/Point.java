@@ -30,7 +30,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  * @author Marc-Antoine Ouimet
  */
 public class Point extends Forme {
-    
+
     /**
      * La couleur par défaut d'un point.
      */
@@ -42,7 +42,7 @@ public class Point extends Forme {
     private static final Color COULEUR_BORDURE = Color.BLACK;
 
     /**
-     * La position du point selon la base canonique dans l'espace 2D.
+     * La position réelle du point exprimée en mètres selon la base canonique.
      */
     private final ObjectProperty<Vector2D> position
             = new SimpleObjectProperty<>(new Vector2D(0, 0));
@@ -51,7 +51,7 @@ public class Point extends Forme {
      * La taille de la bordure du dessin du point exprimée en pixels.
      */
     private static final int TAILLE_BORDURE = 1;
-    
+
     /**
      * La taille par défaut d'un point. Doit être comprise entre
      * {@code TAILLE_MINIMALE} et {@code TAILLE_MAXIMALE} inclusivement.
@@ -85,7 +85,7 @@ public class Point extends Forme {
 
     public Point() {
     }
-    
+
     public Point(final int taille) throws IllegalArgumentException {
         setTaille(taille);
     }
@@ -93,8 +93,8 @@ public class Point extends Forme {
     public Point(@NotNull final Color couleur) {
         super(couleur);
     }
-    
-    public Point(final int taille, @NotNull final Color couleur) 
+
+    public Point(final int taille, @NotNull final Color couleur)
             throws IllegalArgumentException {
         super(couleur);
         setTaille(taille);
@@ -105,9 +105,9 @@ public class Point extends Forme {
         super(couleur);
         position.setValue(new Vector2D(abscisse, ordonnee));
     }
-    
+
     public Point(final int taille, @NotNull final Color couleur,
-            final double abscisse, final double ordonnee) 
+            final double abscisse, final double ordonnee)
             throws IllegalArgumentException {
         this(couleur, abscisse, ordonnee);
         setTaille(taille);
@@ -117,27 +117,42 @@ public class Point extends Forme {
         super(couleur);
         this.position.setValue(position);
     }
-    
-    public Point(final int taille, @NotNull final Color couleur, 
+
+    public Point(final int taille, @NotNull final Color couleur,
             @NotNull Vector2D position) throws IllegalArgumentException {
         this(couleur, position);
         setTaille(taille);
     }
 
     @Override
-    public void dessiner(@NotNull final GraphicsContext contexteGraphique) {
+    public void dessiner(@NotNull final GraphicsContext contexteGraphique,
+            @NotNull final Vector2D echelleVirtuelle,
+            @NotNull Vector2D origineVirtuelle) {
+        final Vector2D positionEchelleVirtuelle = new Vector2D(
+                getAbscisse() * echelleVirtuelle.getX(),
+                getOrdonnee() * echelleVirtuelle.getY());
+        final Vector2D positionSymetrieVirtuelle = new Vector2D(
+                positionEchelleVirtuelle.getX(),
+                - positionEchelleVirtuelle.getY());
+        final Vector2D positionVirtuelle = origineVirtuelle.add(
+                positionSymetrieVirtuelle);
+        dessinerRond(contexteGraphique, positionVirtuelle);
+    }
+    
+    private void dessinerRond(@NotNull final GraphicsContext contexteGraphique, 
+            @NotNull final Vector2D positionVirtuelle) {
         contexteGraphique.setFill(COULEUR_BORDURE);
         contexteGraphique.fillOval(
-                getAbscisse() - getTaille() - TAILLE_BORDURE, 
-                getOrdonnee() - getTaille() - TAILLE_BORDURE, 
-                2 * (getTaille() + TAILLE_BORDURE), 
+                positionVirtuelle.getX() - getTaille() - TAILLE_BORDURE,
+                positionVirtuelle.getY() - getTaille() - TAILLE_BORDURE,
+                2 * (getTaille() + TAILLE_BORDURE),
                 2 * (getTaille() + TAILLE_BORDURE)
         );
         contexteGraphique.setFill(getCouleur());
         contexteGraphique.fillOval(
-                getAbscisse() - getTaille(), 
-                getOrdonnee() - getTaille(), 
-                2 * getTaille(), 
+                positionVirtuelle.getX() - getTaille(),
+                positionVirtuelle.getY() - getTaille(),
+                2 * getTaille(),
                 2 * getTaille()
         );
     }
@@ -177,12 +192,12 @@ public class Point extends Forme {
      * @throws IllegalArgumentException si {@code taille} est inférieure à
      * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}.
      */
-    public final void setTaille(final int taille) 
+    public final void setTaille(final int taille)
             throws IllegalArgumentException {
         if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
             throw new IllegalArgumentException(
-                    "Taille spécifiée non-comprise entre " + TAILLE_MINIMALE 
-                            + " et " + TAILLE_MAXIMALE +  ": " + taille);
+                    "Taille spécifiée non-comprise entre " + TAILLE_MINIMALE
+                    + " et " + TAILLE_MAXIMALE + ": " + taille);
         }
         this.taille.setValue(taille);
     }
