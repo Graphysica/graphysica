@@ -1,10 +1,13 @@
 package org.graphysica;
 
+import java.util.Optional;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 
 
@@ -20,6 +23,12 @@ public class MainApp extends Application {
         stage.setTitle("JavaFX and Maven");
         stage.setScene(scene);
         stage.show();
+        
+//        Dialog dialog = new TextInputDialog();
+//        dialog.setHeaderText("Nouveau fichier");
+//        dialog.setContentText("Titre: ");
+//        dialog.setTitle("Nouveau fichier");
+//        dialog.showAndWait().get();
     }
 
     /**
@@ -32,6 +41,7 @@ public class MainApp extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        
     }
 
 }
