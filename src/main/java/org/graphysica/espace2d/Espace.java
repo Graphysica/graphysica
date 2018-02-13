@@ -18,6 +18,7 @@ package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
 import javafx.scene.layout.AnchorPane;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
  * Un espace est un panneau duquel l'utilisateur peut modifier les composantes
@@ -30,7 +31,7 @@ public class Espace extends AnchorPane {
     /**
      * La toile des formes de l'espace.
      */
-    private final ToileFormes toile;
+    private final Toile toile;
 
     /**
      * Construit un espace initialisé dont les dimensions sont liées à celles de
@@ -40,9 +41,13 @@ public class Espace extends AnchorPane {
      * @param hauteur la hauteur initiale de l'espace, exprimée en pixels.
      */
     public Espace(final double largeur, final double hauteur) {
-        toile = new ToileFormes(largeur, hauteur);
+        toile = new Toile(largeur, hauteur);
         lierDimensions();
         initialiser();
+    }
+    
+    public void deplacer() {
+        toile.setOrigine(toile.getOrigine().add(new Vector2D(1, 2)));
     }
     
     public void ajouter(@NotNull final Forme forme) {

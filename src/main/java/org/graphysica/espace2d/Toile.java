@@ -29,7 +29,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  *
  * @author Marc-Antoine Ouimet
  */
-public class ToileFormes extends ToileRedimensionnable {
+public class Toile extends ToileRedimensionnable {
 
     /**
      * Le contexte graphique de dessin de la toile.
@@ -56,15 +56,38 @@ public class ToileFormes extends ToileRedimensionnable {
             = new SimpleObjectProperty<>(
                     new Vector2D(getWidth() / 2, getHeight() / 2));
 
-    public ToileFormes(final double largeur, final double hauteur) {
+    public Toile(final double largeur, final double hauteur) {
         super(largeur, hauteur);
+        traiterDeplacement();
+        traiterMiseALechelle();
+    }
+    
+    private void traiterDeplacement() {
+        origine.addListener(evenementInvalidation -> actualiser());
+    }
+    
+    private void traiterMiseALechelle() {
+        echelle.addListener(evenementInvalidation -> actualiser());
+    }
+    
+    public Vector2D positionVirtuelle(@NotNull final Vector2D positionReelle) {
+        final Vector2D positionEchelleVirtuelle = new Vector2D(
+                positionReelle.getX() * getEchelle().getX(),
+                positionReelle.getY() * getEchelle().getY());
+        final Vector2D positionSymetrieVirtuelle = new Vector2D(
+                positionEchelleVirtuelle.getX(),
+                - positionEchelleVirtuelle.getY());
+        final Vector2D positionVirtuelle = getOrigine().add(
+                positionSymetrieVirtuelle);
+        return positionVirtuelle;
     }
 
     @Override
     public void actualiser() {
         effacerAffichage();
+        //TODO: Définir un ordre prioritaire de dessin (par exemple, les droites avant les points
         formes.forEach((forme) -> {
-            forme.dessiner(contexteGraphique, getEchelle(), getOrigine());
+            forme.dessiner(this);
         });
     }
 

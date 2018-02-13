@@ -17,8 +17,6 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
-import javafx.scene.canvas.GraphicsContext;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
  * Les classes implémentant cette interface peuvent être dessinées dans un
@@ -31,12 +29,8 @@ public interface Dessinable {
     /**
      * Dessine l'objet dans un contexte graphique spécifié.
      *
-     * @param contexteGraphique le contexte graphique de dessin de l'objet.
-     * @param echelleVirtuelle l'échelle virtuelle de dessin de l'objet.
-     * @param origineVirtuelle l'origine virtuelle de dessin de l'objet.
+     * @param toile la toile surlaquelle dessiner l'objet.
      */
-    public void dessiner(@NotNull final GraphicsContext contexteGraphique, 
-            @NotNull final Vector2D echelleVirtuelle, 
-            @NotNull Vector2D origineVirtuelle);
+    public void dessiner(@NotNull final Toile toile);
 
 }
