@@ -17,9 +17,7 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -51,53 +49,32 @@ public class Point extends Forme {
      * La taille de la bordure du dessin du point exprimée en pixels.
      */
     private static final int TAILLE_BORDURE = 1;
-
+    
     /**
-     * La taille par défaut d'un point. Doit être comprise entre
-     * {@code TAILLE_MINIMALE} et {@code TAILLE_MAXIMALE} inclusivement.
-     *
-     * @see Point#taille
+     * La taille du point.
      */
-    private static final int TAILLE_PAR_DEFAUT = 4;
-
-    /**
-     * La taille minimale d'un point. Doit être positive.
-     *
-     * @see Point#taille
-     * @see Point#setTaille(int)
-     */
-    static final int TAILLE_MINIMALE = 1;
-
-    /**
-     * La taille maximale d'un point. Doit être positive et supérieure à
-     * {@code TAILLE_MINIMALE}.
-     *
-     * @see Point#taille
-     * @see Point#setTaille(int)
-     */
-    static final int TAILLE_MAXIMALE = 10;
-
-    /**
-     * La taille du point sur l'écran, variant de 1 à 10.
-     */
-    private final IntegerProperty taille = new SimpleIntegerProperty(
-            TAILLE_PAR_DEFAUT);
+    private final ObjectProperty<Taille> taille 
+            = new SimpleObjectProperty<>(Taille.pointParDefaut());
 
     public Point() {
     }
 
     public Point(final int taille) throws IllegalArgumentException {
-        setTaille(taille);
+        this.taille.setValue(new Taille(taille));
     }
 
     public Point(@NotNull final Color couleur) {
         super(couleur);
     }
+    
+    public Point(@NotNull final Vector2D position) {
+        setPosition(position);
+    }
 
     public Point(final int taille, @NotNull final Color couleur)
             throws IllegalArgumentException {
         super(couleur);
-        setTaille(taille);
+        this.taille.setValue(new Taille(taille));
     }
 
     public Point(@NotNull final Color couleur,
@@ -110,7 +87,7 @@ public class Point extends Forme {
             final double abscisse, final double ordonnee)
             throws IllegalArgumentException {
         this(couleur, abscisse, ordonnee);
-        setTaille(taille);
+        this.taille.setValue(new Taille(taille));
     }
 
     public Point(@NotNull final Color couleur, @NotNull Vector2D position) {
@@ -121,22 +98,13 @@ public class Point extends Forme {
     public Point(final int taille, @NotNull final Color couleur,
             @NotNull Vector2D position) throws IllegalArgumentException {
         this(couleur, position);
-        setTaille(taille);
+        this.taille.setValue(new Taille(taille));
     }
 
     @Override
-    public void dessiner(@NotNull final GraphicsContext contexteGraphique,
-            @NotNull final Vector2D echelleVirtuelle,
-            @NotNull Vector2D origineVirtuelle) {
-        final Vector2D positionEchelleVirtuelle = new Vector2D(
-                getAbscisse() * echelleVirtuelle.getX(),
-                getOrdonnee() * echelleVirtuelle.getY());
-        final Vector2D positionSymetrieVirtuelle = new Vector2D(
-                positionEchelleVirtuelle.getX(),
-                - positionEchelleVirtuelle.getY());
-        final Vector2D positionVirtuelle = origineVirtuelle.add(
-                positionSymetrieVirtuelle);
-        dessinerRond(contexteGraphique, positionVirtuelle);
+    public void dessiner(@NotNull final Toile toile) {
+        dessinerRond(toile.getGraphicsContext2D(), 
+                toile.positionVirtuelle(getPosition()));
     }
     
     private void dessinerRond(@NotNull final GraphicsContext contexteGraphique, 
@@ -170,11 +138,11 @@ public class Point extends Forme {
         return position.getValue();
     }
 
-    public void setPosition(@NotNull final Vector2D position) {
+    public final void setPosition(@NotNull final Vector2D position) {
         this.position.setValue(position);
     }
 
-    public void setPosition(final double abscisse, final double ordonnee) {
+    public final void setPosition(final double abscisse, final double ordonnee) {
         position.setValue(new Vector2D(abscisse, ordonnee));
     }
 
@@ -185,30 +153,9 @@ public class Point extends Forme {
     public double getOrdonnee() {
         return position.getValue().getY();
     }
-
-    public int getTaille() {
-        return taille.getValue();
-    }
-
-    /**
-     * Modifie la taille du point.
-     *
-     * @param taille la nouvelle taille du point.
-     * @throws IllegalArgumentException si {@code taille} est inférieure à
-     * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}.
-     */
-    public final void setTaille(final int taille)
-            throws IllegalArgumentException {
-        if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
-            throw new IllegalArgumentException(
-                    "Taille spécifiée non-comprise entre " + TAILLE_MINIMALE
-                    + " et " + TAILLE_MAXIMALE + ": " + taille);
-        }
-        this.taille.setValue(taille);
-    }
-
-    public IntegerProperty tailleProperty() {
-        return taille;
+    
+    private int getTaille() {
+        return taille.getValue().getTaille();
     }
 
 }
