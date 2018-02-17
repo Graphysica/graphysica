@@ -22,7 +22,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
@@ -33,16 +32,11 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 public class Toile extends Canvas implements Actualisable {
 
     /**
-     * Le contexte graphique de dessin de la toile.
-     */
-    private final GraphicsContext contexteGraphique = getGraphicsContext2D();
-
-    /**
      * La liste observable des formes dessinées sur la toile.
      */
     private final ObservableList<Forme> formes
             = FXCollections.observableArrayList();
-    
+
     /**
      * L'échelle de l'espace exprimée en pixels par mètre.
      */
@@ -62,25 +56,53 @@ public class Toile extends Canvas implements Actualisable {
         traiterDeplacement();
         traiterMiseALechelle();
     }
-    
+
     private void traiterDeplacement() {
         origine.addListener(evenementInvalidation -> actualiser());
     }
-    
+
     private void traiterMiseALechelle() {
         echelle.addListener(evenementInvalidation -> actualiser());
     }
-    
+
+    /**
+     * Détermine la position sur la toile d'une position réelle selon l'échelle
+     * et l'origine de la toile.
+     *
+     * @param positionReelle la position réelle dont on cherche la position
+     * virtuelle.
+     * @return la position virtuelle de {@code positionReelle}.
+     */
     public Vector2D positionVirtuelle(@NotNull final Vector2D positionReelle) {
         final Vector2D positionEchelleVirtuelle = new Vector2D(
                 positionReelle.getX() * getEchelle().getX(),
                 positionReelle.getY() * getEchelle().getY());
         final Vector2D positionSymetrieVirtuelle = new Vector2D(
                 positionEchelleVirtuelle.getX(),
-                - positionEchelleVirtuelle.getY());
+                -positionEchelleVirtuelle.getY());
         final Vector2D positionVirtuelle = getOrigine().add(
                 positionSymetrieVirtuelle);
         return positionVirtuelle;
+    }
+
+    /**
+     * Détermine la position réelle d'une position sur la toile selon l'échelle
+     * et l'origine de la toile.
+     *
+     * @param positionVirtuelle la position virtuelle dont on cherche la
+     * position réelle.
+     * @return la position réelle de {@code positionVirtuelle}.
+     */
+    public Vector2D positionReelle(@NotNull final Vector2D positionVirtuelle) {
+        final Vector2D positionOrigineReelle = getOrigine().subtract(
+                positionVirtuelle);
+        final Vector2D positionSymetrieReelle = new Vector2D(
+                - positionOrigineReelle.getX(),
+                positionOrigineReelle.getY());
+        final Vector2D positionReelle = new Vector2D(
+                positionSymetrieReelle.getX() / getEchelle().getX(),
+                positionSymetrieReelle.getY() / getEchelle().getY());
+        return positionReelle;
     }
 
     /**
@@ -96,14 +118,14 @@ public class Toile extends Canvas implements Actualisable {
     }
 
     private void effacerAffichage() {
-        contexteGraphique.clearRect(0, 0, getWidth(), getHeight());
+        getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight());
     }
-    
+
     public void ajouter(@NotNull final Forme forme) {
         formes.add(forme);
     }
-    
-        public ObjectProperty<Vector2D> echelleProperty() {
+
+    public ObjectProperty<Vector2D> echelleProperty() {
         return echelle;
     }
 
