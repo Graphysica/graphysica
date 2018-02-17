@@ -113,7 +113,9 @@ public class Toile extends Canvas implements Actualisable {
         effacerAffichage();
         //TODO: Définir un ordre prioritaire de dessin (par exemple, les droites avant les points
         formes.forEach((forme) -> {
-            forme.dessiner(this);
+            if (forme.isAffichee()) {
+                forme.dessiner(this);
+            }
         });
     }
 

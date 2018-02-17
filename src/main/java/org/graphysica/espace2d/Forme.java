@@ -17,7 +17,9 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
 
@@ -30,12 +32,17 @@ import javafx.scene.paint.Color;
 public abstract class Forme implements Dessinable {
 
     private static final Color COULEUR_PAR_DEFAUT = Color.BLACK;
-
+    
     /**
      * La couleur d'affichage de la forme.
      */
-    protected final ObjectProperty<Color> couleur
+    private final ObjectProperty<Color> couleur
             = new SimpleObjectProperty<>(COULEUR_PAR_DEFAUT);
+    
+    /**
+     * Si la forme est affichée.
+     */
+    private final BooleanProperty affichee = new SimpleBooleanProperty(true);
 
     public Forme() {
     }
@@ -57,6 +64,18 @@ public abstract class Forme implements Dessinable {
 
     public final ObjectProperty<Color> couleurProperty() {
         return couleur;
+    }
+    
+    public final boolean isAffichee() {
+        return affichee.getValue();
+    }
+    
+    public final void setAffichee(final boolean affichee) {
+        this.affichee.setValue(affichee);
+    }
+    
+    public final BooleanProperty afficheeProperty() {
+        return affichee;
     }
 
 }
