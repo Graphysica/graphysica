@@ -54,7 +54,7 @@ public class Point extends Forme {
      * La taille du point.
      */
     private final ObjectProperty<Taille> taille 
-            = new SimpleObjectProperty<>(Taille.pointParDefaut());
+            = new SimpleObjectProperty<>(Taille.de("point"));
 
     public Point() {
     }
@@ -156,6 +156,14 @@ public class Point extends Forme {
     
     private int getTaille() {
         return taille.getValue().getTaille();
+    }
+    
+    private void setTaille(@NotNull final Taille taille) {
+        this.taille.setValue(taille);
+    }
+    
+    public ObjectProperty<Taille> tailleProperty() {
+        return taille;
     }
 
 }

@@ -26,13 +26,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Une taille est un nombre compris entre une valeur minimale et une valeur
+ * maximale, qui est toujours défini, et qui peut être chargé à partir d'un
+ * fichier de configuration.
  *
  * @author Marc-Antoine Ouimet
  */
-public class Taille {
+public final class Taille {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Taille.class);
 
+    /**
+     * Le chemin du fichier des propriétés de taille.
+     */
     private static String CHEMIN_PROPRIETES = "/config/taille.properties";
 
     /**
@@ -53,19 +59,31 @@ public class Taille {
     static final int TAILLE_MAXIMALE = 10;
 
     /**
+     * La taille par défaut.
+     */
+    static final int TAILLE_PAR_DEFAUT = 4;
+
+    /**
      * La taille sur l'écran, exprimée en pixels et variant entre entre
      * {@code TAILLE_MINIMALE} et {@code TAILLE_MAXIMALE} inclusivement.
      */
     private final IntegerProperty taille = new SimpleIntegerProperty(
-            TAILLE_MINIMALE);
+            TAILLE_PAR_DEFAUT);
 
     public Taille() {
     }
 
-    public Taille(final int taille) throws IllegalArgumentException {
+    public Taille(final int taille) {
         setTaille(taille);
     }
 
+    /**
+     * Charge une propriété de taille à partir de la clé de la propriété.
+     *
+     * @param propriete la clé de la propriété de taille à récupérer.
+     * @return la taille de la propriété ou la taille par défaut en cas
+     * d'erreur.
+     */
     private static int chargerProprieteTaille(@NotNull final String propriete) {
         try {
             final Properties proprietes = new Properties();
@@ -73,25 +91,33 @@ public class Taille {
                     .getResourceAsStream(CHEMIN_PROPRIETES);
             if (entree != null) {
                 proprietes.load(entree);
+                final String valeur = proprietes.getProperty(propriete);
+                return Integer.parseInt(valeur);
             } else {
                 LOGGER.error(
                         "Fichier de propriétés de taille introuvable au chemin "
                         + CHEMIN_PROPRIETES);
             }
-            return Integer.parseInt(proprietes.getProperty(propriete));
         } catch (final IOException ioex) {
             LOGGER.error("Erreur lors de la lecture du fichier de propriétés "
                     + "au chemin " + CHEMIN_PROPRIETES);
+        } catch (final NumberFormatException nfex) {
+            LOGGER.error("Format inattendu de la propriété '" + propriete
+                    + "' au chemin " + CHEMIN_PROPRIETES);
         }
-        return 1;
+        return TAILLE_PAR_DEFAUT;
     }
 
-    public static Taille pointParDefaut() {
-        return new Taille(chargerProprieteTaille("point"));
-    }
-    
-    public static Taille ligneParDefaut() {
-        return new Taille(chargerProprieteTaille("ligne"));
+    /**
+     * Récupère la taille d'un objet selon sa clé de propriété du fichier de
+     * propriétés au {@code CHEMIN_PROPRIETES}.
+     *
+     * @param type le type d'objet dont on récupère la taille.
+     * @return une taille reflétant la taille de l'objet ou une taille par
+     * défaut.
+     */
+    public static Taille de(@NotNull final String type) {
+        return new Taille(chargerProprieteTaille(type));
     }
 
     public int getTaille() {
@@ -99,20 +125,18 @@ public class Taille {
     }
 
     /**
-     * Modifie la taille.
+     * Modifie la taille. Si la taille spécifiée est inférieure à
+     * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}, défini
+     * la taille à sa valeur par défaut.
      *
      * @param taille la nouvelle taille.
-     * @throws IllegalArgumentException si {@code taille} est inférieure à
-     * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}.
      */
-    public final void setTaille(final int taille)
-            throws IllegalArgumentException {
+    public final void setTaille(final int taille) {
         if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
-            throw new IllegalArgumentException(
-                    "Taille spécifiée non-comprise entre " + TAILLE_MINIMALE
-                    + " et " + TAILLE_MAXIMALE + ": " + taille);
+            this.taille.setValue(TAILLE_PAR_DEFAUT);
+        } else {
+            this.taille.setValue(taille);
         }
-        this.taille.setValue(taille);
     }
 
     public IntegerProperty tailleProperty() {
