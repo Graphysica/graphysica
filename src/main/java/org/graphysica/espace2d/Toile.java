@@ -21,6 +21,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -29,7 +30,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  *
  * @author Marc-Antoine Ouimet
  */
-public class Toile extends ToileRedimensionnable {
+public class Toile extends Canvas implements Actualisable {
 
     /**
      * Le contexte graphique de dessin de la toile.
@@ -82,6 +83,9 @@ public class Toile extends ToileRedimensionnable {
         return positionVirtuelle;
     }
 
+    /**
+     * Actualise l'affichage de cette toile.
+     */
     @Override
     public void actualiser() {
         effacerAffichage();

@@ -16,14 +16,12 @@
  */
 package org.graphysica.espace2d;
 
-import javafx.scene.canvas.Canvas;
-
 /**
  * Une toile redimensionnable est actualisée lorsqu'elle est redimensionnée.
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class ToileRedimensionnable extends Canvas {
+public abstract class ToileRedimensionnable extends Toile {
 
     /**
      * Construit une toile redimensionnable aux dimensions définies.
@@ -43,11 +41,6 @@ public abstract class ToileRedimensionnable extends Canvas {
         widthProperty().addListener(evenementInvalidation -> actualiser());
         heightProperty().addListener(evenementInvalidation -> actualiser());
     }
-
-    /**
-     * Actualise l'affichage de cette toile redimensionnable.
-     */
-    public abstract void actualiser();
 
     @Override
     public boolean isResizable() {
