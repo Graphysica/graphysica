@@ -114,14 +114,29 @@ public class Droite extends Forme {
             variationAbscisses = point2Virtuel.getX() - point1Virtuel.getX();
             variationOrdonnees = point2Virtuel.getY() - point1Virtuel.getY();
             if (Math.abs(variationAbscisses) > Math.abs(variationOrdonnees)) {
-                //La droite est définie même si {@code variationOrdonnees = 0}
+                //La droite est définie même si {@code variationOrdonnees == 0}
                 final double m = variationOrdonnees / variationAbscisses;
                 //La droite est d'équation: y=mx+b
+                final double b = point1Virtuel.getY() 
+                        - m * point1Virtuel.getX();
+                //Soient les points P(xmin, yP) et  Q(xmax, yQ)
+                final double yP = b;
+                final double yQ = m * toile.getWidth() + b;
+                origineTrace = new Vector2D(0, yP); //P
+                arriveeTrace = new Vector2D(toile.getWidth(), yQ); //Q
             } else {
-                //La droite est définie même si {@code variationAbscisses = 0}
+                //La droite est définie même si {@code variationAbscisses == 0}
                 final double m = variationAbscisses / variationOrdonnees;
                 //La droite est d'équation x=my+b
+                final double b = point1Virtuel.getX() 
+                        - m * point1Virtuel.getY();
+                //Soient les points P(xP, ymin) et Q(xQ, ymax)
+                final double xP = b;
+                final double xQ = m * toile.getHeight() + b;
+                origineTrace = new Vector2D(xP, 0); //P
+                arriveeTrace = new Vector2D(xQ, toile.getHeight()); //Q
             }
+            dessinerContinue(toile.getGraphicsContext2D());
         }
     }
 
