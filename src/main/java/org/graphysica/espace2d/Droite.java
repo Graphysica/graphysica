@@ -24,7 +24,7 @@ import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
- *
+ * 
  * @author Marc-Antoine Ouimet
  */
 public class Droite extends Forme {
@@ -37,13 +37,13 @@ public class Droite extends Forme {
     /**
      * La position réelle du premier point dans la droite.
      */
-    private final ObjectProperty<Vector2D> point1
+    protected final ObjectProperty<Vector2D> point1
             = new SimpleObjectProperty<>();
 
     /**
      * La position réelle du deuxième point dans la droite.
      */
-    private final ObjectProperty<Vector2D> point2
+    protected final ObjectProperty<Vector2D> point2
             = new SimpleObjectProperty<>();
 
     /**
@@ -95,7 +95,7 @@ public class Droite extends Forme {
      */
     private boolean indefinie;
 
-    private final ObjectProperty<Taille> epaisseur
+    protected final ObjectProperty<Taille> epaisseur
             = new SimpleObjectProperty<>(Taille.de("ligne"));
 
     public Droite(@NotNull final Point point1, @NotNull final Point point2) {
@@ -156,7 +156,7 @@ public class Droite extends Forme {
         return point2.getValue();
     }
 
-    private int getEpaisseur() {
+    protected int getEpaisseur() {
         return epaisseur.getValue().getTaille();
     }
 
