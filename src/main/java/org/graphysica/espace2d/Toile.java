@@ -126,7 +126,7 @@ public class Toile extends Canvas implements Actualisable {
     public void ajouter(@NotNull final Forme forme) {
         formes.add(forme);
     }
-
+    
     public ObjectProperty<Vector2D> echelleProperty() {
         return echelle;
     }
