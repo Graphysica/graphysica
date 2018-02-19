@@ -79,4 +79,69 @@ public class Ligne extends Forme {
         return epaisseur.getValue().getTaille();
     }
 
+    //https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
+    private static class AlgorithmeCohenSutherland {
+
+        private static final int INTERIEUR = 0b0000;
+        private static final int GAUCHE = 0b0001;
+        private static final int DROITE = 0b0010;
+        private static final int BAS = 0b0100;
+        private static final int HAUT = 0b1000;
+
+        /**
+         * Détermine le code d'un point virtuel selon le système d'axes de la
+         * toile.
+         *
+         * @param toile la toile définissant les contraintes du contexte
+         * graphique.
+         * @param point le point virtuel dont on détermine le code.
+         * @return le code binaire du point dans l'espace de la toile selon
+         * l'algorithme de Cohen-Sutherland.
+         */
+        private static int code(@NotNull final Vector2D point,
+                @NotNull final Toile toile) {
+            int code = INTERIEUR;
+            if (point.getX() < 0) {
+                code |= GAUCHE;
+            } else if (point.getX() > toile.getWidth()) {
+                code |= DROITE;
+            } else if (point.getY() < 0) {
+                code |= HAUT;
+            } else if (point.getY() > toile.getHeight()) {
+                code |= BAS;
+            }
+            return code;
+        }
+
+        //https://stackoverflow.com/questions/8151435/integer-to-binary-array
+        private static boolean[] code(int code) {
+            final boolean[] codeBooleen = new boolean[4];
+            for (int i = codeBooleen.length - 1; i >= 0; i--) {
+                codeBooleen[i] = (code & (1 << i)) != 0;
+            }
+            return codeBooleen;
+        }
+
+        public static boolean dansGauche(@NotNull final Vector2D point,
+                @NotNull final Toile toile) {
+            return code(code(point, toile))[3];
+        }
+
+        public static boolean dansDroite(@NotNull final Vector2D point,
+                @NotNull final Toile toile) {
+            return code(code(point, toile))[2];
+        }
+
+        public static boolean dansBas(@NotNull final Vector2D point,
+                @NotNull final Toile toile) {
+            return code(code(point, toile))[1];
+        }
+
+        public static boolean dansHaut(@NotNull final Vector2D point,
+                @NotNull final Toile toile) {
+            return code(code(point, toile))[0];
+        }
+
+    }
+
 }
