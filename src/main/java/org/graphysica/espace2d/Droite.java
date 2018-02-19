@@ -24,7 +24,8 @@ import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
- * 
+ * Une droite bissecte l'espace en traversant deux points distincts.
+ *
  * @author Marc-Antoine Ouimet
  */
 public class Droite extends Forme {
@@ -46,6 +47,15 @@ public class Droite extends Forme {
     protected final ObjectProperty<Vector2D> point2
             = new SimpleObjectProperty<>();
 
+    /**
+     * L'épaisseur du tracé de la droite.
+     */
+    protected final ObjectProperty<Taille> epaisseur
+            = new SimpleObjectProperty<>(Taille.de("ligne"));
+
+    /**
+     * TODO: Les attributs plus bas ne sont utiles que pour le tracé de droites.
+     */
     /**
      * La position virtuelle du point 1.
      *
@@ -90,14 +100,6 @@ public class Droite extends Forme {
      */
     private double variationOrdonnees;
 
-    /**
-     * La droite est indéfinie si {@code getPoint1().equals(getPoint2())}.
-     */
-    private boolean indefinie;
-
-    protected final ObjectProperty<Taille> epaisseur
-            = new SimpleObjectProperty<>(Taille.de("ligne"));
-
     public Droite(@NotNull final Point point1, @NotNull final Point point2) {
         this.point1.setValue(point1.getPosition());
         this.point1.bind(point1.positionProperty());
@@ -107,8 +109,7 @@ public class Droite extends Forme {
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
-        indefinie = getPoint1().equals(getPoint2());
-        if (!indefinie) {
+        if (!isIndefinie()) {
             point1Virtuel = toile.positionVirtuelle(getPoint1());
             point2Virtuel = toile.positionVirtuelle(getPoint2());
             variationAbscisses = point2Virtuel.getX() - point1Virtuel.getX();
@@ -117,7 +118,7 @@ public class Droite extends Forme {
                 //La droite est définie même si {@code variationOrdonnees == 0}
                 final double m = variationOrdonnees / variationAbscisses;
                 //La droite est d'équation: y=mx+b
-                final double b = point1Virtuel.getY() 
+                final double b = point1Virtuel.getY()
                         - m * point1Virtuel.getX();
                 //Soient les points P(xmin, yP) et  Q(xmax, yQ)
                 final double yP = b;
@@ -128,7 +129,7 @@ public class Droite extends Forme {
                 //La droite est définie même si {@code variationAbscisses == 0}
                 final double m = variationAbscisses / variationOrdonnees;
                 //La droite est d'équation x=my+b
-                final double b = point1Virtuel.getX() 
+                final double b = point1Virtuel.getX()
                         - m * point1Virtuel.getY();
                 //Soient les points P(xP, ymin) et Q(xQ, ymax)
                 final double xP = b;
@@ -158,6 +159,10 @@ public class Droite extends Forme {
 
     protected int getEpaisseur() {
         return epaisseur.getValue().getTaille();
+    }
+
+    protected boolean isIndefinie() {
+        return getPoint1().equals(getPoint2());
     }
 
 }

@@ -21,10 +21,11 @@ import javafx.scene.canvas.GraphicsContext;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
+ * Un segment de droite relie deux points distincts dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-public class SegmentDroite extends Droite {
+public final class SegmentDroite extends Droite {
 
     /**
      * Construit un segment de droite lié à la position d'un point d'origine et
@@ -36,19 +37,19 @@ public class SegmentDroite extends Droite {
     public SegmentDroite(@NotNull final Point origine,
             @NotNull final Point arrivee) {
         super(origine, arrivee);
-        this.point1.setValue(origine.getPosition());
-        this.point1.bind(origine.positionProperty());
-        this.point2.setValue(arrivee.getPosition());
-        this.point2.bind(arrivee.positionProperty());
     }
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
-        final Vector2D point1Virtuel = toile.positionVirtuelle(getOrigine());
-        final Vector2D point2Virtuel = toile.positionVirtuelle(getArrivee());
-        //TODO: Implémenter le dessin en pointillé
-        dessinerContinue(toile.getGraphicsContext2D(),
-                point1Virtuel, point2Virtuel);
+        if (!isIndefinie()) {
+            final Vector2D point1Virtuel = toile.positionVirtuelle(
+                    getOrigine());
+            final Vector2D point2Virtuel = toile.positionVirtuelle(
+                    getArrivee());
+            //TODO: Implémenter le dessin en pointillé
+            dessinerContinue(toile.getGraphicsContext2D(),
+                    point1Virtuel, point2Virtuel);
+        }
     }
 
     /**
@@ -67,8 +68,8 @@ public class SegmentDroite extends Droite {
             @NotNull final Vector2D arriveeVirtuelle) {
         contexteGraphique.setStroke(COULEUR_PAR_DEFAUT);
         contexteGraphique.setLineWidth(getEpaisseur());
-        contexteGraphique.strokeLine(origineVirtuelle.getX(), 
-                origineVirtuelle.getY(), arriveeVirtuelle.getX(), 
+        contexteGraphique.strokeLine(origineVirtuelle.getX(),
+                origineVirtuelle.getY(), arriveeVirtuelle.getX(),
                 arriveeVirtuelle.getY());
     }
 

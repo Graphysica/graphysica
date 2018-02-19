@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
+ * Un point représente une position dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -49,11 +50,11 @@ public class Point extends Forme {
      * La taille de la bordure du dessin du point exprimée en pixels.
      */
     private static final int TAILLE_BORDURE = 1;
-    
+
     /**
      * La taille du point.
      */
-    private final ObjectProperty<Taille> taille 
+    private final ObjectProperty<Taille> taille
             = new SimpleObjectProperty<>(Taille.de("point"));
 
     public Point() {
@@ -66,7 +67,7 @@ public class Point extends Forme {
     public Point(@NotNull final Color couleur) {
         super(couleur);
     }
-    
+
     public Point(@NotNull final Vector2D position) {
         setPosition(position);
     }
@@ -103,14 +104,19 @@ public class Point extends Forme {
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
-        dessinerRond(toile.getGraphicsContext2D(), 
+        dessinerRond(toile.getGraphicsContext2D(),
                 toile.positionVirtuelle(getPosition()));
     }
-    
-    private void dessinerRond(@NotNull final GraphicsContext contexteGraphique, 
+
+    /**
+     * Dessine le point en tant que rond.
+     *
+     * @param contexteGraphique le contexte graphique de dessin du point.
+     * @param positionVirtuelle la position du point dans le contexte graphique.
+     */
+    private void dessinerRond(@NotNull final GraphicsContext contexteGraphique,
             @NotNull final Vector2D positionVirtuelle) {
         contexteGraphique.setFill(COULEUR_BORDURE);
-        //TODO: Déterminer la position graphique de l'objet dans l'espace
         contexteGraphique.fillOval(
                 positionVirtuelle.getX() - getTaille() - TAILLE_BORDURE,
                 positionVirtuelle.getY() - getTaille() - TAILLE_BORDURE,
@@ -125,7 +131,12 @@ public class Point extends Forme {
                 2 * getTaille()
         );
     }
-    
+
+    /**
+     * Déplace le point selon un vecteur de déplcaement.
+     *
+     * @param deplacement le vecteur de déplacement du point.
+     */
     public void deplacer(@NotNull final Vector2D deplacement) {
         setPosition(getPosition().add(deplacement));
     }
@@ -153,15 +164,15 @@ public class Point extends Forme {
     public double getOrdonnee() {
         return position.getValue().getY();
     }
-    
+
     private int getTaille() {
         return taille.getValue().getTaille();
     }
-    
+
     private void setTaille(@NotNull final Taille taille) {
         this.taille.setValue(taille);
     }
-    
+
     public ObjectProperty<Taille> tailleProperty() {
         return taille;
     }
