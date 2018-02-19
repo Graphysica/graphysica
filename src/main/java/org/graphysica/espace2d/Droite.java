@@ -71,21 +71,25 @@ public class Droite extends Forme {
     private Vector2D arriveeTrace;
 
     /**
-     * L'écart entre les abscisses des points virtuels.
+     * L'écart entre les abscisses des points virtuels dans le sens du système
+     * d'axes virtuels. Correspond à
+     * {@code point2Virtuel.getX() - point1Virtuel.getX()}.
      *
      * @see Droite#point1Virtuel
      * @see Droite#point2Virtuel
      */
-    private double variationAbscisse;
+    private double variationAbscisses;
 
     /**
-     * L'écart entre les ordonnées des points virtuels.
+     * L'écart entre les ordonnées des points virtuels dans le sens du système
+     * d'axes virtuels. Correspond à
+     * {@code point2Virtuel.getY() - point1Virtuel.getY()}.
      *
      * @see Droite#point1Virtuel
      * @see Droite#point2Virtuel
      */
-    private double variationOrdonnee;
-    
+    private double variationOrdonnees;
+
     /**
      * La droite est indéfinie si {@code getPoint1().equals(getPoint2())}.
      */
@@ -104,6 +108,21 @@ public class Droite extends Forme {
     @Override
     public void dessiner(@NotNull final Toile toile) {
         indefinie = getPoint1().equals(getPoint2());
+        if (!indefinie) {
+            point1Virtuel = toile.positionVirtuelle(getPoint1());
+            point2Virtuel = toile.positionVirtuelle(getPoint2());
+            variationAbscisses = point2Virtuel.getX() - point1Virtuel.getX();
+            variationOrdonnees = point2Virtuel.getY() - point1Virtuel.getY();
+            if (Math.abs(variationAbscisses) > Math.abs(variationOrdonnees)) {
+                //La droite est définie même si {@code variationOrdonnees = 0}
+                final double m = variationOrdonnees / variationAbscisses;
+                //La droite est d'équation: y=mx+b
+            } else {
+                //La droite est définie même si {@code variationAbscisses = 0}
+                final double m = variationAbscisses / variationOrdonnees;
+                //La droite est d'équation x=my+b
+            }
+        }
     }
 
     private void dessinerContinue(
