@@ -28,7 +28,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  *
  * @author Marc-Antoine Ouimet
  */
-public class Point extends Forme {
+public final class Point extends Forme {
 
     /**
      * La couleur par défaut d'un point.
@@ -41,10 +41,15 @@ public class Point extends Forme {
     private static final Color COULEUR_BORDURE = Color.BLACK;
 
     /**
+     * La position par défaut d'un point.
+     */
+    private static final Vector2D POSITION_PAR_DEFAUT = Vector2D.ZERO;
+
+    /**
      * La position réelle du point exprimée en mètres selon la base canonique.
      */
     private final ObjectProperty<Vector2D> position
-            = new SimpleObjectProperty<>(new Vector2D(0, 0));
+            = new SimpleObjectProperty<>(POSITION_PAR_DEFAUT);
 
     /**
      * La taille de la bordure du dessin du point exprimée en pixels.
@@ -57,47 +62,49 @@ public class Point extends Forme {
     private final ObjectProperty<Taille> taille
             = new SimpleObjectProperty<>(Taille.de("point"));
 
+    /**
+     * Construit un point de couleur, de taille et de position définies par
+     * défaut.
+     */
     public Point() {
+        super(COULEUR_PAR_DEFAUT);
+        proprietesActualisation.add(position);
+        proprietesActualisation.add(taille);
     }
 
-    public Point(final int taille) throws IllegalArgumentException {
-        this.taille.setValue(new Taille(taille));
-    }
-
-    public Point(@NotNull final Color couleur) {
-        super(couleur);
-    }
-
+    /**
+     * Construit un point de couleur et de taille définies par défaut à la
+     * position spécifiée.
+     *
+     * @param position la position réelle du point.
+     */
     public Point(@NotNull final Vector2D position) {
+        this();
         setPosition(position);
     }
 
-    public Point(final int taille, @NotNull final Color couleur)
-            throws IllegalArgumentException {
-        super(couleur);
-        this.taille.setValue(new Taille(taille));
-    }
-
-    public Point(@NotNull final Color couleur,
-            final double abscisse, final double ordonnee) {
-        super(couleur);
-        position.setValue(new Vector2D(abscisse, ordonnee));
-    }
-
-    public Point(final int taille, @NotNull final Color couleur,
-            final double abscisse, final double ordonnee)
-            throws IllegalArgumentException {
-        this(couleur, abscisse, ordonnee);
-        this.taille.setValue(new Taille(taille));
-    }
-
+    /**
+     * Construit un point de taille définie par défaut à la position et de
+     * couleur spécifiées.
+     *
+     * @param couleur la couleur du point.
+     * @param position la position réelle du point.
+     */
     public Point(@NotNull final Color couleur, @NotNull Vector2D position) {
-        super(couleur);
-        this.position.setValue(position);
+        this(position);
+        setCouleur(couleur);
     }
 
+    /**
+     * Construit un point dont la taille, la couleur et la position sont
+     * définies.
+     *
+     * @param taille la taille du point.
+     * @param couleur la couleur du point.
+     * @param position la position réelle du point.
+     */
     public Point(final int taille, @NotNull final Color couleur,
-            @NotNull Vector2D position) throws IllegalArgumentException {
+            @NotNull Vector2D position) {
         this(couleur, position);
         this.taille.setValue(new Taille(taille));
     }
@@ -169,7 +176,7 @@ public class Point extends Forme {
         return taille.getValue().getTaille();
     }
 
-    private void setTaille(@NotNull final Taille taille) {
+    public void setTaille(@NotNull final Taille taille) {
         this.taille.setValue(taille);
     }
 

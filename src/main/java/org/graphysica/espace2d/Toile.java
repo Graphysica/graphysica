@@ -17,6 +17,8 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -57,12 +59,20 @@ public class Toile extends Canvas implements Actualisable {
         traiterMiseALechelle();
     }
 
+    /**
+     * Actualise la toile lorsque son origine est translatée, ce qui déplace
+     * l'espace virtuel affiché.
+     */
     private void traiterDeplacement() {
-        origine.addListener(evenementInvalidation -> actualiser());
+        origine.addListener(evenementActualisation);
     }
 
+    /**
+     * Actualise la toile lorsque son échelle est modifiée, ce qui agrandi ou
+     * rétrécie l'espace virtuel affiché.
+     */
     private void traiterMiseALechelle() {
-        echelle.addListener(evenementInvalidation -> actualiser());
+        echelle.addListener(evenementActualisation);
     }
 
     /**
@@ -97,7 +107,7 @@ public class Toile extends Canvas implements Actualisable {
         final Vector2D positionOrigineReelle = getOrigine().subtract(
                 positionVirtuelle);
         final Vector2D positionSymetrieReelle = new Vector2D(
-                - positionOrigineReelle.getX(),
+                -positionOrigineReelle.getX(),
                 positionOrigineReelle.getY());
         final Vector2D positionReelle = new Vector2D(
                 positionSymetrieReelle.getX() / getEchelle().getX(),
@@ -123,10 +133,43 @@ public class Toile extends Canvas implements Actualisable {
         getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight());
     }
 
+    /**
+     * Ajoute une forme à la toile et lie ses propriétés à l'actualisation de la
+     * toile.
+     *
+     * @param forme la forme à ajouter à la toile.
+     */
     public void ajouter(@NotNull final Forme forme) {
         formes.add(forme);
+        for (final Observable propriete : forme.proprietesActualisation) {
+            propriete.addListener(evenementActualisation);
+        }
     }
-    
+
+    /**
+     * Retire la forme de la toile et délie ses propriétés de l'actualisation de
+     * la toile.
+     *
+     * @param forme la forme à retirer de la toile.
+     */
+    public void retirer(@NotNull final Forme forme) {
+        final boolean retiree = formes.remove(forme);
+        if (retiree) {
+            for (final Observable propriete : forme.proprietesActualisation) {
+                propriete.removeListener(evenementActualisation);
+            }
+        }
+    }
+
+    /**
+     * L'événement d'actualisation des formes en cas d'invalidation de leurs
+     * propriétés.
+     */
+    protected final InvalidationListener evenementActualisation
+            = (Observable observable) -> {
+                actualiser();
+            };
+
     public ObjectProperty<Vector2D> echelleProperty() {
         return echelle;
     }

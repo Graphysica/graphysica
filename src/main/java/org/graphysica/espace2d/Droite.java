@@ -100,7 +100,16 @@ public class Droite extends Forme {
      */
     private double variationOrdonnees;
 
+    /**
+     * Construit une droite passant par deux points.
+     *
+     * @param point1 le premier point en coordonnées réelles.
+     * @param point2 le deuxième point en coordonnées réelles.
+     */
     public Droite(@NotNull final Point point1, @NotNull final Point point2) {
+        proprietesActualisation.add(this.point1);
+        proprietesActualisation.add(this.point2);
+        proprietesActualisation.add(epaisseur);
         this.point1.setValue(point1.getPosition());
         this.point1.bind(point1.positionProperty());
         this.point2.setValue(point2.getPosition());

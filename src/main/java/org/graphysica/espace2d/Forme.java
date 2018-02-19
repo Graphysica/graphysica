@@ -17,6 +17,9 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashSet;
+import java.util.Set;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -31,24 +34,36 @@ import javafx.scene.paint.Color;
  */
 public abstract class Forme implements Dessinable {
 
+    /**
+     * L'ensemble des propriétés de la forme qui provoquent une actualisation
+     * lorsqu'elles sont invalidées. Si l'une de ces propriétés est modifiée,
+     * alors la forme doit être redessinée.
+     */
+    protected final Set<Observable> proprietesActualisation = new HashSet<>();
+
+    /**
+     * La couleur par défaut d'une forme.
+     */
     private static final Color COULEUR_PAR_DEFAUT = Color.BLACK;
-    
+
     /**
      * La couleur d'affichage de la forme.
      */
     private final ObjectProperty<Color> couleur
             = new SimpleObjectProperty<>(COULEUR_PAR_DEFAUT);
-    
+
     /**
      * Si la forme est affichée.
      */
     private final BooleanProperty affichee = new SimpleBooleanProperty(true);
 
     public Forme() {
+        proprietesActualisation.add(couleur);
     }
 
     public Forme(@NotNull final Color couleur) {
-        this.couleur.setValue(couleur);
+        this();
+        setCouleur(couleur);
     }
 
     @Override
@@ -65,15 +80,15 @@ public abstract class Forme implements Dessinable {
     public final ObjectProperty<Color> couleurProperty() {
         return couleur;
     }
-    
+
     public final boolean isAffichee() {
         return affichee.getValue();
     }
-    
+
     public final void setAffichee(final boolean affichee) {
         this.affichee.setValue(affichee);
     }
-    
+
     public final BooleanProperty afficheeProperty() {
         return affichee;
     }

@@ -38,8 +38,8 @@ public abstract class ToileRedimensionnable extends Toile {
      * Traite la redimension de cette toile redimensionnable.
      */
     private void traiterRedimension() {
-        widthProperty().addListener(evenementInvalidation -> actualiser());
-        heightProperty().addListener(evenementInvalidation -> actualiser());
+        widthProperty().addListener(evenementActualisation);
+        heightProperty().addListener(evenementActualisation);
     }
 
     @Override

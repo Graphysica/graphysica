@@ -41,7 +41,7 @@ public class Espace extends AnchorPane {
      * @param hauteur la hauteur initiale de l'espace, exprimée en pixels.
      */
     public Espace(final double largeur, final double hauteur) {
-        toile = new Toile(largeur, hauteur);
+        toile = new ToileInteractive(largeur, hauteur);
         lierDimensions();
         initialiser();
     }
