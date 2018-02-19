@@ -85,6 +85,11 @@ public class Droite extends Forme {
      * @see Droite#point2Virtuel
      */
     private double variationOrdonnee;
+    
+    /**
+     * La droite est indéfinie si {@code getPoint1().equals(getPoint2())}.
+     */
+    private boolean indefinie;
 
     private final ObjectProperty<Taille> epaisseur
             = new SimpleObjectProperty<>(Taille.de("ligne"));
@@ -98,7 +103,7 @@ public class Droite extends Forme {
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
-
+        indefinie = getPoint1().equals(getPoint2());
     }
 
     private void dessinerContinue(
