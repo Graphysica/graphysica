@@ -17,6 +17,8 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.GraphicsContext;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -25,60 +27,83 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  *
  * @author Marc-Antoine Ouimet
  */
-public final class SegmentDroite extends Droite {
+public class SegmentDroite extends Ligne {
 
     /**
-     * Construit un segment de droite lié à la position d'un point d'origine et
-     * d'un point d'arrivée.
-     *
-     * @param origine le point d'origine du segment de droite.
-     * @param arrivee le point d'arrivée du segment de droite.
+     * La position réelle du premier point dans la droite.
      */
-    public SegmentDroite(@NotNull final Point origine,
-            @NotNull final Point arrivee) {
-        super(origine, arrivee);
+    protected final ObjectProperty<Vector2D> point1
+            = new SimpleObjectProperty<>();
+
+    /**
+     * La position réelle du deuxième point dans la droite.
+     */
+    protected final ObjectProperty<Vector2D> point2
+            = new SimpleObjectProperty<>();
+    
+    /**
+     * La position d'origine de la trace du segment de droite.
+     */
+    protected Vector2D origineTrace;
+
+    /**
+     * La position de l'arrivée de la trace du segment de droite.
+     */
+    protected Vector2D arriveeTrace;
+
+    /**
+     * Construit un segment de droite lié à la position de deux points définis.
+     *
+     * @param point1 le premier point en coordonnées réelles.
+     * @param point2 le deuxième point en coordonnées réelles.
+     */
+    public SegmentDroite(@NotNull final Point point1,
+            @NotNull final Point point2) {
+        proprietesActualisation.add(this.point1);
+        proprietesActualisation.add(this.point2);
+        proprietesActualisation.add(epaisseur);
+        this.point1.setValue(point1.getPosition());
+        this.point1.bind(point1.positionProperty());
+        this.point2.setValue(point2.getPosition());
+        this.point2.bind(point2.positionProperty());
     }
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
         if (!isIndefinie()) {
-            final Vector2D point1Virtuel = toile.positionVirtuelle(
-                    getOrigine());
-            final Vector2D point2Virtuel = toile.positionVirtuelle(
-                    getArrivee());
+            origineTrace = toile.positionVirtuelle(getPoint1());
+            arriveeTrace = toile.positionVirtuelle(getPoint2());
             //TODO: Implémenter le dessin en pointillé
-            dessinerContinue(toile.getGraphicsContext2D(),
-                    point1Virtuel, point2Virtuel);
+            dessinerContinue(toile.getGraphicsContext2D());
         }
     }
 
-    /**
-     * Dessine le segment de droite en tant que ligne continue aux point
-     * d'origine et d'arrivée virtuelles définis.
-     *
-     * @param contexteGraphique le contexte de dessin.
-     * @param origineVirtuelle l'origine virtuelle du segment de droite dans le
-     * contexte graphique.
-     * @param arriveeVirtuelle l'arrivée virtuelle du segment de droite dans le
-     * contexte graphique.
-     */
-    private void dessinerContinue(
-            @NotNull final GraphicsContext contexteGraphique,
-            @NotNull final Vector2D origineVirtuelle,
-            @NotNull final Vector2D arriveeVirtuelle) {
+    @Override
+    protected void dessinerContinue(
+            @NotNull final GraphicsContext contexteGraphique) {
         contexteGraphique.setStroke(COULEUR_PAR_DEFAUT);
         contexteGraphique.setLineWidth(getEpaisseur());
-        contexteGraphique.strokeLine(origineVirtuelle.getX(),
-                origineVirtuelle.getY(), arriveeVirtuelle.getX(),
-                arriveeVirtuelle.getY());
+        contexteGraphique.strokeLine(origineTrace.getX(),
+                origineTrace.getY(), arriveeTrace.getX(),
+                arriveeTrace.getY());
     }
 
-    public Vector2D getOrigine() {
+    public Vector2D getPoint1() {
         return point1.getValue();
     }
 
-    public Vector2D getArrivee() {
+    public Vector2D getPoint2() {
         return point2.getValue();
+    }
+
+    /**
+     * Détermine si le segment de droite est indéfini. Il est impossible de
+     * tracer un segment de droite passant par deux points équivalents.
+     *
+     * @return {@code true} si le segment de droite est indéfini.
+     */
+    protected boolean isIndefinie() {
+        return getPoint1().equals(getPoint2());
     }
 
 }
