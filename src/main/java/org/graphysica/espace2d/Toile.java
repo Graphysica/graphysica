@@ -63,6 +63,7 @@ public class Toile extends Canvas implements Actualisable {
         super(largeur, hauteur);
         traiterDeplacement();
         traiterMiseALechelle();
+        formes.add(new Grille(this));
     }
 
     /**
