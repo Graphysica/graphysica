@@ -19,7 +19,6 @@ package org.graphysica.espace2d;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.canvas.GraphicsContext;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
@@ -42,16 +41,6 @@ public class SegmentDroite extends Ligne {
             = new SimpleObjectProperty<>();
     
     /**
-     * La position d'origine de la trace du segment de droite.
-     */
-    protected Vector2D origineTrace;
-
-    /**
-     * La position de l'arrivée de la trace du segment de droite.
-     */
-    protected Vector2D arriveeTrace;
-
-    /**
      * Construit un segment de droite lié à la position de deux points définis.
      *
      * @param point1 le premier point en coordonnées réelles.
@@ -59,6 +48,7 @@ public class SegmentDroite extends Ligne {
      */
     public SegmentDroite(@NotNull final Point point1,
             @NotNull final Point point2) {
+        super();
         proprietesActualisation.add(this.point1);
         proprietesActualisation.add(this.point2);
         proprietesActualisation.add(epaisseur);
@@ -76,16 +66,6 @@ public class SegmentDroite extends Ligne {
             //TODO: Implémenter le dessin en pointillé
             dessinerContinue(toile.getGraphicsContext2D());
         }
-    }
-
-    @Override
-    protected void dessinerContinue(
-            @NotNull final GraphicsContext contexteGraphique) {
-        contexteGraphique.setStroke(COULEUR_PAR_DEFAUT);
-        contexteGraphique.setLineWidth(getEpaisseur());
-        contexteGraphique.strokeLine(origineTrace.getX(),
-                origineTrace.getY(), arriveeTrace.getX(),
-                arriveeTrace.getY());
     }
 
     public Vector2D getPoint1() {

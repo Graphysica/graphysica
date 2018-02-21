@@ -17,7 +17,6 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
-import javafx.scene.canvas.GraphicsContext;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
@@ -101,15 +100,6 @@ public final class Droite extends SegmentDroite {
             arriveeTrace = new Vector2D(xQ, toile.getHeight()); //Q
         }
 
-    }
-
-    @Override
-    protected void dessinerContinue(
-            @NotNull final GraphicsContext contexteGraphique) {
-        contexteGraphique.setStroke(COULEUR_PAR_DEFAUT);
-        contexteGraphique.setLineWidth(getEpaisseur());
-        contexteGraphique.strokeLine(origineTrace.getX(), origineTrace.getY(),
-                arriveeTrace.getX(), arriveeTrace.getY());
     }
 
 }

@@ -21,34 +21,58 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
  * Une ligne a une épaisseur et une couleur par défaut.
- * 
+ *
  * @author Marc-Antoine Ouimet
  */
 public abstract class Ligne extends Forme {
-    
+
     /**
      * La couleur par défaut d'une droite.
      */
     static final Color COULEUR_PAR_DEFAUT = Color.BLACK;
-    
+
     /**
      * L'épaisseur du tracé de la droite.
      */
     protected final ObjectProperty<Taille> epaisseur
             = new SimpleObjectProperty<>(Taille.de("ligne"));
+
+    /**
+     * La position d'origine de la trace de la ligne dans le contexte graphique.
+     */
+    protected Vector2D origineTrace;
+
+    /**
+     * La position de l'arrivée de la trace de la ligne dans le contexte
+     * graphique.
+     */
+    protected Vector2D arriveeTrace;
+
+    public Ligne() {
+        setCouleur(COULEUR_PAR_DEFAUT);
+        proprietesActualisation.add(epaisseur);
+    }
     
     /**
      * Dessine la ligne en tant que tracé continu.
+     *
      * @param contexteGraphique le contexte de dessin de la ligne.
      */
-    protected abstract void dessinerContinue(
-            @NotNull final GraphicsContext contexteGraphique);
-    
+    protected void dessinerContinue(
+            @NotNull final GraphicsContext contexteGraphique) {
+        contexteGraphique.setStroke(getCouleur());
+        contexteGraphique.setLineWidth(getEpaisseur());
+        contexteGraphique.strokeLine(origineTrace.getX(),
+                origineTrace.getY(), arriveeTrace.getX(),
+                arriveeTrace.getY());
+    }
+
     protected int getEpaisseur() {
         return epaisseur.getValue().getTaille();
     }
-    
+
 }
