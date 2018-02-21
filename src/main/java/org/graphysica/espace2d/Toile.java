@@ -46,6 +46,12 @@ public class Toile extends Canvas implements Actualisable {
             = new SimpleObjectProperty<>(new Vector2D(100, 100));
 
     /**
+     * L'espacement minimum des graduations de la grille exprimée en pixels.
+     */
+    private final ObjectProperty<Vector2D> espacement
+            = new SimpleObjectProperty<>(new Vector2D(50, 50));
+
+    /**
      * L'origine virtuelle de l'espace exprimée en pixels selon l'origine de
      * l'écran. Par défaut, l'origine de l'espace est au centre du panneau.
      */
@@ -76,6 +82,28 @@ public class Toile extends Canvas implements Actualisable {
     }
 
     /**
+     * Calcule l'abscisse virtuelle d'une abscisse réelle.
+     *
+     * @param abscisseReelle l'abscisse réelle dont on cherche l'abscisse
+     * virtuelle.
+     * @return l'abscisse virtuelle reflétant l'abscisse réelle.
+     */
+    public double abscisseVirtuelle(final double abscisseReelle) {
+        return abscisseReelle * getEchelle().getX() + getOrigine().getX();
+    }
+
+    /**
+     * Calcule l'ordonnée virtuelle d'une ordonnée réelle.
+     *
+     * @param ordonneeReelle l'ordonnée réelle dont on cherche l'ordonnée
+     * virtuelle.
+     * @return l'ordonnée virtuelle reflétant l'ordonnée réelle.
+     */
+    public double ordonneeVirtuelle(final double ordonneeReelle) {
+        return -ordonneeReelle * getEchelle().getY() + getOrigine().getY();
+    }
+
+    /**
      * Détermine la position sur la toile d'une position réelle selon l'échelle
      * et l'origine de la toile.
      *
@@ -84,15 +112,30 @@ public class Toile extends Canvas implements Actualisable {
      * @return la position virtuelle de {@code positionReelle}.
      */
     public Vector2D positionVirtuelle(@NotNull final Vector2D positionReelle) {
-        final Vector2D positionEchelleVirtuelle = new Vector2D(
-                positionReelle.getX() * getEchelle().getX(),
-                positionReelle.getY() * getEchelle().getY());
-        final Vector2D positionSymetrieVirtuelle = new Vector2D(
-                positionEchelleVirtuelle.getX(),
-                -positionEchelleVirtuelle.getY());
-        final Vector2D positionVirtuelle = getOrigine().add(
-                positionSymetrieVirtuelle);
-        return positionVirtuelle;
+        return new Vector2D(abscisseVirtuelle(positionReelle.getX()),
+                ordonneeVirtuelle(positionReelle.getY()));
+    }
+
+    /**
+     * Calcule l'abscisse réelle d'une abscisse virtuelle.
+     *
+     * @param abscisseVirtuelle l'abscisse virtuelle dont on cherche l'abscisse
+     * réelle.
+     * @return l'abscisse réelle reflétant l'abscisse virtuelle.
+     */
+    public double abscisseReelle(final double abscisseVirtuelle) {
+        return -(getOrigine().getX() - abscisseVirtuelle) / getEchelle().getX();
+    }
+
+    /**
+     * Calcule l'ordonnée réelle d'une ordonnée virtuelle.
+     *
+     * @param ordonneeVirtuelle l'ordonnée virtuelle dont on cherche l'ordonnée
+     * réelle.
+     * @return l'ordonnée réelle reflétant l'ordonnée virtuelle.
+     */
+    public double ordonneeReelle(final double ordonneeVirtuelle) {
+        return (getOrigine().getY() - ordonneeVirtuelle) / getEchelle().getY();
     }
 
     /**
@@ -104,15 +147,8 @@ public class Toile extends Canvas implements Actualisable {
      * @return la position réelle de {@code positionVirtuelle}.
      */
     public Vector2D positionReelle(@NotNull final Vector2D positionVirtuelle) {
-        final Vector2D positionOrigineReelle = getOrigine().subtract(
-                positionVirtuelle);
-        final Vector2D positionSymetrieReelle = new Vector2D(
-                -positionOrigineReelle.getX(),
-                positionOrigineReelle.getY());
-        final Vector2D positionReelle = new Vector2D(
-                positionSymetrieReelle.getX() / getEchelle().getX(),
-                positionSymetrieReelle.getY() / getEchelle().getY());
-        return positionReelle;
+        return new Vector2D(abscisseReelle(positionVirtuelle.getX()),
+                ordonneeReelle(positionVirtuelle.getY()));
     }
 
     /**
@@ -166,32 +202,44 @@ public class Toile extends Canvas implements Actualisable {
      * propriétés.
      */
     protected final InvalidationListener evenementActualisation
-            = (Observable observable) -> {
+            = (@NotNull final Observable observable) -> {
                 actualiser();
             };
 
-    public ObjectProperty<Vector2D> echelleProperty() {
+    public final ObjectProperty<Vector2D> echelleProperty() {
         return echelle;
     }
 
-    public Vector2D getEchelle() {
+    public final Vector2D getEchelle() {
         return echelle.getValue();
     }
 
-    public void setEchelle(@NotNull final Vector2D echelle) {
+    public final void setEchelle(@NotNull final Vector2D echelle) {
         this.echelle.setValue(echelle);
     }
 
-    public ObjectProperty<Vector2D> origineProperty() {
+    public final ObjectProperty<Vector2D> origineProperty() {
         return origine;
     }
 
-    public Vector2D getOrigine() {
+    public final Vector2D getOrigine() {
         return origine.getValue();
     }
 
-    public void setOrigine(@NotNull final Vector2D origine) {
+    public final void setOrigine(@NotNull final Vector2D origine) {
         this.origine.setValue(origine);
+    }
+
+    public final Vector2D getEspacement() {
+        return espacement.getValue();
+    }
+
+    public final void setEspacement(@NotNull final Vector2D espacement) {
+        this.espacement.setValue(espacement);
+    }
+
+    public final ObjectProperty<Vector2D> espacementProperty() {
+        return espacement;
     }
 
 }
