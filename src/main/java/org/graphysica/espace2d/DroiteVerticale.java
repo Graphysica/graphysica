@@ -43,8 +43,10 @@ public class DroiteVerticale extends Ligne {
     @Override
     public void dessiner(@NotNull final Toile toile) {
         if (isVisible(toile)) {
-            origineTrace = new Vector2D(getAbscisse(), 0);
-            origineTrace = new Vector2D(getAbscisse(), toile.getHeight());
+            final double abscisseVirtuelle = toile.abscisseVirtuelle(
+                    getAbscisse());
+            origineTrace = new Vector2D(abscisseVirtuelle, 0);
+            arriveeTrace = new Vector2D(abscisseVirtuelle, toile.getHeight());
             dessinerContinue(toile.getGraphicsContext2D());
         }
     }

@@ -43,8 +43,10 @@ public class DroiteHorizontale extends Ligne {
     @Override
     public void dessiner(@NotNull final Toile toile) {
         if (isVisible(toile)) {
-            origineTrace = new Vector2D(0, getOrdonnee());
-            origineTrace = new Vector2D(toile.getWidth(), getOrdonnee());
+            final double ordonneeVirtuelle = toile.ordonneeVirtuelle(
+                    getOrdonnee());
+            origineTrace = new Vector2D(0, ordonneeVirtuelle);
+            arriveeTrace = new Vector2D(toile.getWidth(), ordonneeVirtuelle);
             dessinerContinue(toile.getGraphicsContext2D());
         }
     }
