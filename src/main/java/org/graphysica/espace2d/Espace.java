@@ -66,4 +66,8 @@ public class Espace extends AnchorPane {
         toile.heightProperty().bind(heightProperty());
     }
 
+    public Toile getToile() {
+        return toile;
+    }
+    
 }

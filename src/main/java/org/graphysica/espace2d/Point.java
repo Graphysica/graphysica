@@ -68,8 +68,6 @@ public final class Point extends Forme {
      */
     public Point() {
         super(COULEUR_PAR_DEFAUT);
-        proprietesActualisation.add(position);
-        proprietesActualisation.add(taille);
     }
 
     /**
@@ -107,6 +105,11 @@ public final class Point extends Forme {
             @NotNull Vector2D position) {
         this(couleur, position);
         this.taille.setValue(new Taille(taille));
+    }
+    
+    {
+        proprietesActualisation.add(position);
+        proprietesActualisation.add(taille);
     }
 
     @Override

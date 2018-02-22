@@ -31,13 +31,10 @@ public abstract class ToileRedimensionnable extends Toile {
      */
     public ToileRedimensionnable(final double largeur, final double hauteur) {
         super(hauteur, hauteur);
-        traiterRedimension();
     }
-
-    /**
-     * Traite la redimension de cette toile redimensionnable.
-     */
-    private void traiterRedimension() {
+    
+    {
+        //Traiter la redimension de la toile
         widthProperty().addListener(evenementActualisation);
         heightProperty().addListener(evenementActualisation);
     }

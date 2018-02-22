@@ -49,13 +49,16 @@ public class SegmentDroite extends Ligne {
     public SegmentDroite(@NotNull final Point point1,
             @NotNull final Point point2) {
         super();
-        proprietesActualisation.add(this.point1);
-        proprietesActualisation.add(this.point2);
-        proprietesActualisation.add(epaisseur);
         this.point1.setValue(point1.getPosition());
         this.point1.bind(point1.positionProperty());
         this.point2.setValue(point2.getPosition());
         this.point2.bind(point2.positionProperty());
+    }
+    
+    {
+        proprietesActualisation.add(point1);
+        proprietesActualisation.add(point2);
+        proprietesActualisation.add(epaisseur);
     }
 
     @Override

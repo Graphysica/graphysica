@@ -58,14 +58,16 @@ public abstract class Forme implements Dessinable {
     private final BooleanProperty affichee = new SimpleBooleanProperty(true);
 
     public Forme() {
-        proprietesActualisation.add(couleur);
     }
-
+    
     public Forme(@NotNull final Color couleur) {
-        this();
         setCouleur(couleur);
     }
 
+    {
+        proprietesActualisation.add(couleur);
+    }
+    
     @Override
     public abstract void dessiner(@NotNull final Toile toile);
 

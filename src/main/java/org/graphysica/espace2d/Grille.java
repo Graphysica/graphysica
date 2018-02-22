@@ -44,8 +44,11 @@ public final class Grille extends Forme {
     public Grille(@NotNull final Toile toile) {
         super();
         setCouleur(COULEUR_PAR_DEFAUT);
-        proprietesActualisation.add(epaisseur);
         initialiser(toile);
+    }
+    
+    {
+        proprietesActualisation.add(epaisseur);
     }
 
     private void initialiser(@NotNull final Toile toile) {

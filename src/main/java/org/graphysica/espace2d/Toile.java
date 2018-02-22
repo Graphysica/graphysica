@@ -40,9 +40,17 @@ public class Toile extends Canvas implements Actualisable {
             = FXCollections.observableArrayList();
 
     /**
+     * L'origine virtuelle de l'espace exprimée en pixels selon l'origine de
+     * l'écran. Par défaut, l'origine de l'espace est au centre du panneau.
+     */
+    protected final ObjectProperty<Vector2D> origine
+            = new SimpleObjectProperty<>(
+                    new Vector2D(getWidth() / 2, getHeight() / 2));
+
+    /**
      * L'échelle de l'espace exprimée en pixels par mètre.
      */
-    private final ObjectProperty<Vector2D> echelle
+    protected final ObjectProperty<Vector2D> echelle
             = new SimpleObjectProperty<>(new Vector2D(100, 100));
 
     /**
@@ -52,34 +60,24 @@ public class Toile extends Canvas implements Actualisable {
             = new SimpleObjectProperty<>(new Vector2D(50, 50));
 
     /**
-     * L'origine virtuelle de l'espace exprimée en pixels selon l'origine de
-     * l'écran. Par défaut, l'origine de l'espace est au centre du panneau.
+     * L'événement d'actualisation des formes en cas d'invalidation de leurs
+     * propriétés.
      */
-    private final ObjectProperty<Vector2D> origine
-            = new SimpleObjectProperty<>(
-                    new Vector2D(getWidth() / 2, getHeight() / 2));
+    protected final InvalidationListener evenementActualisation
+            = (@NotNull final Observable observable) -> {
+                actualiser();
+            };
 
     public Toile(final double largeur, final double hauteur) {
         super(largeur, hauteur);
-        traiterDeplacement();
-        traiterMiseALechelle();
-        formes.add(new Grille(this));
     }
-
-    /**
-     * Actualise la toile lorsque son origine est translatée, ce qui déplace
-     * l'espace virtuel affiché.
-     */
-    private void traiterDeplacement() {
+    
+    {
+        //Traiter le déplacement de l'espace
         origine.addListener(evenementActualisation);
-    }
-
-    /**
-     * Actualise la toile lorsque son échelle est modifiée, ce qui agrandi ou
-     * rétrécie l'espace virtuel affiché.
-     */
-    private void traiterMiseALechelle() {
+        //Traiter la redimension de l'espace
         echelle.addListener(evenementActualisation);
+        formes.add(new Grille(this));
     }
 
     /**
@@ -197,15 +195,6 @@ public class Toile extends Canvas implements Actualisable {
             }
         }
     }
-
-    /**
-     * L'événement d'actualisation des formes en cas d'invalidation de leurs
-     * propriétés.
-     */
-    protected final InvalidationListener evenementActualisation
-            = (@NotNull final Observable observable) -> {
-                actualiser();
-            };
 
     public final ObjectProperty<Vector2D> echelleProperty() {
         return echelle;

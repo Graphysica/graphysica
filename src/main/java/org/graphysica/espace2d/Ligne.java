@@ -54,6 +54,9 @@ public abstract class Ligne extends Forme {
 
     public Ligne() {
         setCouleur(COULEUR_PAR_DEFAUT);
+    }
+    
+    {
         proprietesActualisation.add(epaisseur);
     }
     

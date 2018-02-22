@@ -36,8 +36,11 @@ public class DroiteHorizontale extends Ligne {
 
     public DroiteHorizontale(final double ordonnee) {
         super();
-        proprietesActualisation.add(this.ordonnee);
         setOrdonnee(ordonnee);
+    }
+    
+    {
+        proprietesActualisation.add(this.ordonnee);
     }
 
     @Override

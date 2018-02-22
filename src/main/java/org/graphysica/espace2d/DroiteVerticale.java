@@ -36,8 +36,11 @@ public class DroiteVerticale extends Ligne {
 
     public DroiteVerticale(final double abscisse) {
         super();
-        proprietesActualisation.add(this.abscisse);
         setAbscisse(abscisse);
+    }
+    
+    {
+        proprietesActualisation.add(this.abscisse);
     }
 
     @Override
