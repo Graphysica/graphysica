@@ -71,7 +71,7 @@ public class Toile extends Canvas implements Actualisable {
     public Toile(final double largeur, final double hauteur) {
         super(largeur, hauteur);
     }
-    
+
     {
         //Traiter le déplacement de l'espace
         origine.addListener(evenementActualisation);
