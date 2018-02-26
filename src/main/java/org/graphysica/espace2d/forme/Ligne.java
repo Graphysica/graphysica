@@ -55,11 +55,11 @@ public abstract class Ligne extends Forme {
     public Ligne() {
         setCouleur(COULEUR_PAR_DEFAUT);
     }
-    
+
     {
         proprietesActualisation.add(epaisseur);
     }
-    
+
     /**
      * Dessine la ligne en tant que tracé continu.
      *
@@ -73,6 +73,13 @@ public abstract class Ligne extends Forme {
                 origineTrace.getY(), arriveeTrace.getX(),
                 arriveeTrace.getY());
     }
+
+    /**
+     * Récupère un vecteur dont l'orientation est la même que celle de la ligne.
+     *
+     * @return le vecteur directeur de la ligne.
+     */
+    public abstract Vector2D getVecteurDirecteur();
 
     protected int getEpaisseur() {
         return epaisseur.getValue().get();

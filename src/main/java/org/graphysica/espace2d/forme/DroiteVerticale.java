@@ -29,6 +29,11 @@ import org.graphysica.espace2d.Toile;
  * @author Marc-Antoine Ouimet
  */
 public class DroiteVerticale extends Ligne {
+    
+    /**
+     * Le vecteur directeur de toutes droites verticales.
+     */
+    private static final Vector2D VECTEUR_DIRECTEUR = new Vector2D(1, 0);
 
     /**
      * L'abscisse réelle de la ligne verticale.
@@ -70,6 +75,11 @@ public class DroiteVerticale extends Ligne {
     public boolean isVisible(@NotNull final Toile toile) {
         final double abscisseVirtuelle = toile.abscisseVirtuelle(getAbscisse());
         return abscisseVirtuelle >= 0 && abscisseVirtuelle <= toile.getWidth();
+    }
+
+    @Override
+    public Vector2D getVecteurDirecteur() {
+        return VECTEUR_DIRECTEUR;
     }
 
 }

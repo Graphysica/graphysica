@@ -29,6 +29,11 @@ import org.graphysica.espace2d.Toile;
  * @author Marc-Antoine Ouimet
  */
 public class DroiteHorizontale extends Ligne {
+    
+    /**
+     * Le vecteur directeur de toutes droites horizontales.
+     */
+    private static final Vector2D VECTEUR_DIRECTEUR = new Vector2D(1, 0);
 
     /**
      * L'ordonnée réelle de la ligne horizontale.
@@ -70,6 +75,11 @@ public class DroiteHorizontale extends Ligne {
     public final boolean isVisible(@NotNull final Toile toile) {
         final double ordonneeVirtuelle = toile.ordonneeVirtuelle(getOrdonnee());
         return ordonneeVirtuelle >= 0 && ordonneeVirtuelle <= toile.getHeight();
+    }
+
+    @Override
+    public Vector2D getVecteurDirecteur() {
+        return VECTEUR_DIRECTEUR;
     }
 
 }

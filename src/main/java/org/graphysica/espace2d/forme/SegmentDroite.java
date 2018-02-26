@@ -90,4 +90,9 @@ public class SegmentDroite extends Ligne {
         return getPoint1().equals(getPoint2());
     }
 
+    @Override
+    public Vector2D getVecteurDirecteur() {
+        return getPoint1().subtract(getPoint2());
+    }
+
 }
