@@ -17,6 +17,8 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -45,6 +47,9 @@ public class ToileInteractive extends ToileRedimensionnable {
     }
 
     {
+        setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
+            setCursor(Cursor.CROSSHAIR);
+        });
         setOnScroll((@NotNull final ScrollEvent evenement) -> {
             final double defilementVertical = evenement.getDeltaY();
             final Vector2D positionCurseur = new Vector2D(evenement.getX(),
@@ -53,8 +58,12 @@ public class ToileInteractive extends ToileRedimensionnable {
         });
         setOnMousePressed((@NotNull final MouseEvent evenement) -> {
             if (evenement.isMiddleButtonDown()) {
+                setCursor(Cursor.CLOSED_HAND);
                 enregistrerPositionCurseur(evenement);
             }
+        });
+        setOnMouseReleased((@NotNull final MouseEvent evenement) -> {
+            setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseDragged((@NotNull final MouseEvent evenement) -> {
             if (evenement.isMiddleButtonDown()) {
