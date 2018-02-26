@@ -14,61 +14,62 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.Toile;
 
 /**
- * Une droite verticale est perpendiculaire à toutes les droites horizontales du
+ * Une droite horizontale est perpendiculaire à toutes les droites verticales du
  * plan.
  *
  * @author Marc-Antoine Ouimet
  */
-public class DroiteVerticale extends Ligne {
+public class DroiteHorizontale extends Ligne {
 
     /**
-     * L'abscisse réelle de la ligne verticale.
+     * L'ordonnée réelle de la ligne horizontale.
      */
-    private final DoubleProperty abscisse = new SimpleDoubleProperty();
+    private final DoubleProperty ordonnee = new SimpleDoubleProperty();
 
-    public DroiteVerticale(final double abscisse) {
+    public DroiteHorizontale(final double ordonnee) {
         super();
-        setAbscisse(abscisse);
+        setOrdonnee(ordonnee);
     }
     
     {
-        proprietesActualisation.add(this.abscisse);
+        proprietesActualisation.add(this.ordonnee);
     }
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
         if (isVisible(toile)) {
-            final double abscisseVirtuelle = toile.abscisseVirtuelle(
-                    getAbscisse());
-            origineTrace = new Vector2D(abscisseVirtuelle, 0);
-            arriveeTrace = new Vector2D(abscisseVirtuelle, toile.getHeight());
+            final double ordonneeVirtuelle = toile.ordonneeVirtuelle(
+                    getOrdonnee());
+            origineTrace = new Vector2D(0, ordonneeVirtuelle);
+            arriveeTrace = new Vector2D(toile.getWidth(), ordonneeVirtuelle);
             dessinerContinue(toile.getGraphicsContext2D());
         }
     }
 
-    public final double getAbscisse() {
-        return abscisse.getValue();
+    public final double getOrdonnee() {
+        return ordonnee.getValue();
     }
 
-    public final void setAbscisse(final double abscisse) {
-        this.abscisse.setValue(abscisse);
+    public final void setOrdonnee(final double abscisse) {
+        this.ordonnee.setValue(abscisse);
     }
 
-    public final DoubleProperty abscisseProperty() {
-        return abscisse;
+    public final DoubleProperty ordonneeProperty() {
+        return ordonnee;
     }
-    
-    public boolean isVisible(@NotNull final Toile toile) {
-        final double abscisseVirtuelle = toile.abscisseVirtuelle(getAbscisse());
-        return abscisseVirtuelle >= 0 && abscisseVirtuelle <= toile.getWidth();
+
+    public final boolean isVisible(@NotNull final Toile toile) {
+        final double ordonneeVirtuelle = toile.ordonneeVirtuelle(getOrdonnee());
+        return ordonneeVirtuelle >= 0 && ordonneeVirtuelle <= toile.getHeight();
     }
 
 }

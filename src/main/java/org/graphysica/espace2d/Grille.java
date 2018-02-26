@@ -16,6 +16,11 @@
  */
 package org.graphysica.espace2d;
 
+import org.graphysica.espace2d.forme.DroiteVerticale;
+import org.graphysica.espace2d.forme.Ligne;
+import org.graphysica.espace2d.forme.Taille;
+import org.graphysica.espace2d.forme.DroiteHorizontale;
+import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;

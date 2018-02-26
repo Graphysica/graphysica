@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
@@ -25,6 +25,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+import org.graphysica.espace2d.Dessinable;
+import org.graphysica.espace2d.Toile;
 
 /**
  * Une forme peut être dessinée à l'écran dans un espace avec une couleur
@@ -71,6 +73,10 @@ public abstract class Forme implements Dessinable {
     @Override
     public abstract void dessiner(@NotNull final Toile toile);
 
+    public Set<Observable> getProprietesActualisation() {
+        return proprietesActualisation;
+    }
+    
     public final Color getCouleur() {
         return couleur.getValue();
     }

@@ -16,6 +16,7 @@
  */
 package org.graphysica.espace2d;
 
+import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -71,7 +72,7 @@ public class Toile extends Canvas implements Actualisable {
     public Toile(final double largeur, final double hauteur) {
         super(largeur, hauteur);
     }
-    
+
     {
         //Traiter le déplacement de l'espace
         origine.addListener(evenementActualisation);
@@ -176,7 +177,7 @@ public class Toile extends Canvas implements Actualisable {
      */
     public void ajouter(@NotNull final Forme forme) {
         formes.add(forme);
-        for (final Observable propriete : forme.proprietesActualisation) {
+        for (final Observable propriete : forme.getProprietesActualisation()) {
             propriete.addListener(evenementActualisation);
         }
     }
@@ -190,7 +191,8 @@ public class Toile extends Canvas implements Actualisable {
     public void retirer(@NotNull final Forme forme) {
         final boolean retiree = formes.remove(forme);
         if (retiree) {
-            for (final Observable propriete : forme.proprietesActualisation) {
+            for (final Observable propriete
+                    : forme.getProprietesActualisation()) {
                 propriete.removeListener(evenementActualisation);
             }
         }
