@@ -51,8 +51,8 @@ public class Espace extends AnchorPane {
         toile.setOrigine(toile.getOrigine().add(new Vector2D(1, 2)));
     }
     
-    public void ajouter(@NotNull final Forme forme) {
-        toile.ajouter(forme);
+    public void ajouter(@NotNull final Forme... formes) {
+        toile.ajouter(formes);
     }
 
     private void initialiser() {

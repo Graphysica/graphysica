@@ -170,30 +170,35 @@ public class Toile extends Canvas implements Actualisable {
     }
 
     /**
-     * Ajoute une forme à la toile et lie ses propriétés à l'actualisation de la
-     * toile.
+     * Ajoute des formes à la toile et lie leurs propriétés à l'actualisation de
+     * la toile.
      *
-     * @param forme la forme à ajouter à la toile.
+     * @param formes les formes à ajouter à la toile.
      */
-    public void ajouter(@NotNull final Forme forme) {
-        formes.add(forme);
-        for (final Observable propriete : forme.getProprietesActualisation()) {
-            propriete.addListener(evenementActualisation);
+    public void ajouter(@NotNull final Forme... formes) {
+        for (final Forme forme : formes) {
+            this.formes.add(forme);
+            for (final Observable propriete
+                    : forme.getProprietesActualisation()) {
+                propriete.addListener(evenementActualisation);
+            }
         }
     }
 
     /**
-     * Retire la forme de la toile et délie ses propriétés de l'actualisation de
-     * la toile.
+     * Retire les formes de la toile et délie leurs propriétés de
+     * l'actualisation de la toile.
      *
-     * @param forme la forme à retirer de la toile.
+     * @param formes les formes à retirer de la toile.
      */
-    public void retirer(@NotNull final Forme forme) {
-        final boolean retiree = formes.remove(forme);
-        if (retiree) {
-            for (final Observable propriete
-                    : forme.getProprietesActualisation()) {
-                propriete.removeListener(evenementActualisation);
+    public void retirer(@NotNull final Forme... formes) {
+        for (final Forme forme : formes) {
+            final boolean retiree = this.formes.remove(forme);
+            if (retiree) {
+                for (final Observable propriete
+                        : forme.getProprietesActualisation()) {
+                    propriete.removeListener(evenementActualisation);
+                }
             }
         }
     }
