@@ -38,7 +38,10 @@ public final class StackLimite<E> extends Stack<E> {
     /**
      * La capacité de ce stack limité.
      */
-    private int capacite;
+    private int capacite = CAPACITE_PAR_DEFAUT;
+
+    public StackLimite() {
+    }
 
     public StackLimite(final int capacite) {
         setCapacite(capacite);
