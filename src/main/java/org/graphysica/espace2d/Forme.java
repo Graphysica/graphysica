@@ -25,6 +25,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+import org.graphysica.construction.Element;
 
 /**
  * Une forme peut être dessinée à l'écran dans un espace avec une couleur
@@ -32,7 +33,7 @@ import javafx.scene.paint.Color;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Forme implements Dessinable {
+public abstract class Forme extends Element implements Dessinable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation
