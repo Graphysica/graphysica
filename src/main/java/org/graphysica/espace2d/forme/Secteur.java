@@ -31,6 +31,7 @@ import org.graphysica.espace2d.Toile;
  * Un secteur est une région d'un disque, définie entre deux angles.
  *
  * @author Marc-Antoine
+ * @deprecated 
  */
 public class Secteur extends Forme {
 
