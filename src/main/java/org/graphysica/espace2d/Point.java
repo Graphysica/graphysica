@@ -176,7 +176,7 @@ public final class Point extends Forme {
     }
 
     private int getTaille() {
-        return taille.getValue().getTaille();
+        return taille.getValue().get();
     }
 
     public void setTaille(@NotNull final Taille taille) {

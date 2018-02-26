@@ -31,7 +31,7 @@ import javafx.scene.paint.Color;
  */
 public final class Grille extends Forme {
 
-    private static final Color COULEUR_PAR_DEFAUT = new Color(0, 0, 0, 0.1);
+    private static final Color COULEUR_PAR_DEFAUT = new Color(0, 0, 0, 0.3);
 
     /**
      * L'épaisseur du tracé de la grille.

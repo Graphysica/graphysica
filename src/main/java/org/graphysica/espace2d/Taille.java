@@ -74,7 +74,7 @@ public final class Taille {
     }
 
     public Taille(final int taille) {
-        setTaille(taille);
+        set(taille);
     }
 
     /**
@@ -120,7 +120,7 @@ public final class Taille {
         return new Taille(chargerProprieteTaille(type));
     }
 
-    public int getTaille() {
+    public int get() {
         return taille.getValue();
     }
 
@@ -131,7 +131,7 @@ public final class Taille {
      *
      * @param taille la nouvelle taille.
      */
-    public final void setTaille(final int taille) {
+    public final void set(final int taille) {
         if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
             this.taille.setValue(TAILLE_PAR_DEFAUT);
         } else {

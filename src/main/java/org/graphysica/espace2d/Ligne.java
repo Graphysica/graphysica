@@ -75,7 +75,7 @@ public abstract class Ligne extends Forme {
     }
 
     protected int getEpaisseur() {
-        return epaisseur.getValue().getTaille();
+        return epaisseur.getValue().get();
     }
 
 }
