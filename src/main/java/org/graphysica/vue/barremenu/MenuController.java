@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica;
+package org.graphysica.vue.barremenu;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,14 +23,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import org.graphysica.espace2d.*;
 
-public class FXMLController implements Initializable {
-
-    @FXML
-    private AnchorPane panneau;
+/**
+ * Classe controlleur du FXML Menu
+ *
+ * @author Victor Babin <vicbab@Graphysica>
+ */
+public class MenuController implements Initializable {
 
     @FXML
     private Menu mnuFichier;
@@ -100,22 +99,14 @@ public class FXMLController implements Initializable {
 
     @FXML
     private MenuItem licence;
-
-    @FXML
-    private HBox conteneur;
-
-    @FXML
-    private Espace espace;
-
-    @FXML
-    private HBox boite;
-
-    public HBox getBoite() {
-        return boite;
-    }
-        
+    
+    
+    /**
+     * Initialisation du controlleur.
+     */
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-    }
-
+    public void initialize(URL url, ResourceBundle rb) {
+        
+    }    
+    
 }

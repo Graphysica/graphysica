@@ -18,6 +18,7 @@ package org.graphysica.espace2d;
 
 import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -43,6 +44,14 @@ public class Espace extends AnchorPane {
      */
     public Espace(final double largeur, final double hauteur) {
         toile = new ToileInteractive(largeur, hauteur);
+        lierDimensions();
+        initialiser();
+    }
+
+    public Espace() {
+        
+        
+        this.toile = new ToileInteractive(USE_PREF_SIZE, USE_PREF_SIZE);
         lierDimensions();
         initialiser();
     }
