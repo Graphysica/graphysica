@@ -24,6 +24,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
+import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.util.FastMath;
 import org.graphysica.espace2d.Toile;
@@ -33,6 +34,7 @@ import org.graphysica.espace2d.Toile;
  *
  * @author Marc-Antoine
  */
+@SuppressWarnings("unchecked")
 public class Angle extends Forme {
 
     /**
@@ -57,15 +59,27 @@ public class Angle extends Forme {
      */
     private static final Vector2D HORIZONTALE = new Vector2D(1, 0);
 
+    /**
+     * Le premier point extrême de l'angle.
+     */
     private final ObjectProperty<Vector2D> point1
             = new SimpleObjectProperty<>();
 
+    /**
+     * Le somme de l'angle.
+     */
     private final ObjectProperty<Vector2D> sommet
             = new SimpleObjectProperty<>();
 
+    /**
+     * Le deuxième point extrême de l'angle.
+     */
     private final ObjectProperty<Vector2D> point2
             = new SimpleObjectProperty<>();
 
+    /**
+     * L'opacité de la couleur de remplissage de l'angle.
+     */
     private final DoubleProperty opacite = new SimpleDoubleProperty(0.5);
 
     public Angle(@NotNull final Point point1, @NotNull final Point sommet,
@@ -87,32 +101,46 @@ public class Angle extends Forme {
         proprietesActualisation.add(opacite);
     }
 
+    /**
+     * Dessine l'angle en tant que secteur dont l'ouverture est comprise entre
+     * 0º et 180º.
+     *
+     * @param toile la toile sur laquelle dessiner l'angle.
+     */
     @Override
     public void dessiner(@NotNull final Toile toile) {
-        final int rayon = taille.getValue().get() * MULTIPLICATEUR_RAYON;
-        final Vector2D centreVirtuel = toile.positionVirtuelle(getSommet());
-        final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
-        final Color couleurRemplissage = couleurTransparente(getCouleur(),
-                opacite.getValue());
-        final double angleInitial = getAngleInitial();
-        System.out.println("angleInitial = " + angleInitial);
-        final double angle = getAngle();
-        System.out.println("angle = " + angle);
-        contexteGraphique.setFill(couleurRemplissage);
-        contexteGraphique.fillArc(
-                centreVirtuel.getX() - rayon,
-                centreVirtuel.getY() - rayon,
-                2 * rayon, 2 * rayon,
-                angleInitial, angle,
-                ArcType.ROUND);
-        contexteGraphique.setStroke(getCouleur());
-        contexteGraphique.setLineWidth(1);
-        contexteGraphique.strokeArc(
-                centreVirtuel.getX() - rayon,
-                centreVirtuel.getY() - rayon,
-                2 * rayon, 2 * rayon,
-                angleInitial, angle,
-                ArcType.ROUND);
+        if (isDefini()) {
+            // Adapter l'angle à la convention du tracé
+            double angle = -getAngle();
+            double angleInitial = -getAngleInitial();
+            // Restreindre l'angle du tracé à [0º, 180º]
+            if (angle > 180) {
+                angle -= 360;
+                angleInitial += 360;
+            }
+            final int rayon = taille.getValue().get() * MULTIPLICATEUR_RAYON;
+            final Vector2D centreVirtuel = toile.positionVirtuelle(
+                    getSommet());
+            final GraphicsContext contexteGraphique = toile
+                    .getGraphicsContext2D();
+            final Color couleurRemplissage = couleurTransparente(getCouleur(),
+                    opacite.getValue());
+            contexteGraphique.setFill(couleurRemplissage);
+            contexteGraphique.fillArc(
+                    centreVirtuel.getX() - rayon,
+                    centreVirtuel.getY() - rayon,
+                    2 * rayon, 2 * rayon,
+                    angleInitial, angle,
+                    ArcType.ROUND);
+            contexteGraphique.setStroke(getCouleur());
+            contexteGraphique.setLineWidth(1);
+            contexteGraphique.strokeArc(
+                    centreVirtuel.getX() - rayon,
+                    centreVirtuel.getY() - rayon,
+                    2 * rayon, 2 * rayon,
+                    angleInitial, angle,
+                    ArcType.ROUND);
+        }
     }
 
     public final Vector2D getPoint1() {
@@ -148,28 +176,44 @@ public class Angle extends Forme {
      *
      * @return la valeur de l'angle initial.
      * @see Angle#HORIZONTALE
+     * @throws MathArithmeticException si le sommet est confondu à l'un ou
+     * l'autre des points de l'angle.
+     * @see Angle#isDefini()
      */
-    public double getAngleInitial() {
+    public double getAngleInitial() throws MathArithmeticException {
         final Vector2D vecteur1 = getPoint1().subtract(getSommet());
-        System.out.println("getAngleInitial()::" + Vector2D.angle(vecteur1, HORIZONTALE));
-        return FastMath.toDegrees(Vector2D.angle(vecteur1, HORIZONTALE));
+        return FastMath.toDegrees(angle(vecteur1, HORIZONTALE));
     }
 
-    //TODO: Régler le signe de l'angle
     /**
      * Calcule l'angle entre les vecteurs partant du sommet vers les deux
      * points.
      *
      * @return la valeur de l'angle représenté.
+     * @throws MathArithmeticException si le sommet est confondu à l'un ou
+     * l'autre des points de l'angle.
+     * @see Angle#isDefini()
      */
-    public double getAngle() {
+    public double getAngle() throws MathArithmeticException {
         final Vector2D vecteur1 = getPoint1().subtract(getSommet());
         final Vector2D vecteur2 = getPoint2().subtract(getSommet());
-        System.out.println("getAngle()::" + Vector2D.angle(vecteur1, vecteur2));
-        return FastMath.toDegrees(Vector2D.angle(vecteur1, vecteur2));
+        return -FastMath.toDegrees(angle(vecteur1, vecteur2));
     }
 
-    //TODO: Régler le signe de l'angle
+    /**
+     * Récupère l'angle trigonométrique entre deux vecteurs, en radians.
+     *
+     * @param vecteur1 le premier vecteur.
+     * @param vecteur2 le deuxième vecteur.
+     * @return l'angle entre les vecteurs en radians, partant de
+     * {@code vecteur1} vers {@code vecteur2}.
+     */
+    private static double angle(@NotNull final Vector2D vecteur1,
+            @NotNull final Vector2D vecteur2) {
+        return FastMath.atan2(vecteur2.getY(), vecteur2.getX())
+                - FastMath.atan2(vecteur1.getY(), vecteur1.getX());
+    }
+
     /**
      * Récupère une couleur de même teinte et d'opacité définie.
      *
@@ -181,6 +225,16 @@ public class Angle extends Forme {
             final double opacite) {
         return new Color(couleur.getRed(), couleur.getGreen(),
                 couleur.getBlue(), opacite);
+    }
+
+    /**
+     * Détermine si l'angle est défini, c'est-à-dire si les points sont
+     * distincts du sommet.
+     *
+     * @return si l'angle est défini.
+     */
+    public boolean isDefini() {
+        return !(point1.equals(sommet) || point2.equals(sommet));
     }
 
 }
