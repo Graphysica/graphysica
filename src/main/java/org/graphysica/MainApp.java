@@ -3,10 +3,12 @@ package org.graphysica;
 import java.io.IOException;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToolBar;
@@ -29,7 +31,7 @@ public class MainApp extends Application {
     private MenuBar menubar;
     private VBox vertical;
     private VBox chronometre;
-    private HBox horizontal;
+    private SplitPane splitPane;
     private ToolBar toolBar;
     private TabPane information;
     private MenuBar menuBar;
@@ -64,10 +66,10 @@ public class MainApp extends Application {
         espace = new Espace(869,517);
         menuBar = FXMLLoader.load(getClass().getResource("/fxml/Menu.fxml"));
         vertical = new VBox();
-        horizontal = new HBox();
+        information = FXMLLoader.load(getClass().getResource("/fxml/Information.fxml"));
+        splitPane = new SplitPane(information, espace);
         chronometre = FXMLLoader.load(getClass().getResource("/fxml/Chronometre.fxml"));
         toolBar = FXMLLoader.load(getClass().getResource("/fxml/BarreOutils.fxml"));
-        information = FXMLLoader.load(getClass().getResource("/fxml/Information.fxml"));
         
         initialiserDimensions();
         ajouterObjetsEspace();
@@ -78,22 +80,21 @@ public class MainApp extends Application {
         panneauPrincipal.getChildren().add(vertical);
         vertical.getChildren().add(menuBar);
         vertical.getChildren().add(toolBar);
-        vertical.getChildren().add(horizontal);
-        horizontal.getChildren().add(information);
-        horizontal.getChildren().add(espace);
+        vertical.getChildren().add(splitPane);
         vertical.getChildren().add(chronometre);
     }
 
     private void ajouterObjetsEspace() {
         espace.ajouter(new Point(Vector2D.ZERO));
-        espace.ajouter(new Point(new Vector2D(4, 8)));
-        espace.ajouter(new SegmentDroite(new Point(Vector2D.ZERO), new Point(new Vector2D(4, 8))));
+        espace.ajouter(new Point(new Vector2D(0.2, 0.5)));
+        espace.ajouter(new SegmentDroite(new Point(Vector2D.ZERO), new Point(new Vector2D(0.2, 0.5))));
     }
 
     private void initialiserDimensions() {
         menuBar.prefWidthProperty().bind(panneauPrincipal.widthProperty());
         toolBar.prefWidthProperty().bind(panneauPrincipal.widthProperty());
         vertical.prefWidthProperty().bind(panneauPrincipal.widthProperty());
+        information.setPrefSize(300, panneauPrincipal.getPrefHeight() - chronometre.getPrefHeight());
         espace.setPrefSize(panneauPrincipal.getPrefWidth() - information.getPrefWidth(), panneauPrincipal.getPrefHeight() - chronometre.getPrefHeight());
     }
 

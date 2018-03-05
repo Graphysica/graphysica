@@ -18,9 +18,14 @@ package org.graphysica.vue.barreoutils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 
 /**
  * FXML Controller class
@@ -30,29 +35,62 @@ import javafx.scene.control.Button;
 public class BarreOutilsController implements Initializable {
 
     @FXML
-    private Button click;
+    private Button curseur;
 
     @FXML
-    private Button selection;
+    private MenuButton mbObjets;
 
     @FXML
-    private Button forme;
+    private MenuItem tag;
 
     @FXML
-    private Button boite;
+    private MenuItem puzzle;
 
     @FXML
-    private Button champ;
+    private Button curseurPlus;
 
     @FXML
-    private Button info;
+    private Button archive;
+
+    @FXML
+    private Button champVectoriel;
+
+    @FXML
+    private Button inspecteur;
+
+    public enum Buttons {
+        POINTEUR, TAG, PUZZLE, SELECTEUR, ARCHIVE, CHAMP_VECTORIEL, INSPECTEUR;
+        //FIXME mauvaise façon de gérer la sélection
+    }
+
+    private Buttons currButton = Buttons.POINTEUR;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+        archive.setOnAction((event) -> {
+           currButton = Buttons.ARCHIVE; 
+        });
+        tag.setOnAction((event) -> {
+            currButton = Buttons.TAG;
+        });
+        curseur.setOnAction((event) -> {
+           currButton = Buttons.POINTEUR; 
+        });
+        curseurPlus.setOnAction((event) -> {
+            currButton = Buttons.SELECTEUR;
+        });
+        champVectoriel.setOnAction((event) -> {
+           currButton = Buttons.CHAMP_VECTORIEL; 
+        });
+        inspecteur.setOnAction((event) -> {
+            currButton = Buttons.INSPECTEUR;
+        });
+        puzzle.setOnAction((event) -> {
+           currButton = Buttons.PUZZLE; 
+        });
+    }
+
 }
