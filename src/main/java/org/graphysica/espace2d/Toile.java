@@ -100,7 +100,7 @@ public class Toile extends Canvas implements Actualisable {
      * @return l'ensemble des abscisses virtuelles reflétant les abscisses
      * réelles.
      */
-    public double[] abscissesVirtuelles(final double[] abscissesReelles) {
+    public double[] abscissesVirtuelles(final double... abscissesReelles) {
         final double[] abscissesVirtuelles
                 = new double[abscissesReelles.length];
         for (int i = 0; i < abscissesReelles.length; i++) {
@@ -128,7 +128,7 @@ public class Toile extends Canvas implements Actualisable {
      * @return l'ensemble des ordonnées virtuelles reflétant les ordonnées
      * réelles.
      */
-    public double[] ordonneesVirtuelles(final double[] ordonneesReelles) {
+    public double[] ordonneesVirtuelles(final double... ordonneesReelles) {
         final double[] ordonneesVirtuelles
                 = new double[ordonneesReelles.length];
         for (int i = 0; i < ordonneesReelles.length; i++) {
@@ -169,7 +169,7 @@ public class Toile extends Canvas implements Actualisable {
      * @return l'ensemble des abscisses réelles reflétant les abscisses
      * virtuelles.
      */
-    public double[] abscissesReelles(final double[] abscissesVirtuelles) {
+    public double[] abscissesReelles(final double... abscissesVirtuelles) {
         final double[] abscissesReelles
                 = new double[abscissesVirtuelles.length];
         for (int i = 0; i < abscissesVirtuelles.length; i++) {
@@ -197,7 +197,7 @@ public class Toile extends Canvas implements Actualisable {
      * @return l'ensemble des ordonnées réelles reflétant les ordonnées
      * virtuelles.
      */
-    public double[] ordonneesReellees(final double[] ordonneesVirtuelles) {
+    public double[] ordonneesReellees(final double... ordonneesVirtuelles) {
         final double[] ordonneesReelles
                 = new double[ordonneesVirtuelles.length];
         for (int i = 0; i < ordonneesVirtuelles.length; i++) {
