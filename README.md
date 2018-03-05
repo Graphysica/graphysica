@@ -1,3 +1,4 @@
+[![GitHub issues](https://img.shields.io/github/issues/Graphysica/graphysica.svg)](https://github.com/Graphysica/graphysica/issues) [![GitHub license](https://img.shields.io/github/license/Graphysica/graphysica.svg)](https://github.com/Graphysica/graphysica/blob/master/LICENSE)
 # Graphysica
 
 Graphysica est un environnement de simulation de physique mécanique multiplateforme.
