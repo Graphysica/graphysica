@@ -93,6 +93,23 @@ public class Toile extends Canvas implements Actualisable {
     }
 
     /**
+     * Calcule les abscisses virtuelles d'un ensemble d'abscisses réelles.
+     *
+     * @param abscissesReelles les abscisses réelles dont on cherche la valeur
+     * réelle.
+     * @return l'ensemble des abscisses virtuelles reflétant les abscisses
+     * réelles.
+     */
+    public double[] abscissesVirtuelles(final double[] abscissesReelles) {
+        final double[] abscissesVirtuelles
+                = new double[abscissesReelles.length];
+        for (int i = 0; i < abscissesReelles.length; i++) {
+            abscissesVirtuelles[i] = abscisseVirtuelle(abscissesReelles[i]);
+        }
+        return abscissesVirtuelles;
+    }
+
+    /**
      * Calcule l'ordonnée virtuelle d'une ordonnée réelle.
      *
      * @param ordonneeReelle l'ordonnée réelle dont on cherche l'ordonnée
@@ -101,6 +118,23 @@ public class Toile extends Canvas implements Actualisable {
      */
     public double ordonneeVirtuelle(final double ordonneeReelle) {
         return -ordonneeReelle * getEchelle().getY() + getOrigine().getY();
+    }
+
+    /**
+     * Calcule les ordonnées virtuelles d'un ensemble d'ordonnées réelles.
+     *
+     * @param ordonneesReelles les ordonnées réelles dont on cherche la valeur
+     * réelle.
+     * @return l'ensemble des ordonnées virtuelles reflétant les ordonnées
+     * réelles.
+     */
+    public double[] ordonneesVirtuelles(final double[] ordonneesReelles) {
+        final double[] ordonneesVirtuelles
+                = new double[ordonneesReelles.length];
+        for (int i = 0; i < ordonneesReelles.length; i++) {
+            ordonneesVirtuelles[i] = ordonneeVirtuelle(ordonneesReelles[i]);
+        }
+        return ordonneesVirtuelles;
     }
 
     /**
@@ -128,6 +162,23 @@ public class Toile extends Canvas implements Actualisable {
     }
 
     /**
+     * Calcule les abscisses réelles d'un ensemble d'abscisses virtuelles.
+     *
+     * @param abscissesVirtuelles les abscisses virtuelles dont on cherche la
+     * valeur réelle.
+     * @return l'ensemble des abscisses réelles reflétant les abscisses
+     * virtuelles.
+     */
+    public double[] abscissesReelles(final double[] abscissesVirtuelles) {
+        final double[] abscissesReelles
+                = new double[abscissesVirtuelles.length];
+        for (int i = 0; i < abscissesVirtuelles.length; i++) {
+            abscissesReelles[i] = abscisseReelle(abscissesVirtuelles[i]);
+        }
+        return abscissesReelles;
+    }
+
+    /**
      * Calcule l'ordonnée réelle d'une ordonnée virtuelle.
      *
      * @param ordonneeVirtuelle l'ordonnée virtuelle dont on cherche l'ordonnée
@@ -136,6 +187,23 @@ public class Toile extends Canvas implements Actualisable {
      */
     public double ordonneeReelle(final double ordonneeVirtuelle) {
         return (getOrigine().getY() - ordonneeVirtuelle) / getEchelle().getY();
+    }
+
+    /**
+     * Calcule les ordonnées réelles d'un ensemble d'ordonnées virtuelles.
+     *
+     * @param ordonneesVirtuelles les ordonnées virtuelles dont on cherche la
+     * valeur réelle.
+     * @return l'ensemble des ordonnées réelles reflétant les ordonnées
+     * virtuelles.
+     */
+    public double[] ordonneesReellees(final double[] ordonneesVirtuelles) {
+        final double[] ordonneesReelles
+                = new double[ordonneesVirtuelles.length];
+        for (int i = 0; i < ordonneesVirtuelles.length; i++) {
+            ordonneesReelles[i] = ordonneeReelle(ordonneesVirtuelles[i]);
+        }
+        return ordonneesReelles;
     }
 
     /**
@@ -170,6 +238,20 @@ public class Toile extends Canvas implements Actualisable {
     }
 
     /**
+     * Ajoute une forme à la toile et lie ses propriétés à l'actualisation de la
+     * toile.
+     *
+     * @param forme la forme à ajouter à la toile.
+     */
+    public void ajouter(@NotNull final Forme forme) {
+        this.formes.add(forme);
+        for (final Observable propriete
+                : forme.getProprietesActualisation()) {
+            propriete.addListener(evenementActualisation);
+        }
+    }
+
+    /**
      * Ajoute des formes à la toile et lie leurs propriétés à l'actualisation de
      * la toile.
      *
@@ -177,10 +259,22 @@ public class Toile extends Canvas implements Actualisable {
      */
     public void ajouter(@NotNull final Forme... formes) {
         for (final Forme forme : formes) {
-            this.formes.add(forme);
+            ajouter(forme);
+        }
+    }
+
+    /**
+     * Retire une forme de la toile et délie ses propriétés de l'actualisation
+     * de la toile.
+     *
+     * @param forme la forme à retirer de la toile.
+     */
+    public void retirer(@NotNull final Forme forme) {
+        final boolean retiree = formes.remove(forme);
+        if (retiree) {
             for (final Observable propriete
                     : forme.getProprietesActualisation()) {
-                propriete.addListener(evenementActualisation);
+                propriete.removeListener(evenementActualisation);
             }
         }
     }
@@ -193,13 +287,7 @@ public class Toile extends Canvas implements Actualisable {
      */
     public void retirer(@NotNull final Forme... formes) {
         for (final Forme forme : formes) {
-            final boolean retiree = this.formes.remove(forme);
-            if (retiree) {
-                for (final Observable propriete
-                        : forme.getProprietesActualisation()) {
-                    propriete.removeListener(evenementActualisation);
-                }
-            }
+            retirer(forme);
         }
     }
 
