@@ -22,7 +22,7 @@
         <items>
           <MenuItem fx:id="tag" mnemonicParsing="false" text="Tag">
                <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgTag" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/icons/tag.png" />
                      </image>
@@ -31,7 +31,7 @@
             </MenuItem>
           <MenuItem fx:id="puzzle" mnemonicParsing="false" text="Puzzle">
                <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgPuzzle" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/icons/puzzle-piece.png" />
                      </image>
@@ -40,7 +40,7 @@
             </MenuItem>
         </items>
          <graphic>
-            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imgObjets" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/icons/object-ungroup.png" />
                </image>

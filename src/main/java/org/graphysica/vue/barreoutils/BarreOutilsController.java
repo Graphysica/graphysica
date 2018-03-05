@@ -18,14 +18,13 @@ package org.graphysica.vue.barreoutils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * FXML Controller class
@@ -57,39 +56,50 @@ public class BarreOutilsController implements Initializable {
 
     @FXML
     private Button inspecteur;
+    
+    @FXML
+    private ImageView imgTag;
 
-    public enum Buttons {
-        POINTEUR, TAG, PUZZLE, SELECTEUR, ARCHIVE, CHAMP_VECTORIEL, INSPECTEUR;
-        //FIXME mauvaise façon de gérer la sélection
-    }
+    @FXML
+    private ImageView imgPuzzle;
 
-    private Buttons currButton = Buttons.POINTEUR;
+    @FXML
+    private ImageView imgObjets;
+    
+    private Image icon = null;
+
+    
+
+    private Outil.Buttons currButton = Outil.Buttons.POINTEUR;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        icon = imgObjets.getImage();
         archive.setOnAction((event) -> {
-           currButton = Buttons.ARCHIVE; 
+            currButton = Outil.Buttons.ARCHIVE;
         });
         tag.setOnAction((event) -> {
-            currButton = Buttons.TAG;
+            currButton = Outil.Buttons.TAG;
+            imgObjets.setImage(imgTag.getImage());
         });
         curseur.setOnAction((event) -> {
-           currButton = Buttons.POINTEUR; 
+            currButton = Outil.Buttons.POINTEUR;
         });
         curseurPlus.setOnAction((event) -> {
-            currButton = Buttons.SELECTEUR;
+            currButton = Outil.Buttons.SELECTEUR;
         });
         champVectoriel.setOnAction((event) -> {
-           currButton = Buttons.CHAMP_VECTORIEL; 
+            currButton = Outil.Buttons.CHAMP_VECTORIEL;
         });
         inspecteur.setOnAction((event) -> {
-            currButton = Buttons.INSPECTEUR;
+            currButton = Outil.Buttons.INSPECTEUR;
         });
         puzzle.setOnAction((event) -> {
-           currButton = Buttons.PUZZLE; 
+            currButton = Outil.Buttons.PUZZLE;
+            imgObjets.setImage(imgPuzzle.getImage());
         });
     }
 
