@@ -23,15 +23,12 @@ import org.graphysica.espace2d.forme.DroiteHorizontale;
 import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
 
 /**
- *
+ * //TODO: Retravailler... Peut-être avec des manipulations bitwise.
  * @author Marc-Antoine Ouimet
  */
 public final class Grille extends Forme {
@@ -41,17 +38,34 @@ public final class Grille extends Forme {
     /**
      * L'épaisseur du tracé de la grille.
      */
-    protected final ObjectProperty<Taille> epaisseur
+    private final ObjectProperty<Taille> epaisseur
             = new SimpleObjectProperty<>(Taille.de("grille"));
 
-    private final Set<Ligne> lignes = new HashSet<>();
+    /**
+     * La liste ordonnée des droites horizontales de la grille. L'ordre des
+     * droites maintenu par la grille correspond à leur ordre d'affichage à
+     * partir de la gauche. Ce faisant, le premier élément de la liste sera le
+     * plus à gauche de la grille dans la toile et le dernier élément de la
+     * liste sera le plus à droite de la grille dans la toile.
+     */
+    private final ArrayList<DroiteHorizontale> droitesHorizontales
+            = new ArrayList<>();
+
+    /**
+     * La liste ordonnée des droites verticales de la grille. L'ordre des
+     * droites maintenu par la grille correspond à leur ordre d'affichage à
+     * partir du haut. Ce faisant, le premier élément de la liste sera le
+     * plus en haut de la grille dans la toile et le dernier élément de la
+     * liste sera le plus en bas de la grille dans la toile.
+     */
+    private final ArrayList<DroiteVerticale> droitesVerticales
+            = new ArrayList<>();
 
     public Grille(@NotNull final Toile toile) {
-        super();
         setCouleur(COULEUR_PAR_DEFAUT);
         initialiser(toile);
     }
-    
+
     {
         proprietesActualisation.add(epaisseur);
     }
@@ -68,7 +82,8 @@ public final class Grille extends Forme {
             abscisse -= espacementHorizontal;
         }
         for (int i = 0; i < lignesVerticales; i++) {
-            lignes.add(new DroiteVerticale(toile.abscisseReelle(abscisse)));
+            droitesVerticales.add(new DroiteVerticale(
+                    toile.abscisseReelle(abscisse), COULEUR_PAR_DEFAUT));
             abscisse += espacementHorizontal;
         }
         final int lignesHorizontales = (int) (toile.getHeight()
@@ -82,33 +97,143 @@ public final class Grille extends Forme {
             ordonnee -= espacementVertical;
         }
         for (int i = 0; i < lignesHorizontales; i++) {
-            lignes.add(new DroiteHorizontale(toile.ordonneeReelle(ordonnee)));
+            droitesHorizontales.add(new DroiteHorizontale(
+                    toile.ordonneeReelle(ordonnee), COULEUR_PAR_DEFAUT));
             ordonnee += espacementVertical;
         }
-        for (final Ligne ligne : lignes) {
-            ligne.setCouleur(COULEUR_PAR_DEFAUT);
-        }
+    }
+
+    /**
+     * Calcule le nombre de lignes horizontales à afficher par mètre.
+     *
+     * @param toile la toile affichant la grille.
+     * @return le nombre de lignes horizontales à afficher par mètre.
+     */
+    private double lignesHorizontalesParMetre(@NotNull final Toile toile) {
+        return toile.getEchelle().getX() / toile.getEspacement().getX();
+    }
+    
+    private double metresParLigneHorizontale(@NotNull final Toile toile) {
+        return 1 / lignesHorizontalesParMetre(toile);
+    }
+
+    /**
+     * Calcule le nombre de lignes horizontales à afficher sur la toile.
+     *
+     * @param toile la toile affichant la grille.
+     * @return le nombre de lignes horizontales à afficher sur la toile.
+     * @deprecated refaire avec première et dernière abscisse
+     */
+    private int lignesHorizontales(@NotNull final Toile toile) {
+        final double largeur = toile.abscisseReelle(toile.getWidth())
+                - toile.abscisseReelle(0);
+        return (int) (Math.abs(largeur * lignesHorizontalesParMetre(toile)));
+    }
+
+    /**
+     * Calcule la première abscisse de la grille à partir de la gauche.
+     *
+     * @param toile la toile affichant la grille.
+     * @return l'abscisse de la droite verticale la plus à gauche dans la toile.
+     */
+    private double premiereAbscisse(@NotNull final Toile toile) {
+        final double abscisseOrigine = toile.getOrigine().getX();
+        final int nombreDroites = (int) (abscisseOrigine
+                / toile.getEchelle().getX());
+        return abscisseOrigine - nombreDroites * toile.getEchelle().getX();
+    }
+
+    private double derniereAbscisse(@NotNull final Toile toile) {
+        final double abscisseOrigine = toile.getOrigine().getX();
+        final int nombreDroites = (int) ((abscisseOrigine - toile.getWidth())
+                / toile.getEchelle().getX());
+        return abscisseOrigine + nombreDroites * toile.getEchelle().getX();
+    }
+
+    /**
+     * Calcule le nombre de lignes verticales à afficher par mètre.
+     *
+     * @param toile la toile affichant la grille.
+     * @return le nombre de lignes verticales à afficher par mètre.
+     */
+    private double lignesVerticalesParMetre(@NotNull final Toile toile) {
+        return toile.getEchelle().getY() / toile.getEspacement().getY();
+    }
+    
+    private double metreParLigneVerticale(@NotNull final Toile toile) {
+        return 1 / lignesVerticalesParMetre(toile);
+    }
+
+    /**
+     * Calcule le nombre de lignes verticales à afficher sur la toile.
+     *
+     * @param toile la toile affichant la grille.
+     * @return le nombre de lignes verticales à afficher sur la toile.
+     * @deprecated refaire avec première et dernière ordonnée
+     */
+    private int lignesVerticales(@NotNull final Toile toile) {
+        final double hauteur = toile.ordonneeReelle(toile.getHeight())
+                - toile.ordonneeReelle(0);
+        return (int) (Math.abs(hauteur * lignesVerticalesParMetre(toile)));
+    }
+
+    /**
+     * Calcule la première ordonnée de la grille à partir du haut.
+     *
+     * @param toile la toile affichnt la grille.
+     * @return l'ordonnée de la droite horizontale la plus en haut dans la
+     * toile.
+     */
+    private double premiereOrdonnee(@NotNull final Toile toile) {
+        final double ordonneeOrigine = toile.getOrigine().getY(); // px
+        System.out.println("ordonneeOrigine = " + ordonneeOrigine);
+        final double ecartHaut = ordonneeOrigine 
+                / toile.getEchelle().getY(); // m
+        System.out.println("ecartHaut = " + ecartHaut);
+        int lignesParMetre = (int) (lignesHorizontalesParMetre(toile));
+        System.out.println("lignesParMetre = " + lignesParMetre);
+        final int lignesEcart = (int) (ecartHaut * lignesParMetre); // lignes
+        System.out.println("lignesEcart = " + lignesEcart);
+        return ordonneeOrigine - lignesEcart * metresParLigneHorizontale(toile);
+    }
+
+    private double derniereOrdonnee(@NotNull final Toile toile) {
+        final double ordonneeOrigine = toile.getOrigine().getY();
+        final int nombreDroites = (int) ((ordonneeOrigine - toile.getHeight())
+                / toile.getEchelle().getY());
+        return ordonneeOrigine + nombreDroites * toile.getEchelle().getY();
     }
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
+        System.out.println("");
+        System.out.println("lignesHorizontalesParMetre = " + lignesHorizontalesParMetre(toile));
+        System.out.println("lignesVerticalesParMetre = " + lignesVerticalesParMetre(toile));
+        System.out.println("");
+        System.out.println("premiereAbscisse = " + premiereAbscisse(toile));
+        System.out.println("derniereAbscisse = " + derniereAbscisse(toile));
+        System.out.println("premiereOrdonnee = " + premiereOrdonnee(toile));
+        System.out.println("derniereOrdonnee = " + derniereOrdonnee(toile));
         //retirerLignesNonVisibles(toile);
         //TODO: Ajouter des lignes...
-        for (final Ligne ligne : lignes) {
-            ligne.dessiner(toile);
+        for (final Ligne droiteHorizontale : droitesHorizontales) {
+            droiteHorizontale.dessiner(toile);
+        }
+        for (final Ligne droiteVerticale : droitesVerticales) {
+            droiteVerticale.dessiner(toile);
         }
     }
 
-    private void retirerLignesNonVisibles(@NotNull final Toile toile) {
-        final List<Ligne> lignesARetirer = new ArrayList<>();
-        for (final Ligne ligne : lignes) {
-            if (!estVisible(ligne, toile)) {
-                lignesARetirer.add(ligne);
-            }
-        }
-        lignes.removeAll(lignesARetirer);
-    }
-
+//    private void retirerLignesNonVisibles(@NotNull final Toile toile) {
+//        final List<Ligne> lignesARetirer = new ArrayList<>();
+//        for (final Ligne ligne : lignes) {
+//            System.out.println("estVisible = " + estVisible(ligne, toile));
+//            if (!estVisible(ligne, toile)) {
+//                lignesARetirer.add(ligne);
+//            }
+//        }
+//        lignes.removeAll(lignesARetirer);
+//    }
     private boolean estVisible(@NotNull final Ligne ligne,
             @NotNull final Toile toile) {
         if (ligne instanceof DroiteHorizontale) {
