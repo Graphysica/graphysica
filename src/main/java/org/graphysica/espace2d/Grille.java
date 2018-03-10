@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
  * //TODO: Retravailler... Peut-être avec des manipulations bitwise.
@@ -34,6 +35,12 @@ import javafx.scene.paint.Color;
 public final class Grille extends Forme {
 
     private static final Color COULEUR_PAR_DEFAUT = new Color(0, 0, 0, 0.3);
+    
+    /**
+     * L'espacement minimum des graduations de la grille exprimée en pixels.
+     */
+    private final ObjectProperty<Vector2D> espacement
+            = new SimpleObjectProperty<>(new Vector2D(50, 50));
 
     /**
      * L'épaisseur du tracé de la grille.
@@ -72,8 +79,8 @@ public final class Grille extends Forme {
 
     private void initialiser(@NotNull final Toile toile) {
         final int lignesVerticales = (int) (toile.getWidth()
-                / toile.getEspacement().getX());
-        final double espacementHorizontal = toile.getEspacement().getX();
+                / getEspacement().getX());
+        final double espacementHorizontal = getEspacement().getX();
         double abscisse = toile.getOrigine().getX();
         while (abscisse < 0) {
             abscisse += espacementHorizontal;
@@ -87,8 +94,8 @@ public final class Grille extends Forme {
             abscisse += espacementHorizontal;
         }
         final int lignesHorizontales = (int) (toile.getHeight()
-                / toile.getEspacement().getY());
-        final double espacementVertical = toile.getEspacement().getX();
+                / getEspacement().getY());
+        final double espacementVertical = getEspacement().getX();
         double ordonnee = toile.getOrigine().getY();
         while (ordonnee < 0) {
             ordonnee += espacementVertical;
@@ -110,7 +117,7 @@ public final class Grille extends Forme {
      * @return le nombre de lignes horizontales à afficher par mètre.
      */
     private double lignesHorizontalesParMetre(@NotNull final Toile toile) {
-        return toile.getEchelle().getX() / toile.getEspacement().getX();
+        return toile.getEchelle().getX() / getEspacement().getX();
     }
     
     private double metresParLigneHorizontale(@NotNull final Toile toile) {
@@ -157,7 +164,7 @@ public final class Grille extends Forme {
      * @return le nombre de lignes verticales à afficher par mètre.
      */
     private double lignesVerticalesParMetre(@NotNull final Toile toile) {
-        return toile.getEchelle().getY() / toile.getEspacement().getY();
+        return toile.getEchelle().getY() / getEspacement().getY();
     }
     
     private double metreParLigneVerticale(@NotNull final Toile toile) {
@@ -206,22 +213,8 @@ public final class Grille extends Forme {
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
-        System.out.println("");
-        System.out.println("lignesHorizontalesParMetre = " + lignesHorizontalesParMetre(toile));
-        System.out.println("lignesVerticalesParMetre = " + lignesVerticalesParMetre(toile));
-        System.out.println("");
-        System.out.println("premiereAbscisse = " + premiereAbscisse(toile));
-        System.out.println("derniereAbscisse = " + derniereAbscisse(toile));
-        System.out.println("premiereOrdonnee = " + premiereOrdonnee(toile));
-        System.out.println("derniereOrdonnee = " + derniereOrdonnee(toile));
-        //retirerLignesNonVisibles(toile);
-        //TODO: Ajouter des lignes...
-        for (final Ligne droiteHorizontale : droitesHorizontales) {
-            droiteHorizontale.dessiner(toile);
-        }
-        for (final Ligne droiteVerticale : droitesVerticales) {
-            droiteVerticale.dessiner(toile);
-        }
+        final Vector2D origine = toile.getOrigine();
+        
     }
 
 //    private void retirerLignesNonVisibles(@NotNull final Toile toile) {
@@ -243,6 +236,18 @@ public final class Grille extends Forme {
             final DroiteVerticale droite = (DroiteVerticale) ligne;
             return droite.isVisible(toile);
         }
+    }
+    
+    public final Vector2D getEspacement() {
+        return espacement.getValue();
+    }
+
+    public final void setEspacement(@NotNull final Vector2D espacement) {
+        this.espacement.setValue(espacement);
+    }
+
+    public final ObjectProperty<Vector2D> espacementProperty() {
+        return espacement;
     }
 
 }

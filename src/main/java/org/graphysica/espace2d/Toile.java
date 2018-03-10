@@ -55,12 +55,6 @@ public class Toile extends Canvas implements Actualisable {
             = new SimpleObjectProperty<>(new Vector2D(100, 100));
 
     /**
-     * L'espacement minimum des graduations de la grille exprimée en pixels.
-     */
-    private final ObjectProperty<Vector2D> espacement
-            = new SimpleObjectProperty<>(new Vector2D(50, 50));
-
-    /**
      * L'événement d'actualisation des formes en cas d'invalidation de leurs
      * propriétés.
      */
@@ -313,18 +307,6 @@ public class Toile extends Canvas implements Actualisable {
 
     public final void setOrigine(@NotNull final Vector2D origine) {
         this.origine.setValue(origine);
-    }
-
-    public final Vector2D getEspacement() {
-        return espacement.getValue();
-    }
-
-    public final void setEspacement(@NotNull final Vector2D espacement) {
-        this.espacement.setValue(espacement);
-    }
-
-    public final ObjectProperty<Vector2D> espacementProperty() {
-        return espacement;
     }
 
 }
