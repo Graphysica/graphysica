@@ -26,18 +26,19 @@ import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
- * //TODO: Retravailler... Peut-être avec des manipulations bitwise.
+ * Une grille permet de subdiviser l'espace selon un espacement virtuel qui
+ * correspond à un pourcentage entier de son échelle. La grille n'est pas
+ * dessinée à l'aide d'instances de droites horizontales et verticales par
+ * soucis de gestion de mémoire.
  *
  * @author Marc-Antoine Ouimet
  */
 public final class Grille extends Forme {
 
-    private static final Color COULEUR_PAR_DEFAUT = new Color(0, 0, 0, 0.3);
-
     /**
      * L'espacement minimum des graduations de la grille exprimée en pixels.
      */
-    private final ObjectProperty<Vector2D> espacement 
+    private final ObjectProperty<Vector2D> espacement
             = new SimpleObjectProperty<>();
 
     /**
@@ -46,11 +47,14 @@ public final class Grille extends Forme {
     private final ObjectProperty<Taille> epaisseur
             = new SimpleObjectProperty<>(Taille.de("grille"));
 
-    public Grille(@NotNull final Vector2D espacement) {
-        this(espacement, COULEUR_PAR_DEFAUT);
-    }
-    
-    public Grille(@NotNull final Vector2D espacement, 
+    /**
+     * Construit une grille dont l'espacement et la couleur sont définis.
+     *
+     * @param espacement l'espacement virtuel entre chaque graduation de la
+     * grille.
+     * @param couleur la couleur de la grille.
+     */
+    public Grille(@NotNull final Vector2D espacement,
             @NotNull final Color couleur) {
         setEspacement(espacement);
         setCouleur(couleur);
@@ -63,23 +67,25 @@ public final class Grille extends Forme {
     @Override
     public void dessiner(@NotNull final Toile toile) {
         final Vector2D origine = toile.getOrigine();
-        final Vector2D origineVirtuelle = toile.positionVirtuelle(origine);
         final Vector2D echelle = toile.getEchelle();
         final Vector2D espacementMinimal = getEspacement();
         final Vector2D espacementMinimalReel = new Vector2D(
                 espacementMinimal.getX() / echelle.getX(),
                 espacementMinimal.getY() / echelle.getY());
         final Vector2D exposant = new Vector2D(
-                (int) (Math.log(espacementMinimalReel.getX()) / Math.log(2)), 
+                (int) (Math.log(espacementMinimalReel.getX()) / Math.log(2)),
                 (int) (Math.log(espacementMinimalReel.getY()) / Math.log(2)));
         final Vector2D espacementReel = new Vector2D(
                 Math.pow(2, exposant.getX()), Math.pow(2, exposant.getY()));
+        // L'espacement virtuel entre les graduations de la grille
         final Vector2D espacementVirtuel = new Vector2D(
-                espacementReel.getX() * echelle.getX(), 
+                espacementReel.getX() * echelle.getX(),
                 espacementReel.getY() * echelle.getY());
+        // La position d'ancrage de la grille dans le coin supérieur gauche
         final Vector2D positionAncrageGrille = new Vector2D(
-                origineVirtuelle.getX() % espacementVirtuel.getX(), 
-                origineVirtuelle.getY() % espacementVirtuel.getY());
+                origine.getX() % espacementVirtuel.getX(),
+                origine.getY() % espacementVirtuel.getY());
+        // Tracer la grille
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
         contexteGraphique.setStroke(getCouleur());
         contexteGraphique.setLineWidth(1);
@@ -91,7 +97,7 @@ public final class Grille extends Forme {
         double y = positionAncrageGrille.getY();
         while (y < toile.getHeight()) {
             contexteGraphique.strokeLine(0, y, toile.getWidth(), y);
-            y+= espacementVirtuel.getY();
+            y += espacementVirtuel.getY();
         }
     }
 

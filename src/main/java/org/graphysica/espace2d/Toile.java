@@ -66,17 +66,31 @@ public class Toile extends Canvas implements Actualisable {
                 actualiser();
             };
 
+    /**
+     * La grille secondaire de la toile. Représente les graduations plus
+     * précises de l'espace.
+     */
+    private final Grille grilleSecondaire = new Grille(new Vector2D(25, 25),
+            Color.gray(0.9));
+
+    /**
+     * La grille principale de la toile. Représente les graduations plus
+     * grossières de l'espace.
+     */
+    private final Grille grillePrincipale = new Grille(new Vector2D(100, 100),
+            Color.gray(0.5));
+
     public Toile(final double largeur, final double hauteur) {
         super(largeur, hauteur);
     }
 
     {
-        //Traiter le déplacement de l'espace
+        // Traiter le déplacement de l'espace
         origine.addListener(evenementActualisation);
-        //Traiter la redimension de l'espace
+        // Traiter la redimension de l'espace
         echelle.addListener(evenementActualisation);
-        formes.add(new Grille(new Vector2D(25, 25), new Color(0, 0, 0, 0.3)));
-        formes.add(new Grille(new Vector2D(100, 100), new Color(0, 0, 0, 0.5)));
+        ajouter(grilleSecondaire, grillePrincipale);
+        // TODO: Tracer des axes gradués
         formes.add(new DroiteHorizontale(0, 2, Color.BLACK));
         formes.add(new DroiteVerticale(0, 2, Color.BLACK));
     }
