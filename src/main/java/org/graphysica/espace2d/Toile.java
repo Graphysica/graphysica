@@ -25,7 +25,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.DroiteHorizontale;
+import org.graphysica.espace2d.forme.DroiteVerticale;
 
 /**
  * Une toile permettant d'afficher un ensemble de formes.
@@ -72,7 +75,10 @@ public class Toile extends Canvas implements Actualisable {
         origine.addListener(evenementActualisation);
         //Traiter la redimension de l'espace
         echelle.addListener(evenementActualisation);
-        formes.add(new Grille(this));
+        formes.add(new Grille(new Vector2D(25, 25), new Color(0, 0, 0, 0.3)));
+        formes.add(new Grille(new Vector2D(100, 100), new Color(0, 0, 0, 0.5)));
+        formes.add(new DroiteHorizontale(0, 2, Color.BLACK));
+        formes.add(new DroiteVerticale(0, 2, Color.BLACK));
     }
 
     /**
