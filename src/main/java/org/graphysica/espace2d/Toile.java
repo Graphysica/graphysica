@@ -25,7 +25,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.DroiteHorizontale;
+import org.graphysica.espace2d.forme.DroiteVerticale;
 
 /**
  * Une toile permettant d'afficher un ensemble de formes.
@@ -55,12 +58,6 @@ public class Toile extends Canvas implements Actualisable {
             = new SimpleObjectProperty<>(new Vector2D(100, 100));
 
     /**
-     * L'espacement minimum des graduations de la grille exprimée en pixels.
-     */
-    private final ObjectProperty<Vector2D> espacement
-            = new SimpleObjectProperty<>(new Vector2D(50, 50));
-
-    /**
      * L'événement d'actualisation des formes en cas d'invalidation de leurs
      * propriétés.
      */
@@ -69,16 +66,33 @@ public class Toile extends Canvas implements Actualisable {
                 actualiser();
             };
 
+    /**
+     * La grille secondaire de la toile. Représente les graduations plus
+     * précises de l'espace.
+     */
+    private final Grille grilleSecondaire = new Grille(new Vector2D(25, 25),
+            Color.gray(0.9));
+
+    /**
+     * La grille principale de la toile. Représente les graduations plus
+     * grossières de l'espace.
+     */
+    private final Grille grillePrincipale = new Grille(new Vector2D(100, 100),
+            Color.gray(0.5));
+
     public Toile(final double largeur, final double hauteur) {
         super(largeur, hauteur);
     }
 
     {
-        //Traiter le déplacement de l'espace
+        // Traiter le déplacement de l'espace
         origine.addListener(evenementActualisation);
-        //Traiter la redimension de l'espace
+        // Traiter la redimension de l'espace
         echelle.addListener(evenementActualisation);
-        formes.add(new Grille(this));
+        ajouter(grilleSecondaire, grillePrincipale);
+        // TODO: Tracer des axes gradués
+        formes.add(new DroiteHorizontale(0, 2, Color.BLACK));
+        formes.add(new DroiteVerticale(0, 2, Color.BLACK));
     }
 
     /**
@@ -313,18 +327,6 @@ public class Toile extends Canvas implements Actualisable {
 
     public final void setOrigine(@NotNull final Vector2D origine) {
         this.origine.setValue(origine);
-    }
-
-    public final Vector2D getEspacement() {
-        return espacement.getValue();
-    }
-
-    public final void setEspacement(@NotNull final Vector2D espacement) {
-        this.espacement.setValue(espacement);
-    }
-
-    public final ObjectProperty<Vector2D> espacementProperty() {
-        return espacement;
     }
 
 }

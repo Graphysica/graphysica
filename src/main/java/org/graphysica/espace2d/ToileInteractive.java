@@ -17,7 +17,6 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -96,8 +95,10 @@ public class ToileInteractive extends ToileRedimensionnable {
             setEchelle(new Vector2D(
                     echelle.getValue().getX() * facteurZoom,
                     echelle.getValue().getY() * facteurZoom));
-            origine.setValue(origine.getValue().subtract(
-                    translationOrigine.scalarMultiply(facteurZoom)));
+            final Vector2D nouvelleOrigine = origine.getValue().subtract(
+                    translationOrigine.scalarMultiply(facteurZoom));
+            origine.setValue(new Vector2D((int) nouvelleOrigine.getX(),
+                    (int) nouvelleOrigine.getY()));
         }
     }
 
@@ -110,7 +111,9 @@ public class ToileInteractive extends ToileRedimensionnable {
     private void deplacer(@NotNull final Vector2D positionCurseur) {
         final Vector2D deplacement = positionCurseur.subtract(
                 positionPrecendenteCurseur);
-        origine.setValue(origine.getValue().add(deplacement));
+        final Vector2D nouvelleOrigine = origine.getValue().add(deplacement);
+        origine.setValue(new Vector2D((int) nouvelleOrigine.getX(),
+                (int) nouvelleOrigine.getY()));
         positionPrecendenteCurseur = positionCurseur;
     }
 
