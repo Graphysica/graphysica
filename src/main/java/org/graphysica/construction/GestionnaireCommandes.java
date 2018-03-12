@@ -41,6 +41,7 @@ public class GestionnaireCommandes {
 
     public void executer(@NotNull final Commande commande) {
         commande.executer();
+        commandesAnnulees.clear();
         if (commande instanceof CommandeAnnulable) {
             commandes.push((CommandeAnnulable) commande);
         }
