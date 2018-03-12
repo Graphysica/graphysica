@@ -127,7 +127,7 @@ public class Etiquette extends Forme {
     @Override
     public void dessiner(@NotNull final Toile toile) {
         final TeXFormula formule = new TeXFormula(getTexte());
-        Image imageFormule = SwingFXUtils.toFXImage(
+        final Image imageFormule = SwingFXUtils.toFXImage(
                 (BufferedImage) formule.createBufferedImage(
                         TeXConstants.STYLE_TEXT, getTailleCaractere(),
                         couleur(), null), null);
@@ -139,7 +139,7 @@ public class Etiquette extends Forme {
     }
 
     /**
-     * Converti une couleur de javafx.scene.paint.Color vers java.awt.Color.
+     * Convertit une couleur de javafx.scene.paint.Color vers java.awt.Color.
      *
      * @return la couleur convertie.
      */

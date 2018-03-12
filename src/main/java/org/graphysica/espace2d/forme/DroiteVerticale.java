@@ -19,6 +19,7 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Toile;
 
@@ -28,7 +29,8 @@ import org.graphysica.espace2d.Toile;
  *
  * @author Marc-Antoine Ouimet
  */
-public class DroiteVerticale extends Ligne {
+public class DroiteVerticale extends Ligne implements 
+        Comparable<DroiteVerticale> {
     
     /**
      * Le vecteur directeur de toutes droites verticales.
@@ -41,8 +43,24 @@ public class DroiteVerticale extends Ligne {
     private final DoubleProperty abscisse = new SimpleDoubleProperty();
 
     public DroiteVerticale(final double abscisse) {
-        super();
         setAbscisse(abscisse);
+    }
+    
+    public DroiteVerticale(final double abscisse, 
+            @NotNull final Color couleur) {
+        this(abscisse);
+        setCouleur(couleur);
+    }
+    
+    public DroiteVerticale(final double abscisse, final int epaisseur) {
+        this(abscisse);
+        setEpaisseur(epaisseur);
+    }
+    
+    public DroiteVerticale(final double abscisse, final int epaisseur,
+            @NotNull final Color couleur) {
+        this(abscisse, epaisseur);
+        setCouleur(couleur);
     }
     
     {
@@ -58,6 +76,11 @@ public class DroiteVerticale extends Ligne {
             arriveeTrace = new Vector2D(abscisseVirtuelle, toile.getHeight());
             dessinerContinue(toile.getGraphicsContext2D());
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull final DroiteVerticale droite) {
+        return Double.compare(getAbscisse(), droite.getAbscisse());
     }
 
     public final double getAbscisse() {

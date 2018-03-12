@@ -19,6 +19,7 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Toile;
 
@@ -28,7 +29,8 @@ import org.graphysica.espace2d.Toile;
  *
  * @author Marc-Antoine Ouimet
  */
-public class DroiteHorizontale extends Ligne {
+public class DroiteHorizontale extends Ligne implements 
+        Comparable<DroiteHorizontale> {
     
     /**
      * Le vecteur directeur de toutes droites horizontales.
@@ -41,8 +43,24 @@ public class DroiteHorizontale extends Ligne {
     private final DoubleProperty ordonnee = new SimpleDoubleProperty();
 
     public DroiteHorizontale(final double ordonnee) {
-        super();
         setOrdonnee(ordonnee);
+    }
+
+    public DroiteHorizontale(final double ordonnee, 
+            @NotNull final Color couleur) {
+        this(ordonnee);
+        setCouleur(couleur);
+    }
+    
+    public DroiteHorizontale(final double ordonne, final int epaisseur) {
+        this(ordonne);
+        setEpaisseur(epaisseur);
+    }
+    
+    public DroiteHorizontale(final double ordonnee, final int epaisseur, 
+            @NotNull final Color couleur) {
+        this(ordonnee, epaisseur);
+        setCouleur(couleur);
     }
     
     {
@@ -58,6 +76,11 @@ public class DroiteHorizontale extends Ligne {
             arriveeTrace = new Vector2D(toile.getWidth(), ordonneeVirtuelle);
             dessinerContinue(toile.getGraphicsContext2D());
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull final DroiteHorizontale droite) {
+        return Double.compare(getOrdonnee(), droite.getOrdonnee());
     }
 
     public final double getOrdonnee() {

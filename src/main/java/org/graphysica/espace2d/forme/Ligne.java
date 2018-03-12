@@ -81,8 +81,12 @@ public abstract class Ligne extends Forme {
      */
     public abstract Vector2D getVecteurDirecteur();
 
-    protected int getEpaisseur() {
+    public final int getEpaisseur() {
         return epaisseur.getValue().get();
+    }
+    
+    public final void setEpaisseur(final int epaisseur) {
+        this.epaisseur.setValue(new Taille(epaisseur));
     }
 
 }
