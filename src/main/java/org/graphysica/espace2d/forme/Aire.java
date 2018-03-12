@@ -17,7 +17,6 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import java.util.Stack;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,7 +41,18 @@ public class Aire extends Forme {
     /**
      * La liste ordonnée des points délimitant cette aire.
      */
-    private final ObservableList<Point> points;
+    private final ObservableList<ObjectProperty<Vector2D>> points
+            = FXCollections.observableArrayList();
+
+    /**
+     * Construit une aire sur un ensemble de vecteurs observables.
+     *
+     * @param points l'ensemble des positions traçant le polygone de l'aire.
+     */
+    public Aire(@NotNull final ObjectProperty<Vector2D>... points) {
+        this.points.addAll(points);
+        setCouleur(COULEUR_PAR_DEFAUT);
+    }
 
     /**
      * Construit une aire sur un ensemble défini de points.
@@ -50,9 +60,9 @@ public class Aire extends Forme {
      * @param points l'ensemble de points traçant le polygone de l'aire.
      */
     public Aire(@NotNull final Point... points) {
-        this.points = FXCollections.observableArrayList();
-        proprietesActualisation.add(this.points);
-        this.points.addAll(points);
+        for (final Point point : points) {
+            this.points.add(point.positionProperty());
+        }
         setCouleur(COULEUR_PAR_DEFAUT);
     }
 
@@ -64,10 +74,13 @@ public class Aire extends Forme {
      * @param curseur la position réelle du curseur correspondant au prochain
      * point de {@code points}.
      */
-    public Aire(@NotNull final ObservableList<Point> points,
-            @NotNull final ObjectProperty<Vector2D> curseur) {
-        points.add(new Point(curseur));
-        this.points = points;
+    public Aire(@NotNull final ObjectProperty<Vector2D> curseur,
+            @NotNull final Point... points) {
+        this(points);
+        this.points.add(curseur);
+    }
+
+    {
         proprietesActualisation.add(this.points);
     }
 
@@ -87,7 +100,7 @@ public class Aire extends Forme {
     private double[] abscisses() {
         final double[] abscisses = new double[points.size()];
         for (int i = 0; i < abscisses.length; i++) {
-            abscisses[i] = points.get(i).getAbscisse();
+            abscisses[i] = points.get(i).getValue().getX();
         }
         return abscisses;
     }
@@ -100,7 +113,7 @@ public class Aire extends Forme {
     private double[] ordonnees() {
         final double[] ordonnees = new double[points.size()];
         for (int i = 0; i < ordonnees.length; i++) {
-            ordonnees[i] = points.get(i).getOrdonnee();
+            ordonnees[i] = points.get(i).getValue().getY();
         }
         return ordonnees;
     }
