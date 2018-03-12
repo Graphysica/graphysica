@@ -26,6 +26,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.DroiteHorizontale;
@@ -261,10 +262,9 @@ public class Toile extends Canvas implements Actualisable {
      */
     public void ajouter(@NotNull final Forme forme) {
         this.formes.add(forme);
-        for (final Observable propriete
-                : forme.getProprietesActualisation()) {
+        forme.getProprietesActualisation().forEach((propriete) -> {
             propriete.addListener(evenementActualisation);
-        }
+        });
     }
 
     /**
@@ -288,10 +288,9 @@ public class Toile extends Canvas implements Actualisable {
     public void retirer(@NotNull final Forme forme) {
         final boolean retiree = formes.remove(forme);
         if (retiree) {
-            for (final Observable propriete
-                    : forme.getProprietesActualisation()) {
+            forme.getProprietesActualisation().forEach((propriete) -> {
                 propriete.removeListener(evenementActualisation);
-            }
+            });
         }
     }
 

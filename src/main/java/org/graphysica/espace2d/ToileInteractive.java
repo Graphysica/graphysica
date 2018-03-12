@@ -17,6 +17,8 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -40,12 +42,22 @@ public class ToileInteractive extends ToileRedimensionnable {
      * bouton du milieu de la souris est enfoncé.
      */
     private Vector2D positionPrecendenteCurseur;
+    
+    /**
+     * La position virtuelle du curseur sur cette toile interactive.
+     */
+    private final ObjectProperty<Vector2D> positionVirtuelleCurseur 
+           = new SimpleObjectProperty<>();
 
     public ToileInteractive(final double largeur, final double hauteur) {
         super(largeur, hauteur);
     }
 
     {
+        setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
+            positionVirtuelleCurseur.setValue(
+                    positionVirtuelleCurseur(evenement));
+        });
         setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
             setCursor(Cursor.CROSSHAIR);
         });
@@ -123,8 +135,26 @@ public class ToileInteractive extends ToileRedimensionnable {
      */
     private void enregistrerPositionCurseur(
             @NotNull final MouseEvent evenement) {
-        positionPrecendenteCurseur = new Vector2D(evenement.getX(),
-                evenement.getY());
+        positionPrecendenteCurseur = positionVirtuelleCurseur(evenement);
     }
-
+    
+    /**
+     * Récupère la position virtuelle du curseur sur la toile.
+     *
+     * @param evenement l'événement du curseur.
+     * @return la position virtuelle du curseur.
+     */
+    public Vector2D positionVirtuelleCurseur(
+            @NotNull final MouseEvent evenement) {
+        return new Vector2D(evenement.getX(), evenement.getY());
+    }
+    
+    public final Vector2D getPositionVirtuelleCurseur() {
+        return positionVirtuelleCurseur.getValue();
+    }
+    
+    public final ObjectProperty<Vector2D> positionVirtuelleCurseurProperty() {
+        return positionVirtuelleCurseur;
+    }
+    
 }
