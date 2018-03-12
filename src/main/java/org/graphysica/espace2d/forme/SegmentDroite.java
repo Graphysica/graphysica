@@ -42,6 +42,18 @@ public class SegmentDroite extends Ligne {
             = new SimpleObjectProperty<>();
 
     /**
+     * Construit un segment de droite à partir de deux vecteurs position fixes.
+     *
+     * @param point1 le premier vecteur position du segment de droite.
+     * @param point2 le deuxième vecteur position du segment de droite.
+     */
+    public SegmentDroite(@NotNull final Vector2D point1,
+            @NotNull final Vector2D point2) {
+        this.point1.setValue(point1);
+        this.point2.setValue(point2);
+    }
+
+    /**
      * Construit un segment de droite lié à la position de deux points définis.
      *
      * @param point1 le premier point en coordonnées réelles.
@@ -49,10 +61,22 @@ public class SegmentDroite extends Ligne {
      */
     public SegmentDroite(@NotNull final Point point1,
             @NotNull final Point point2) {
-        this.point1.setValue(point1.getPosition());
         this.point1.bind(point1.positionProperty());
-        this.point2.setValue(point2.getPosition());
         this.point2.bind(point2.positionProperty());
+    }
+
+    /**
+     * Construit une prévisualisation de segment de droite à partir d'un vecteur
+     * position et de la position du curseur sur la droite.
+     *
+     * @param point le vecteur position de l'origine du segment de droite.
+     * @param curseur l'arrivée du segment de droite, qui correspond à la
+     * position réelle du curseur sur la toile.
+     */
+    public SegmentDroite(@NotNull final Vector2D point,
+            @NotNull final ObjectProperty<Vector2D> curseur) {
+        this.point1.setValue(point);
+        this.point2.bind(curseur);
     }
 
     /**
@@ -65,7 +89,6 @@ public class SegmentDroite extends Ligne {
      */
     public SegmentDroite(@NotNull final Point point,
             @NotNull final ObjectProperty<Vector2D> curseur) {
-        point1.setValue(point.getPosition());
         point1.bind(point.positionProperty());
         point2.bind(curseur);
     }
