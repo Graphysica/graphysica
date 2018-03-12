@@ -17,6 +17,7 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.GraphicsContext;
@@ -60,8 +61,7 @@ public final class Point extends Forme {
     /**
      * La taille du point.
      */
-    private final ObjectProperty<Taille> taille
-            = new SimpleObjectProperty<>(Taille.de("point"));
+    private final IntegerProperty taille = Taille.de("point");
 
     /**
      * Construit un point de couleur, de taille et de position définies par
@@ -105,7 +105,7 @@ public final class Point extends Forme {
     public Point(final int taille, @NotNull final Color couleur,
             @NotNull Vector2D position) {
         this(couleur, position);
-        this.taille.setValue(new Taille(taille));
+        this.taille.setValue(taille);
     }
 
     /**
@@ -188,14 +188,14 @@ public final class Point extends Forme {
     }
 
     private int getTaille() {
-        return taille.getValue().get();
+        return taille.getValue();
     }
 
-    public void setTaille(@NotNull final Taille taille) {
+    public void setTaille(final int taille) {
         this.taille.setValue(taille);
     }
 
-    public ObjectProperty<Taille> tailleProperty() {
+    public IntegerProperty tailleProperty() {
         return taille;
     }
 

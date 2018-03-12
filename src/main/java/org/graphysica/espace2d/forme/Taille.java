@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Marc-Antoine Ouimet
  */
-public final class Taille {
+public final class Taille extends SimpleIntegerProperty {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Taille.class);
 
@@ -71,6 +71,7 @@ public final class Taille {
             TAILLE_PAR_DEFAUT);
 
     public Taille() {
+        set(TAILLE_PAR_DEFAUT);
     }
 
     public Taille(final int taille) {
@@ -120,10 +121,11 @@ public final class Taille {
         return new Taille(chargerProprieteTaille(type));
     }
 
-    public int get() {
-        return taille.getValue();
+    @Override
+    public void setValue(@NotNull final Number valeur) {
+        set(valeur.intValue());
     }
-
+    
     /**
      * Modifie la taille. Si la taille spécifiée est inférieure à
      * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}, défini
@@ -131,16 +133,13 @@ public final class Taille {
      *
      * @param taille la nouvelle taille.
      */
+    @Override
     public final void set(final int taille) {
         if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
-            this.taille.setValue(TAILLE_PAR_DEFAUT);
+            super.setValue(TAILLE_PAR_DEFAUT);
         } else {
-            this.taille.setValue(taille);
+            super.setValue(taille);
         }
-    }
-
-    public IntegerProperty tailleProperty() {
-        return taille;
     }
 
 }

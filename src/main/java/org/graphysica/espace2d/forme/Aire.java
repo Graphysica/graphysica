@@ -44,15 +44,15 @@ public class Aire extends Forme {
     private final ObservableList<ObjectProperty<Vector2D>> points
             = FXCollections.observableArrayList();
 
-    /**
-     * Construit une aire sur un ensemble de vecteurs observables.
-     *
-     * @param points l'ensemble des positions traçant le polygone de l'aire.
-     */
-    public Aire(@NotNull final ObjectProperty<Vector2D>... points) {
-        this.points.addAll(points);
-        setCouleur(COULEUR_PAR_DEFAUT);
-    }
+//    /**
+//     * Construit une aire sur un ensemble de vecteurs observables.
+//     *
+//     * @param points l'ensemble des positions traçant le polygone de l'aire.
+//     */
+//    public Aire(@NotNull final ObjectProperty<Vector2D>... points) {
+//        this.points.addAll(points);
+//        setCouleur(COULEUR_PAR_DEFAUT);
+//    }
 
     /**
      * Construit une aire sur un ensemble défini de points.

@@ -17,8 +17,7 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -38,8 +37,7 @@ public abstract class Ligne extends Forme {
     /**
      * L'épaisseur du tracé de la droite.
      */
-    protected final ObjectProperty<Taille> epaisseur
-            = new SimpleObjectProperty<>(Taille.de("ligne"));
+    protected final IntegerProperty epaisseur = Taille.de("ligne");
 
     /**
      * La position d'origine de la trace de la ligne dans le contexte graphique.
@@ -82,11 +80,11 @@ public abstract class Ligne extends Forme {
     public abstract Vector2D getVecteurDirecteur();
 
     public final int getEpaisseur() {
-        return epaisseur.getValue().get();
+        return epaisseur.getValue();
     }
     
     public final void setEpaisseur(final int epaisseur) {
-        this.epaisseur.setValue(new Taille(epaisseur));
+        this.epaisseur.setValue(epaisseur);
     }
 
 }

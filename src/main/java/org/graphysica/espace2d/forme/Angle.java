@@ -18,6 +18,7 @@ package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -51,8 +52,7 @@ public class Angle extends Forme {
      * La taille du secteur représentant l'angle. Le rayon du tracé du secteur
      * correspond à {@code MULTIPLICATEUR_RAYON} fois cette taille.
      */
-    private final ObjectProperty<Taille> taille = new SimpleObjectProperty(
-            Taille.de("angle"));
+    private final IntegerProperty taille = Taille.de("angle");
 
     /**
      * Le vecteur représentant l'horizontale, soit l'angle de zéro.
@@ -139,7 +139,7 @@ public class Angle extends Forme {
                 angle -= 360;
                 angleInitial += 360;
             }
-            final int rayon = taille.getValue().get() * MULTIPLICATEUR_RAYON;
+            final int rayon = taille.getValue() * MULTIPLICATEUR_RAYON;
             final Vector2D centreVirtuel = toile.positionVirtuelle(
                     getSommet());
             final GraphicsContext contexteGraphique = toile
