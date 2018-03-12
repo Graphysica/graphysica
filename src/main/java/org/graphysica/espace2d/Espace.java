@@ -48,17 +48,29 @@ public class Espace extends AnchorPane {
     }
 
     public Espace() {
-        this.toile = new ToileInteractive(USE_PREF_SIZE, USE_PREF_SIZE);
+        toile = new ToileInteractive(getWidth(), getHeight());
         lierDimensions();
         initialiser();
     }
-    
+
     public void deplacer() {
         toile.setOrigine(toile.getOrigine().add(new Vector2D(1, 2)));
     }
-    
+
+    public void ajouter(@NotNull final Forme forme) {
+        toile.ajouter(forme);
+    }
+
     public void ajouter(@NotNull final Forme... formes) {
         toile.ajouter(formes);
+    }
+
+    public void retirer(@NotNull final Forme forme) {
+        toile.retirer(forme);
+    }
+
+    public void retirer(@NotNull final Forme... formes) {
+        toile.retirer(formes);
     }
 
     private void initialiser() {
@@ -76,5 +88,5 @@ public class Espace extends AnchorPane {
     public Toile getToile() {
         return toile;
     }
-    
+
 }

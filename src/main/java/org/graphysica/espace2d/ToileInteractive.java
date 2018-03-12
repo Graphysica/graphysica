@@ -17,6 +17,8 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -41,11 +43,20 @@ public class ToileInteractive extends ToileRedimensionnable {
      */
     private Vector2D positionPrecendenteCurseur;
 
+    /**
+     * La position réelle du curseur sur cette toile interactive.
+     */
+    private final ObjectProperty<Vector2D> positionReelleCurseur
+            = new SimpleObjectProperty<>();
+
     public ToileInteractive(final double largeur, final double hauteur) {
         super(largeur, hauteur);
     }
 
     {
+        setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
+            actualiserPositionCurseur(evenement);
+        });
         setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
             setCursor(Cursor.CROSSHAIR);
         });
@@ -65,6 +76,7 @@ public class ToileInteractive extends ToileRedimensionnable {
             setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseDragged((@NotNull final MouseEvent evenement) -> {
+            actualiserPositionCurseur(evenement);
             if (evenement.isMiddleButtonDown()) {
                 final Vector2D positionCurseur = new Vector2D(evenement.getX(),
                         evenement.getY());
@@ -123,8 +135,45 @@ public class ToileInteractive extends ToileRedimensionnable {
      */
     private void enregistrerPositionCurseur(
             @NotNull final MouseEvent evenement) {
-        positionPrecendenteCurseur = new Vector2D(evenement.getX(),
-                evenement.getY());
+        positionPrecendenteCurseur = positionVirtuelleCurseur(evenement);
+    }
+
+    /**
+     * Récupère la position virtuelle du curseur sur la toile.
+     *
+     * @param evenement l'événement du curseur.
+     * @return la position virtuelle du curseur.
+     */
+    public Vector2D positionVirtuelleCurseur(
+            @NotNull final MouseEvent evenement) {
+        return new Vector2D(evenement.getX(), evenement.getY());
+    }
+
+    /**
+     * Récupère la position réelle du curseur sur la toile.
+     *
+     * @param evenement l'événement du curseur.
+     * @return la position réelle du curseur.
+     */
+    public Vector2D positionReelleCurseur(
+            @NotNull final MouseEvent evenement) {
+        return positionReelle(positionVirtuelleCurseur(evenement));
+    }
+
+    /**
+     * Actualise la position réelle du curseur sur la toile.
+     */
+    private void actualiserPositionCurseur(
+            @NotNull final MouseEvent evenement) {
+        positionReelleCurseur.setValue(positionReelleCurseur(evenement));
+    }
+
+    public final Vector2D getPositionReelleCurseur() {
+        return positionReelleCurseur.getValue();
+    }
+
+    public final ObjectProperty<Vector2D> positionReelleCurseurProperty() {
+        return positionReelleCurseur;
     }
 
 }

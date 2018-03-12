@@ -17,6 +17,7 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.ObjectProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Toile;
 
@@ -55,6 +56,18 @@ public final class Droite extends SegmentDroite {
      */
     public Droite(@NotNull final Point point1, @NotNull final Point point2) {
         super(point1, point2);
+    }
+
+    /**
+     * Construit une prévisualisation de droite à partir d'un point défini et de
+     * la position du curseur.
+     *
+     * @param point le point initial de la droite.
+     * @param curseur l'emplacement réel du curseur sur la toile.
+     */
+    public Droite(@NotNull final Point point,
+            @NotNull final ObjectProperty<Vector2D> curseur) {
+        super(point, curseur);
     }
 
     @Override

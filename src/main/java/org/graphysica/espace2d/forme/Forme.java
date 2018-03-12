@@ -25,6 +25,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+import org.graphysica.construction.Element;
 import org.graphysica.espace2d.Dessinable;
 import org.graphysica.espace2d.Toile;
 
@@ -34,7 +35,7 @@ import org.graphysica.espace2d.Toile;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Forme implements Dessinable {
+public abstract class Forme extends Element implements Dessinable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation

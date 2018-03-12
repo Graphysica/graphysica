@@ -107,7 +107,18 @@ public final class Point extends Forme {
         this(couleur, position);
         this.taille.setValue(new Taille(taille));
     }
-    
+
+    /**
+     * Construit une prévisualisation de point positionné à la position du
+     * curseur.
+     *
+     * @param curseur la position réelle du curseur.
+     */
+    public Point(@NotNull final ObjectProperty<Vector2D> curseur) {
+        setCouleur(COULEUR_PAR_DEFAUT);
+        position.bind(curseur);
+    }
+
     {
         proprietesActualisation.add(position);
         proprietesActualisation.add(taille);
