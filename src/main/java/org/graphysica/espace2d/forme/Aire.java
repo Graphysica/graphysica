@@ -17,10 +17,13 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
+import java.util.Stack;
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Toile;
 
 /**
@@ -37,14 +40,35 @@ public class Aire extends Forme {
             0.04, 0.4);
 
     /**
-     * La liste ordonnée des points traçant délimitant cette aire.
+     * La liste ordonnée des points délimitant cette aire.
      */
-    private final ObservableList<Point> points
-            = FXCollections.observableArrayList();
+    private final ObservableList<Point> points;
 
+    /**
+     * Construit une aire sur un ensemble défini de points.
+     *
+     * @param points l'ensemble de points traçant le polygone de l'aire.
+     */
     public Aire(@NotNull final Point... points) {
+        this.points = FXCollections.observableArrayList();
+        proprietesActualisation.add(this.points);
         this.points.addAll(points);
         setCouleur(COULEUR_PAR_DEFAUT);
+    }
+
+    /**
+     * Construit une prévisualisation d'aire définie sur un ensemble de points
+     * et la position du curseur.
+     *
+     * @param points l'ensemble des points définis de l'aire à prévisualiser.
+     * @param curseur la position réelle du curseur correspondant au prochain
+     * point de {@code points}.
+     */
+    public Aire(@NotNull final ObservableList<Point> points,
+            @NotNull final ObjectProperty<Vector2D> curseur) {
+        points.add(new Point(curseur));
+        this.points = points;
+        proprietesActualisation.add(this.points);
     }
 
     @Override

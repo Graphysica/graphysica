@@ -82,6 +82,13 @@ public class Angle extends Forme {
      */
     private final DoubleProperty opacite = new SimpleDoubleProperty(0.5);
 
+    /**
+     * Construit un angle entre deux points à partir d'un sommet.
+     *
+     * @param point1 le premier point délimitant l'angle.
+     * @param sommet le sommet, qui est à l'origine du secteur.
+     * @param point2 le deuxième point délimitant l'angle.
+     */
     public Angle(@NotNull final Point point1, @NotNull final Point sommet,
             @NotNull final Point point2) {
         setCouleur(COULEUR_PAR_DEFAUT);
@@ -91,6 +98,20 @@ public class Angle extends Forme {
         this.sommet.bind(sommet.positionProperty());
         setPoint2(point2.getPosition());
         this.point2.bind(point2.positionProperty());
+    }
+
+    /**
+     * Construit une prévisualisation d'angle à partir d'un point, d'un sommet
+     * et de la position du curseur.
+     *
+     * @param point le permier point délimitant l'angle.
+     * @param sommet le sommet, qui est à l'origine du secteur.
+     * @param curseur la position réelle du curseur, qui fait office de deuxième
+     * point délimitant l'angle.
+     */
+    public Angle(@NotNull final Point point, @NotNull final Point sommet,
+            @NotNull final ObjectProperty<Vector2D> curseur) {
+        this(point, sommet, new Point(curseur));
     }
 
     {
