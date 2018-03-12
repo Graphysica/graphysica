@@ -18,6 +18,8 @@ package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import java.awt.image.BufferedImage;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -56,6 +58,21 @@ public class Etiquette extends Forme {
      * Le texte de cette étiquette.
      */
     private final StringProperty texte = new SimpleStringProperty();
+
+    /**
+     * L'image de la formule TeX.
+     */
+    private Image imageFormule;
+
+    /**
+     * L'événement de reconstruction de l'image de la formule. L'image de la
+     * formule TeX doit être reconstruite si la couleur de l'étiquette, la
+     * taille de caractère du texte ou le texte lui-même est modifié.
+     */
+    private final InvalidationListener reconstruireImage
+            = (@NotNull final Observable observable) -> {
+                construireImage();
+            };
 
     /**
      * La taille des caractères de cette étiquette exprimée en points.
@@ -122,20 +139,32 @@ public class Etiquette extends Forme {
         proprietesActualisation.add(tailleCaractere);
         proprietesActualisation.add(positionAncrage);
         proprietesActualisation.add(positionRelative);
+        texte.addListener(reconstruireImage);
+        tailleCaractere.addListener(reconstruireImage);
+        couleurProperty().addListener(reconstruireImage);
     }
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
-        final TeXFormula formule = new TeXFormula(getTexte());
-        final Image imageFormule = SwingFXUtils.toFXImage(
-                (BufferedImage) formule.createBufferedImage(
-                        TeXConstants.STYLE_TEXT, getTailleCaractere(),
-                        couleur(), null), null);
+        if (imageFormule == null) {
+            construireImage();
+        }
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
         final Vector2D position = toile.positionVirtuelle(getPositionAncrage())
                 .add(getPositionRelative());
         contexteGraphique.drawImage(imageFormule, (int) (position.getX()),
                 (int) (position.getY()));
+    }
+
+    /**
+     * Construit l'image de la formule TeX à partir du texte.
+     */
+    private void construireImage() {
+        //TODO: ajuster TeXFormula#setDPITarget(float) à l'écran 
+        imageFormule = SwingFXUtils.toFXImage(
+                (BufferedImage) new TeXFormula(getTexte()).createBufferedImage(
+                        TeXConstants.STYLE_TEXT, getTailleCaractere(),
+                        couleur(), null), null);
     }
 
     /**
