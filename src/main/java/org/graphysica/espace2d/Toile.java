@@ -16,6 +16,7 @@
  */
 package org.graphysica.espace2d;
 
+import org.graphysica.espace2d.forme.Grille;
 import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.InvalidationListener;
