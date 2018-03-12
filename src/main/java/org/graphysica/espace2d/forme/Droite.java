@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.Toile;
 
 /**
  * Une droite bissecte l'espace en traversant deux points distincts.

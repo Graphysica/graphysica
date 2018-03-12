@@ -19,7 +19,7 @@ package org.graphysica.construction.commande;
 import com.sun.istack.internal.NotNull;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.construction.Construction;
-import org.graphysica.espace2d.Point;
+import org.graphysica.espace2d.forme.Point;
 
 /**
  * Une commande de création de point permet de créer un point sur une

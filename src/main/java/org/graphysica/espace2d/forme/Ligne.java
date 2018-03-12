@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
@@ -55,11 +55,11 @@ public abstract class Ligne extends Forme {
     public Ligne() {
         setCouleur(COULEUR_PAR_DEFAUT);
     }
-    
+
     {
         proprietesActualisation.add(epaisseur);
     }
-    
+
     /**
      * Dessine la ligne en tant que tracé continu.
      *
@@ -74,8 +74,19 @@ public abstract class Ligne extends Forme {
                 arriveeTrace.getY());
     }
 
-    protected int getEpaisseur() {
-        return epaisseur.getValue().getTaille();
+    /**
+     * Récupère un vecteur dont l'orientation est la même que celle de la ligne.
+     *
+     * @return le vecteur directeur de la ligne.
+     */
+    public abstract Vector2D getVecteurDirecteur();
+
+    public final int getEpaisseur() {
+        return epaisseur.getValue().get();
+    }
+    
+    public final void setEpaisseur(final int epaisseur) {
+        this.epaisseur.setValue(new Taille(epaisseur));
     }
 
 }

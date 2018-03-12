@@ -17,6 +17,7 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -45,6 +46,9 @@ public class ToileInteractive extends ToileRedimensionnable {
     }
 
     {
+        setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
+            setCursor(Cursor.CROSSHAIR);
+        });
         setOnScroll((@NotNull final ScrollEvent evenement) -> {
             final double defilementVertical = evenement.getDeltaY();
             final Vector2D positionCurseur = new Vector2D(evenement.getX(),
@@ -53,8 +57,12 @@ public class ToileInteractive extends ToileRedimensionnable {
         });
         setOnMousePressed((@NotNull final MouseEvent evenement) -> {
             if (evenement.isMiddleButtonDown()) {
+                setCursor(Cursor.CLOSED_HAND);
                 enregistrerPositionCurseur(evenement);
             }
+        });
+        setOnMouseReleased((@NotNull final MouseEvent evenement) -> {
+            setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseDragged((@NotNull final MouseEvent evenement) -> {
             if (evenement.isMiddleButtonDown()) {
@@ -87,8 +95,10 @@ public class ToileInteractive extends ToileRedimensionnable {
             setEchelle(new Vector2D(
                     echelle.getValue().getX() * facteurZoom,
                     echelle.getValue().getY() * facteurZoom));
-            origine.setValue(origine.getValue().subtract(
-                    translationOrigine.scalarMultiply(facteurZoom)));
+            final Vector2D nouvelleOrigine = origine.getValue().subtract(
+                    translationOrigine.scalarMultiply(facteurZoom));
+            origine.setValue(new Vector2D((int) nouvelleOrigine.getX(),
+                    (int) nouvelleOrigine.getY()));
         }
     }
 
@@ -101,7 +111,9 @@ public class ToileInteractive extends ToileRedimensionnable {
     private void deplacer(@NotNull final Vector2D positionCurseur) {
         final Vector2D deplacement = positionCurseur.subtract(
                 positionPrecendenteCurseur);
-        origine.setValue(origine.getValue().add(deplacement));
+        final Vector2D nouvelleOrigine = origine.getValue().add(deplacement);
+        origine.setValue(new Vector2D((int) nouvelleOrigine.getX(),
+                (int) nouvelleOrigine.getY()));
         positionPrecendenteCurseur = positionCurseur;
     }
 

@@ -20,6 +20,8 @@ import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 import org.graphysica.construction.commande.Commande;
+import org.graphysica.espace2d.Espace;
+import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Une construction permet d'élaborer une scène de simulation de physique.
@@ -27,7 +29,12 @@ import org.graphysica.construction.commande.Commande;
  * @author Marc-Antoine
  */
 public class Construction {
-
+    
+    /**
+     * L'espace graphique de la construction.
+     */
+    private final Espace espace = new Espace();
+    
     /**
      * Le gestionnaire des commandes de la construction.
      */
@@ -57,6 +64,9 @@ public class Construction {
      * l'élément spécifié.
      */
     public boolean ajouterElement(@NotNull final Element element) {
+        if (element instanceof Forme) {
+            espace.ajouter((Forme) element);
+        }
         return elements.add(element);
     }
 
@@ -68,7 +78,22 @@ public class Construction {
      * spécifié.
      */
     public boolean retirerElement(@NotNull final Element element) {
+        if (element instanceof Forme) {
+            espace.retirer((Forme) element);
+        }
         return elements.remove(element);
     }
+    
+    public void annuler() {
+        gestionnaireCommandes.annuler();
+    }
+    
+    public void refaire() {
+        gestionnaireCommandes.refaire();
+    }
 
+    public Espace getEspace() {
+        return espace;
+    }
+    
 }

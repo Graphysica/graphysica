@@ -47,21 +47,25 @@ public class GestionnaireCommandes {
     }
 
     /**
-     * Annule la dernière commande exécutée.
+     * Annule la dernière commande exécutée s'il y a lieu.
      */
     public void annuler() {
-        final CommandeAnnulable commande = commandes.pop();
-        commande.annuler();
-        commandesAnnulees.push(commande);
+        if (!commandes.isEmpty()) {
+            final CommandeAnnulable commande = commandes.pop();
+            commande.annuler();
+            commandesAnnulees.push(commande);
+        }
     }
 
     /**
-     * Refait la dernière commande annulée.
+     * Refait la dernière commande annulée s'il y a lieu.
      */
     public void refaire() {
-        final CommandeAnnulable commande = commandesAnnulees.pop();
-        commande.refaire();
-        commandes.push(commande);
+        if (!commandesAnnulees.isEmpty()) {
+            final CommandeAnnulable commande = commandesAnnulees.pop();
+            commande.refaire();
+            commandes.push(commande);
+        }
     }
 
 }

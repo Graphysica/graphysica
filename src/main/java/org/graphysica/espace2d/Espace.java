@@ -16,6 +16,7 @@
  */
 package org.graphysica.espace2d;
 
+import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
 import javafx.scene.layout.AnchorPane;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -45,13 +46,31 @@ public class Espace extends AnchorPane {
         lierDimensions();
         initialiser();
     }
-    
+
+    public Espace() {
+        toile = new ToileInteractive(getWidth(), getHeight());
+        lierDimensions();
+        initialiser();
+    }
+
     public void deplacer() {
         toile.setOrigine(toile.getOrigine().add(new Vector2D(1, 2)));
     }
-    
+
     public void ajouter(@NotNull final Forme forme) {
         toile.ajouter(forme);
+    }
+
+    public void ajouter(@NotNull final Forme... formes) {
+        toile.ajouter(formes);
+    }
+
+    public void retirer(@NotNull final Forme forme) {
+        toile.retirer(forme);
+    }
+
+    public void retirer(@NotNull final Forme... formes) {
+        toile.retirer(formes);
     }
 
     private void initialiser() {
@@ -69,5 +88,5 @@ public class Espace extends AnchorPane {
     public Toile getToile() {
         return toile;
     }
-    
+
 }
