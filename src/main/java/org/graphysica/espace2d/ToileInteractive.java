@@ -42,12 +42,12 @@ public class ToileInteractive extends ToileRedimensionnable {
      * bouton du milieu de la souris est enfoncé.
      */
     private Vector2D positionPrecendenteCurseur;
-    
+
     /**
-     * La position virtuelle du curseur sur cette toile interactive.
+     * La position réelle du curseur sur cette toile interactive.
      */
-    private final ObjectProperty<Vector2D> positionVirtuelleCurseur 
-           = new SimpleObjectProperty<>();
+    private final ObjectProperty<Vector2D> positionReelleCurseur
+            = new SimpleObjectProperty<>();
 
     public ToileInteractive(final double largeur, final double hauteur) {
         super(largeur, hauteur);
@@ -55,8 +55,7 @@ public class ToileInteractive extends ToileRedimensionnable {
 
     {
         setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
-            positionVirtuelleCurseur.setValue(
-                    positionVirtuelleCurseur(evenement));
+            actualiserPositionCurseur(evenement);
         });
         setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
             setCursor(Cursor.CROSSHAIR);
@@ -77,6 +76,7 @@ public class ToileInteractive extends ToileRedimensionnable {
             setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseDragged((@NotNull final MouseEvent evenement) -> {
+            actualiserPositionCurseur(evenement);
             if (evenement.isMiddleButtonDown()) {
                 final Vector2D positionCurseur = new Vector2D(evenement.getX(),
                         evenement.getY());
@@ -137,7 +137,7 @@ public class ToileInteractive extends ToileRedimensionnable {
             @NotNull final MouseEvent evenement) {
         positionPrecendenteCurseur = positionVirtuelleCurseur(evenement);
     }
-    
+
     /**
      * Récupère la position virtuelle du curseur sur la toile.
      *
@@ -148,13 +148,32 @@ public class ToileInteractive extends ToileRedimensionnable {
             @NotNull final MouseEvent evenement) {
         return new Vector2D(evenement.getX(), evenement.getY());
     }
-    
-    public final Vector2D getPositionVirtuelleCurseur() {
-        return positionVirtuelleCurseur.getValue();
+
+    /**
+     * Récupère la position réelle du curseur sur la toile.
+     *
+     * @param evenement l'événement du curseur.
+     * @return la position réelle du curseur.
+     */
+    public Vector2D positionReelleCurseur(
+            @NotNull final MouseEvent evenement) {
+        return positionReelle(positionVirtuelleCurseur(evenement));
     }
-    
-    public final ObjectProperty<Vector2D> positionVirtuelleCurseurProperty() {
-        return positionVirtuelleCurseur;
+
+    /**
+     * Actualise la position réelle du curseur sur la toile.
+     */
+    private void actualiserPositionCurseur(
+            @NotNull final MouseEvent evenement) {
+        positionReelleCurseur.setValue(positionReelleCurseur(evenement));
     }
-    
+
+    public final Vector2D getPositionReelleCurseur() {
+        return positionReelleCurseur.getValue();
+    }
+
+    public final ObjectProperty<Vector2D> positionReelleCurseurProperty() {
+        return positionReelleCurseur;
+    }
+
 }
