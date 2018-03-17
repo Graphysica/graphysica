@@ -86,10 +86,11 @@ public final class Point extends Forme {
      * Construit un point de taille définie par défaut à la position et de
      * couleur spécifiées.
      *
-     * @param couleur la couleur du point.
      * @param position la position réelle du point.
+     * @param couleur la couleur du point.
      */
-    public Point(@NotNull final Color couleur, @NotNull Vector2D position) {
+    public Point(@NotNull final Vector2D position, 
+            @NotNull final Color couleur) {
         this(position);
         setCouleur(couleur);
     }
@@ -98,13 +99,13 @@ public final class Point extends Forme {
      * Construit un point dont la taille, la couleur et la position sont
      * définies.
      *
-     * @param taille la taille du point.
-     * @param couleur la couleur du point.
      * @param position la position réelle du point.
+     * @param couleur la couleur du point.
+     * @param taille la taille du point.
      */
-    public Point(final int taille, @NotNull final Color couleur,
-            @NotNull Vector2D position) {
-        this(couleur, position);
+    public Point(@NotNull final Vector2D position, 
+            @NotNull final Color couleur, final int taille) {
+        this(position, couleur);
         this.taille.setValue(taille);
     }
 
@@ -173,10 +174,6 @@ public final class Point extends Forme {
 
     public final void setPosition(@NotNull final Vector2D position) {
         this.position.setValue(position);
-    }
-
-    public final void setPosition(final double abscisse, final double ordonnee) {
-        position.setValue(new Vector2D(abscisse, ordonnee));
     }
 
     public double getAbscisse() {
