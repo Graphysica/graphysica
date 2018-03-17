@@ -136,9 +136,9 @@ public final class Taille extends SimpleIntegerProperty {
     @Override
     public final void set(final int taille) {
         if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
-            super.setValue(TAILLE_PAR_DEFAUT);
+            super.set(TAILLE_PAR_DEFAUT);
         } else {
-            super.setValue(taille);
+            super.set(taille);
         }
     }
 
