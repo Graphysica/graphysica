@@ -46,6 +46,11 @@ public class Toile extends Canvas implements Actualisable {
             = FXCollections.observableArrayList();
 
     /**
+     * L'ordre de rendu des formes sur la toile.
+     */
+    private final OrdreRendu ordreRendu = new OrdreRendu();
+
+    /**
      * L'origine virtuelle de l'espace exprimée en pixels selon l'origine de
      * l'écran. Par défaut, l'origine de l'espace est au centre du panneau.
      */
@@ -72,14 +77,16 @@ public class Toile extends Canvas implements Actualisable {
      * La grille secondaire de la toile. Représente les graduations plus
      * précises de l'espace.
      */
-    private final Grille grilleSecondaire = new Grille(new Vector2D(25, 25),
+    private final Grille grilleSecondaire = new Grille(
+            new Vector2D(getEchelle().getX() / 4, getEchelle().getY() / 4),
             Color.gray(0.9));
 
     /**
      * La grille principale de la toile. Représente les graduations plus
      * grossières de l'espace.
      */
-    private final Grille grillePrincipale = new Grille(new Vector2D(100, 100),
+    private final Grille grillePrincipale = new Grille(
+            new Vector2D(getEchelle().getX(), getEchelle().getY()),
             Color.gray(0.5));
 
     public Toile(final double largeur, final double hauteur) {
@@ -237,19 +244,28 @@ public class Toile extends Canvas implements Actualisable {
     }
 
     /**
-     * Actualise l'affichage de cette toile.
+     * Actualise l'affichage de cette toile en redessinant chacune de ses
+     * formes. Si la classe d'une forme ne fait pas partie des définitions de
+     * l'ordre de rendu, elle n'est pas dessinée.
+     *
+     * @see Toile#ordreRendu
+     * @see OrdreRendu
      */
     @Override
     public void actualiser() {
         effacerAffichage();
-        //TODO: Définir un ordre prioritaire de dessin (par exemple, les droites avant les points
-        formes.forEach((forme) -> {
-            if (forme.isAffichee()) {
-                forme.dessiner(this);
-            }
+        ordreRendu.stream().forEach((classe) -> {
+            formes.forEach((forme) -> {
+                if (forme.isAffichee() && classe.isInstance(forme)) {
+                    forme.dessiner(this);
+                }
+            });
         });
     }
 
+    /**
+     * Réinitialise l'image rendue par cette toile.
+     */
     private void effacerAffichage() {
         getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight());
     }
