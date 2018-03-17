@@ -16,6 +16,7 @@
  */
 package org.graphysica.espace2d;
 
+import org.graphysica.espace2d.forme.OrdreRendu;
 import org.graphysica.espace2d.forme.Grille;
 import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
@@ -26,11 +27,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.DroiteHorizontale;
 import org.graphysica.espace2d.forme.DroiteVerticale;
+import org.slf4j.LoggerFactory;
 
 /**
  * Une toile permettant d'afficher un ensemble de formes.
@@ -38,6 +39,12 @@ import org.graphysica.espace2d.forme.DroiteVerticale;
  * @author Marc-Antoine Ouimet
  */
 public class Toile extends Canvas implements Actualisable {
+    
+    /**
+     * L'utilitaire d'enregistrement de trace d'exécution.
+     */
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(
+            Toile.class);
 
     /**
      * La liste observable des formes dessinées sur la toile.
@@ -254,13 +261,23 @@ public class Toile extends Canvas implements Actualisable {
     @Override
     public void actualiser() {
         effacerAffichage();
-        ordreRendu.stream().forEach((classe) -> {
-            formes.forEach((forme) -> {
-                if (forme.isAffichee() && classe.isInstance(forme)) {
-                    forme.dessiner(this);
+        int formesDessinees = 0;
+        for (final Class classe : ordreRendu) {
+            for (final Forme forme : formes) {
+                if (classe.isInstance(forme)) {
+                    formesDessinees++;
+                    if (forme.isAffichee()) {
+                        forme.dessiner(this);
+                    }
                 }
-            });
-        });
+            }
+        }
+        if (formesDessinees != formes.size()) {
+            LOGGER.warn(String.format("Des classes de formes ne sont pas "
+                    + "comprises dans l'ordre de rendu de la toile. "
+                    + "%d formes sur %d ont été dessinées.", formesDessinees, 
+                    formes.size()));
+        }
     }
 
     /**
