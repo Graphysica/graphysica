@@ -30,8 +30,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Axe;
-import org.graphysica.espace2d.forme.DroiteHorizontale;
-import org.graphysica.espace2d.forme.DroiteVerticale;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -40,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Marc-Antoine Ouimet
  */
 public class Toile extends Canvas implements Actualisable {
-    
+
     /**
      * L'utilitaire d'enregistrement de trace d'exécution.
      */
@@ -108,8 +106,8 @@ public class Toile extends Canvas implements Actualisable {
         // Traiter la redimension de l'espace
         echelle.addListener(evenementActualisation);
         ajouter(grilleSecondaire, grillePrincipale);
-        ajouter(new Axe(Axe.Sens.HORIZONTAL, grillePrincipale.getEspacement()), 
-                new Axe(Axe.Sens.VERTICAL, grillePrincipale.getEspacement()));
+        //ajouter(new Axe(Axe.Sens.HORIZONTAL, grillePrincipale.getEspacement()),
+        //new Axe(Axe.Sens.VERTICAL, grillePrincipale.getEspacement()));
     }
 
     /**
@@ -275,7 +273,7 @@ public class Toile extends Canvas implements Actualisable {
         if (formesAffichables != formes.size()) {
             LOGGER.warn(String.format("Des classes de formes ne sont pas "
                     + "comprises dans l'ordre de rendu de la toile. "
-                    + "%d formes sur %d sont affichables.", formesAffichables, 
+                    + "%d formes sur %d sont affichables.", formesAffichables,
                     formes.size()));
         }
     }
@@ -337,6 +335,66 @@ public class Toile extends Canvas implements Actualisable {
         for (final Forme forme : formes) {
             retirer(forme);
         }
+    }
+
+    /**
+     * Calcule la position virtuelle des graduations horizontales de la toile
+     * qui correspond à des valeurs d'ordonnées de l'espace.
+     *
+     * @param espacementMinimal l'espacement virtuel minimal entre chaque
+     * graduation.
+     * @return l'ensemble des valeurs d'abscisse des graduations horizontales de
+     * la toile.
+     */
+    public double[] graduationsHorizontales(final double espacementMinimal) {
+        final int puissance = 5;
+        final double espacementMinimalReel = espacementMinimal / getEchelle()
+                .getY();
+        final int exposant = (int) (Math.log(espacementMinimalReel)
+                / Math.log(puissance));
+        final double espacementReel = Math.pow(puissance, exposant);
+        final double espacementVirtuel = espacementReel * getEchelle().getY();
+        double ordonneeAncrage = getOrigine().getY() % espacementVirtuel;
+        ordonneeAncrage = ordonneeAncrage < 0
+                ? ordonneeAncrage + espacementVirtuel : ordonneeAncrage;
+        final double[] graduationsHorizontales = new double[(int) (getHeight()
+                / espacementVirtuel)];
+        double y = ordonneeAncrage;
+        for (int i = 0; i < graduationsHorizontales.length; i++) {
+            graduationsHorizontales[i] = y;
+            y += espacementVirtuel;
+        }
+        return graduationsHorizontales;
+    }
+
+    /**
+     * Calcule la position virtuelle des graduations verticales de la toile qui
+     * correspondent à des valeurs d'abscisses de l'espace.
+     *
+     * @param espacementMinimal l'espacement virtuel minimal entre chaque
+     * graduation.
+     * @return l'ensemble des valeurs d'ordonnée des graduations verticales de
+     * la toile.
+     */
+    public double[] graduationsVerticales(final double espacementMinimal) {
+        final int puissance = 5;
+        final double espacementMinimalReel = espacementMinimal / getEchelle()
+                .getX();
+        final int exposant = (int) (Math.log(espacementMinimalReel)
+                / Math.log(puissance));
+        final double espacementReel = Math.pow(puissance, exposant);
+        final double espacementVirtuel = espacementReel * getEchelle().getX();
+        double abscisseAncrage = getOrigine().getX() % espacementVirtuel;
+        abscisseAncrage = abscisseAncrage < 0
+                ? abscisseAncrage + espacementVirtuel : abscisseAncrage;
+        final double[] graduationsVerticales = new double[(int) (getWidth()
+                / espacementVirtuel)];
+        double x = abscisseAncrage;
+        for (int i = 0; i < graduationsVerticales.length; i++) {
+            graduationsVerticales[i] = x;
+            x += espacementVirtuel;
+        }
+        return graduationsVerticales;
     }
 
     public final ObjectProperty<Vector2D> echelleProperty() {

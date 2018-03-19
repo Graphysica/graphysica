@@ -64,38 +64,18 @@ public final class Grille extends Forme {
 
     @Override
     public void dessiner(@NotNull final Toile toile) {
-        final Vector2D origine = toile.getOrigine();
-        final Vector2D echelle = toile.getEchelle();
-        final Vector2D espacementMinimal = getEspacement();
-        final Vector2D espacementMinimalReel = new Vector2D(
-                espacementMinimal.getX() / echelle.getX(),
-                espacementMinimal.getY() / echelle.getY());
-        final Vector2D exposant = new Vector2D(
-                (int) (Math.log(espacementMinimalReel.getX()) / Math.log(2)),
-                (int) (Math.log(espacementMinimalReel.getY()) / Math.log(2)));
-        final Vector2D espacementReel = new Vector2D(
-                Math.pow(2, exposant.getX()), Math.pow(2, exposant.getY()));
-        // L'espacement virtuel entre les graduations de la grille
-        final Vector2D espacementVirtuel = new Vector2D(
-                espacementReel.getX() * echelle.getX(),
-                espacementReel.getY() * echelle.getY());
-        // La position d'ancrage de la grille dans le coin supérieur gauche
-        final Vector2D positionAncrageGrille = new Vector2D(
-                origine.getX() % espacementVirtuel.getX(),
-                origine.getY() % espacementVirtuel.getY());
-        // Tracer la grille
+        final double[] graduationsHorizontales = toile.graduationsHorizontales(
+                getEspacement().getY());
+        final double[] graduationsVerticales = toile.graduationsVerticales(
+                getEspacement().getX());
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
         contexteGraphique.setStroke(getCouleur());
         contexteGraphique.setLineWidth(epaisseur.getValue());
-        double x = positionAncrageGrille.getX();
-        while (x < toile.getWidth()) {
-            contexteGraphique.strokeLine(x, 0, x, toile.getHeight());
-            x += espacementVirtuel.getX();
-        }
-        double y = positionAncrageGrille.getY();
-        while (y < toile.getHeight()) {
+        for (final double y : graduationsHorizontales) {
             contexteGraphique.strokeLine(0, y, toile.getWidth(), y);
-            y += espacementVirtuel.getY();
+        }
+        for (final double x : graduationsVerticales) {
+            contexteGraphique.strokeLine(x, 0, x, toile.getHeight());
         }
     }
 
