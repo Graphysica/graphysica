@@ -29,6 +29,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.Axe;
 import org.graphysica.espace2d.forme.DroiteHorizontale;
 import org.graphysica.espace2d.forme.DroiteVerticale;
 import org.slf4j.LoggerFactory;
@@ -107,9 +108,8 @@ public class Toile extends Canvas implements Actualisable {
         // Traiter la redimension de l'espace
         echelle.addListener(evenementActualisation);
         ajouter(grilleSecondaire, grillePrincipale);
-        // TODO: Tracer des axes gradués
-        formes.add(new DroiteHorizontale(0, 2, Color.BLACK));
-        formes.add(new DroiteVerticale(0, 2, Color.BLACK));
+        ajouter(new Axe(Axe.Sens.HORIZONTAL, grillePrincipale.getEspacement()), 
+                new Axe(Axe.Sens.VERTICAL, grillePrincipale.getEspacement()));
     }
 
     /**

@@ -133,6 +133,35 @@ public class Etiquette extends Forme {
         this(texte, taille, positionAncrage);
         setCouleur(couleur);
     }
+    
+    public Etiquette(@NotNull final String texte, 
+            @NotNull final Vector2D positionAncrage) {
+        this(texte);
+        setPositionAncrage(positionAncrage);
+    }
+    
+    public Etiquette(@NotNull final String texte,
+            @NotNull final Vector2D positionAncrage, 
+            @NotNull final Vector2D positionRelative) {
+        this(texte, positionAncrage);
+        setPositionRelative(positionRelative);
+    }
+    
+    public Etiquette(@NotNull final String texte,
+            @NotNull final Vector2D positionAncrage, 
+            @NotNull final Vector2D positionRelative,
+            final int taille) {
+        this(texte, positionAncrage, positionRelative);
+        setTailleCaractere(taille);
+    }
+    
+    public Etiquette(@NotNull final String texte,
+            @NotNull final Vector2D positionAncrage, 
+            @NotNull final Vector2D positionRelative,
+            final int taille, @NotNull final Color couleur) {
+        this(texte, positionAncrage, positionRelative, taille);
+        setCouleur(couleur);
+    }
 
     {
         proprietesActualisation.add(texte);
@@ -217,6 +246,10 @@ public class Etiquette extends Forme {
 
     private Vector2D getPositionAncrage() {
         return positionAncrage.getValue();
+    }
+    
+    private void setPositionAncrage(@NotNull final Vector2D positionAncrage) {
+        this.positionAncrage.setValue(positionAncrage);
     }
 
 }
