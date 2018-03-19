@@ -235,7 +235,7 @@ public class Etiquette extends Forme {
         return tailleCaractere;
     }
 
-    private Vector2D getPositionRelative() {
+    public final Vector2D getPositionRelative() {
         return positionRelative.getValue();
     }
 
@@ -244,12 +244,20 @@ public class Etiquette extends Forme {
         this.positionRelative.setValue(positionRelative);
     }
 
-    private Vector2D getPositionAncrage() {
+    public final Vector2D getPositionAncrage() {
         return positionAncrage.getValue();
     }
     
-    private void setPositionAncrage(@NotNull final Vector2D positionAncrage) {
+    public final void setPositionAncrage(@NotNull final Vector2D positionAncrage) {
         this.positionAncrage.setValue(positionAncrage);
+    }
+    
+    public final double getLargeur() {
+        return imageFormule.getWidth();
+    }
+    
+    public final double getHauteur() {
+        return imageFormule.getHeight();
     }
 
 }

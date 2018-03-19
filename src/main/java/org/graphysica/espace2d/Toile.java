@@ -46,6 +46,11 @@ public class Toile extends Canvas implements Actualisable {
             Toile.class);
 
     /**
+     * La puissance de graduation de la toile.
+     */
+    public static final int PUISSANCE = 5;
+
+    /**
      * La liste observable des formes dessinées sur la toile.
      */
     private final ObservableList<Forme> formes
@@ -106,8 +111,9 @@ public class Toile extends Canvas implements Actualisable {
         // Traiter la redimension de l'espace
         echelle.addListener(evenementActualisation);
         ajouter(grilleSecondaire, grillePrincipale);
-        //ajouter(new Axe(Axe.Sens.HORIZONTAL, grillePrincipale.getEspacement()),
-        //new Axe(Axe.Sens.VERTICAL, grillePrincipale.getEspacement()));
+        ajouter(
+                new Axe(Axe.Sens.HORIZONTAL, grillePrincipale.getEspacement().getY()),
+                new Axe(Axe.Sens.VERTICAL, grillePrincipale.getEspacement().getX()));
     }
 
     /**
@@ -247,7 +253,7 @@ public class Toile extends Canvas implements Actualisable {
         return new Vector2D(abscisseReelle(positionVirtuelle.getX()),
                 ordonneeReelle(positionVirtuelle.getY()));
     }
-
+    
     /**
      * Actualise l'affichage de cette toile en redessinant chacune de ses
      * formes. Si la classe d'une forme ne fait pas partie des définitions de
@@ -347,18 +353,17 @@ public class Toile extends Canvas implements Actualisable {
      * la toile.
      */
     public double[] graduationsHorizontales(final double espacementMinimal) {
-        final int puissance = 5;
         final double espacementMinimalReel = espacementMinimal / getEchelle()
                 .getY();
         final int exposant = (int) (Math.log(espacementMinimalReel)
-                / Math.log(puissance));
-        final double espacementReel = Math.pow(puissance, exposant);
+                / Math.log(PUISSANCE));
+        final double espacementReel = Math.pow(PUISSANCE, exposant);
         final double espacementVirtuel = espacementReel * getEchelle().getY();
         double ordonneeAncrage = getOrigine().getY() % espacementVirtuel;
-        ordonneeAncrage = ordonneeAncrage < 0
-                ? ordonneeAncrage + espacementVirtuel : ordonneeAncrage;
+        ordonneeAncrage = ordonneeAncrage > 0
+                ? ordonneeAncrage - espacementVirtuel : ordonneeAncrage;
         final double[] graduationsHorizontales = new double[(int) (getHeight()
-                / espacementVirtuel)];
+                / espacementVirtuel) + 2];
         double y = ordonneeAncrage;
         for (int i = 0; i < graduationsHorizontales.length; i++) {
             graduationsHorizontales[i] = y;
@@ -377,18 +382,17 @@ public class Toile extends Canvas implements Actualisable {
      * la toile.
      */
     public double[] graduationsVerticales(final double espacementMinimal) {
-        final int puissance = 5;
         final double espacementMinimalReel = espacementMinimal / getEchelle()
                 .getX();
         final int exposant = (int) (Math.log(espacementMinimalReel)
-                / Math.log(puissance));
-        final double espacementReel = Math.pow(puissance, exposant);
+                / Math.log(PUISSANCE));
+        final double espacementReel = Math.pow(PUISSANCE, exposant);
         final double espacementVirtuel = espacementReel * getEchelle().getX();
         double abscisseAncrage = getOrigine().getX() % espacementVirtuel;
-        abscisseAncrage = abscisseAncrage < 0
-                ? abscisseAncrage + espacementVirtuel : abscisseAncrage;
+        abscisseAncrage = abscisseAncrage > 0
+                ? abscisseAncrage - espacementVirtuel : abscisseAncrage;
         final double[] graduationsVerticales = new double[(int) (getWidth()
-                / espacementVirtuel)];
+                / espacementVirtuel) + 2];
         double x = abscisseAncrage;
         for (int i = 0; i < graduationsVerticales.length; i++) {
             graduationsVerticales[i] = x;

@@ -61,6 +61,14 @@ public class Fleche extends SegmentDroite {
         super.dessiner(toile);
         tete.dessiner(toile);
     }
+    
+    public void setOrigine(@NotNull final Vector2D origine) {
+        this.point1.setValue(origine);
+    }
+    
+    public void setArrivee(@NotNull final Vector2D arrivee) {
+        this.point2.setValue(arrivee);
+    }
 
     private Vector2D getOrigine() {
         return getPoint1();
