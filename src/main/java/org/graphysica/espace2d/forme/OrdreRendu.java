@@ -22,10 +22,11 @@ import java.util.LinkedHashSet;
 /**
  * Un ordre de rendu est un ensemble ordonné des classes de forme à dessiner sur
  * une toile. L'ordre de rendu ne devrait comprendre que des classes qui sont
- * des enfants directs de la classe forme.
+ * des enfants directs de la classe Forme.
  *
  * @author Marc-Antoine Ouimet
  */
+@SuppressWarnings("unchecked")
 public class OrdreRendu extends LinkedHashSet<Class> {
 
     {

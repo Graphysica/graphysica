@@ -104,7 +104,6 @@ public class SegmentDroite extends Ligne {
         if (!isIndefinie()) {
             origineTrace = toile.positionVirtuelle(getPoint1());
             arriveeTrace = toile.positionVirtuelle(getPoint2());
-            //TODO: Implémenter le dessin en pointillé
             dessinerContinue(toile.getGraphicsContext2D());
         }
     }

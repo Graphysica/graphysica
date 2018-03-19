@@ -17,7 +17,6 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.GraphicsContext;
@@ -44,7 +43,7 @@ public final class Grille extends Forme {
     /**
      * L'épaisseur du tracé de la grille.
      */
-    private final IntegerProperty epaisseur = Taille.de("grille");
+    private final Taille epaisseur = Taille.de("grille");
 
     /**
      * Construit une grille dont l'espacement et la couleur sont définis.

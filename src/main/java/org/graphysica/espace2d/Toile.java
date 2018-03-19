@@ -261,21 +261,21 @@ public class Toile extends Canvas implements Actualisable {
     @Override
     public void actualiser() {
         effacerAffichage();
-        int formesDessinees = 0;
+        int formesAffichables = 0;
         for (final Class classe : ordreRendu) {
             for (final Forme forme : formes) {
                 if (classe.isInstance(forme)) {
-                    formesDessinees++;
+                    formesAffichables++;
                     if (forme.isAffichee()) {
                         forme.dessiner(this);
                     }
                 }
             }
         }
-        if (formesDessinees != formes.size()) {
+        if (formesAffichables != formes.size()) {
             LOGGER.warn(String.format("Des classes de formes ne sont pas "
                     + "comprises dans l'ordre de rendu de la toile. "
-                    + "%d formes sur %d ont été dessinées.", formesDessinees, 
+                    + "%d formes sur %d sont affichables.", formesAffichables, 
                     formes.size()));
         }
     }

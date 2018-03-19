@@ -61,7 +61,7 @@ public final class Point extends Forme {
     /**
      * La taille du point.
      */
-    private final IntegerProperty taille = Taille.de("point");
+    private final Taille taille = Taille.de("point");
 
     /**
      * Construit un point de couleur, de taille et de position définies par
@@ -192,7 +192,7 @@ public final class Point extends Forme {
         this.taille.setValue(taille);
     }
 
-    public IntegerProperty tailleProperty() {
+    public Taille tailleProperty() {
         return taille;
     }
 

@@ -23,7 +23,8 @@ import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
- * Une ligne a une épaisseur et une couleur par défaut.
+ * Une ligne a une épaisseur et une couleur par défaut pour relier deux points
+ * dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -82,7 +83,7 @@ public abstract class Ligne extends Forme {
     public final int getEpaisseur() {
         return epaisseur.getValue();
     }
-    
+
     public final void setEpaisseur(final int epaisseur) {
         this.epaisseur.setValue(epaisseur);
     }
