@@ -25,7 +25,7 @@ import javafx.scene.control.Tab;
 /**
  * FXML Controller class
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public class InformationController implements Initializable {
 

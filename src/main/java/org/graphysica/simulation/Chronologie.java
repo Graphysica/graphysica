@@ -18,7 +18,7 @@ package org.graphysica.simulation;
 
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public class Chronologie {
     //TODO la chronologie (qu'est-ce-qu'on fait ici)

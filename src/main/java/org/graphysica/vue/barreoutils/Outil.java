@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public class Outil {
 
