@@ -66,7 +66,7 @@ public abstract class Axe extends Forme {
     /**
      * L'énumération des sens possibles d'un axe.
      */
-    public enum Sens {
+    public static enum Sens {
         VERTICAL,
         HORIZONTAL
     }
