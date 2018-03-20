@@ -16,8 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
-import org.graphysica.espace2d.Point;
-import org.graphysica.espace2d.SegmentDroite;
+import org.graphysica.espace2d.forme.Point;
+import org.graphysica.espace2d.forme.SegmentDroite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

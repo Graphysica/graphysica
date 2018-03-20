@@ -27,7 +27,7 @@ import org.graphysica.espace2d.Toile;
 /**
  * Un axe horizontal permet de représenter les valeurs d'abscisse de l'espace.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public class AxeHorizontal extends Axe {
 

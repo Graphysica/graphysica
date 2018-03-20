@@ -39,7 +39,7 @@ import org.scilab.forge.jlatexmath.TeXFormula;
  * Une étiquette permet d'afficher du texte en format TeX à une position
  * relative d'une position d'ancrage.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public class Etiquette extends Forme {
 

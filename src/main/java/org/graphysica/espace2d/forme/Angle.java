@@ -32,7 +32,7 @@ import org.graphysica.espace2d.Toile;
 /**
  * Un angle décrit l'espace angulaire entre deux points à partir d'un sommet.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 @SuppressWarnings("unchecked")
 public class Angle extends Forme {

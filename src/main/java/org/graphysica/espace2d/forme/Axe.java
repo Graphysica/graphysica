@@ -31,7 +31,7 @@ import org.graphysica.espace2d.Toile;
  * Un axe permet de graduer l'espace avec des étiquettes et un sens de
  * propagation.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public abstract class Axe extends Forme {
 

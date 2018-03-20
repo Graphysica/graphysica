@@ -27,7 +27,7 @@ import org.graphysica.espace2d.Toile;
 /**
  * Un axe vertical permet de représenter les valeurs d'ordonnée de l'espace.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public class AxeVertical extends Axe {
 
