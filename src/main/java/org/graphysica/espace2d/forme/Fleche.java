@@ -27,7 +27,7 @@ import org.graphysica.espace2d.Toile;
  * la flèche est représentée par un triangle dont le sommet correspond à
  * l'arrivée de la flèche.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public class Fleche extends SegmentDroite {
 

@@ -28,7 +28,7 @@ import org.graphysica.espace2d.Toile;
 /**
  * Une aire représente un polygone formé d'une séquence de points dans l'espace.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public class Aire extends Forme {
 

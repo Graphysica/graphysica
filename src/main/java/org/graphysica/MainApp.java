@@ -16,8 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
-import org.graphysica.espace2d.Point;
-import org.graphysica.espace2d.SegmentDroite;
+import org.graphysica.espace2d.forme.Point;
+import org.graphysica.espace2d.forme.SegmentDroite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public class MainApp extends Application {
     public void initialiserPanneau() throws IOException {
         panneauPrincipal.setPrefSize(900, 700);
         
-        espace = new Espace(869,517);
+        espace = new Espace();
         menuBar = FXMLLoader.load(getClass().getResource("/fxml/Menu.fxml"));
         vertical = new VBox();
         horizontal = new HBox();

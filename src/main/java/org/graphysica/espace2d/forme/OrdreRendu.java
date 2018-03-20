@@ -40,8 +40,7 @@ public class OrdreRendu extends LinkedHashSet<Class> {
     }
 
     @Override
-    public boolean add(@NotNull final Class classe)
-            throws IllegalArgumentException {
+    public boolean add(@NotNull final Class classe) {
         if (classe.isAssignableFrom(Forme.class)) {
             throw new IllegalArgumentException(
                     "Le type de classe spécifié n'est pas une forme.");
