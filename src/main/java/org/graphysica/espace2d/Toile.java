@@ -111,9 +111,10 @@ public class Toile extends Canvas implements Actualisable {
         // Traiter la redimension de l'espace
         echelle.addListener(evenementActualisation);
         ajouter(grilleSecondaire, grillePrincipale);
-        ajouter(
-                new Axe(Axe.Sens.HORIZONTAL, grillePrincipale.getEspacement().getY()),
-                new Axe(Axe.Sens.VERTICAL, grillePrincipale.getEspacement().getX()));
+        ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL,
+                grillePrincipale.getEspacement().getY()),
+                Axe.nouvelAxe(Axe.Sens.VERTICAL,
+                        grillePrincipale.getEspacement().getX()));
     }
 
     /**
@@ -253,7 +254,7 @@ public class Toile extends Canvas implements Actualisable {
         return new Vector2D(abscisseReelle(positionVirtuelle.getX()),
                 ordonneeReelle(positionVirtuelle.getY()));
     }
-    
+
     /**
      * Actualise l'affichage de cette toile en redessinant chacune de ses
      * formes. Si la classe d'une forme ne fait pas partie des définitions de
