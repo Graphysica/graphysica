@@ -289,7 +289,8 @@ public class Toile extends Canvas implements Actualisable {
      * Réinitialise l'image rendue par cette toile.
      */
     private void effacerAffichage() {
-        getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight());
+        getGraphicsContext2D().setFill(Color.WHITE);
+        getGraphicsContext2D().fillRect(0, 0, getWidth(), getHeight());
     }
 
     /**
