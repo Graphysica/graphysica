@@ -62,6 +62,11 @@ public final class Point extends Forme {
      * La taille du point.
      */
     private final Taille taille = Taille.de("point");
+    
+    /**
+     * Le seuil de distance de sélection des points exprimé en pixels.
+     */
+    private static final double DISTANCE_SELECTION = 7;
 
     /**
      * Construit un point de couleur, de taille et de position définies par
@@ -154,6 +159,20 @@ public final class Point extends Forme {
                 2 * getTaille(),
                 2 * getTaille()
         );
+    }
+
+    @Override
+    public boolean isSelectionne(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        return distance(curseur, repere) <= DISTANCE_SELECTION;
+    }
+
+    @Override
+    public double distance(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        final Vector2D positionVirtuelle = repere.positionVirtuelle(
+                getPosition());
+        return positionVirtuelle.distance(curseur);
     }
 
     /**

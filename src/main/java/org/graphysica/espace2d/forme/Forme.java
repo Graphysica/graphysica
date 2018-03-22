@@ -35,7 +35,8 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Forme extends Element implements Dessinable {
+public abstract class Forme extends Element implements Dessinable, 
+        Selectionnable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation
