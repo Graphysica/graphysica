@@ -21,7 +21,7 @@ package org.graphysica.espace2d;
  *
  * @author Marc-Antoine Ouimet
  */
-public interface Actualisable {
+interface Actualisable {
 
     /**
      * Actualise l'objet.

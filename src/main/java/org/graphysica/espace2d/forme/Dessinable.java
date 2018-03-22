@@ -26,7 +26,7 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
-public interface Dessinable {
+interface Dessinable {
 
     /**
      * Dessine l'objet dans un contexte graphique d'espace spécifié.
