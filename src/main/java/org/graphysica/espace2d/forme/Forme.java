@@ -27,7 +27,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import org.graphysica.construction.Element;
-import org.graphysica.espace2d.Dessinable;
 import org.graphysica.espace2d.Repere;
 
 /**
