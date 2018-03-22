@@ -14,18 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
-
 /**
- * Les classes implémentant cette interface peuvent être actualisées.
- *
- * @author Marc-Antoine Ouimet
+ * Classes de formes aux coordonnées réelles pouvant être dessinées sur une toile avec un repère.
  */
-public interface Actualisable {
-
-    /**
-     * Actualise l'objet.
-     */
-    public void actualiser();
-
-}
+package org.graphysica.espace2d.forme;

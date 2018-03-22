@@ -22,20 +22,27 @@ import javafx.beans.Observable;
 import javafx.scene.canvas.Canvas;
 
 /**
- * Une toile redimensionnable est actualisée lorsqu'elle est redimensionnée.
+ * Une toile redimensionnable est actualisée lorsqu'elle est redimensionnée. Il
+ * faut lier les dimensions de la toile aux dimensions du panneau parent.
+ * <pre>
+ *      ToileRedimensionnable toile = ...;
+ *      AnchorPane panneau = new AnchorPane(toile);
+ *      toile.widthProperty().bind(panneau.widthProperty());
+ *      toile.heightProperty().bind(panneau.heightProperty());
+ * </pre>
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class ToileRedimensionnable extends Canvas 
+public abstract class ToileRedimensionnable extends Canvas
         implements Actualisable {
-    
+
     /**
      * L'événement d'actualisation de la toile redimmensionable.
      */
-    protected final InvalidationListener evenementActualisation 
+    protected final InvalidationListener evenementActualisation
             = (@NotNull final Observable observable) -> {
-        actualiser();
-    };
+                actualiser();
+            };
 
     /**
      * Construit une toile redimensionnable aux dimensions définies.
@@ -46,7 +53,7 @@ public abstract class ToileRedimensionnable extends Canvas
     public ToileRedimensionnable(final double largeur, final double hauteur) {
         super(hauteur, hauteur);
     }
-    
+
     {
         //Traiter la redimension de la toile
         widthProperty().addListener(evenementActualisation);

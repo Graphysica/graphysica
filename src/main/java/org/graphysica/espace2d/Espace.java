@@ -28,33 +28,33 @@ import org.graphysica.espace2d.forme.Axe;
 import org.slf4j.LoggerFactory;
 
 /**
- * Une toile permettant d'afficher un ensemble de formes.
+ * Un espace permet d'afficher un ensemble de formes dans un repère.
  *
  * @author Marc-Antoine Ouimet
  */
 public class Espace extends ToileRedimensionnable implements Actualisable {
 
     /**
-     * L'utilitaire d'enregistrement de trace d'exécution.
+     * L'utilitaire d'enregistrement de traces d'exécution.
      */
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(
             Espace.class);
 
     /**
-     * La liste observable des formes dessinées sur la toile.
+     * La liste observable des formes dessinées dans l'espace.
      */
     private final ObservableList<Forme> formes
             = FXCollections.observableArrayList();
 
     /**
-     * L'ordre de rendu des formes sur la toile.
+     * L'ordre de rendu des formes dams l'espace.
      */
     private final OrdreRendu ordreRendu = new OrdreRendu();
 
     /**
      * Le repère de l'espace.
      */
-    protected Repere repere = new Repere();
+    protected Repere repere;
 
     /**
      * La grille secondaire de la toile. Représente les graduations plus
@@ -74,6 +74,12 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
                     repere.getEchelle().getY()),
             Color.gray(0.5));
 
+    /**
+     * Construit un espace dont les dimensions virtuelles sont définies.
+     *
+     * @param largeur la largeur de l'espace exprimée en pixels.
+     * @param hauteur la hauteur de l'espace exprimée en pixels.
+     */
     public Espace(final double largeur, final double hauteur) {
         super(largeur, hauteur);
         setRepere(new Repere(largeur, hauteur));
@@ -81,9 +87,8 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
 
     {
         formes.addListener(evenementActualisation);
-        repere.origineVirtuelleProperty().addListener(evenementActualisation);
-        repere.echelleProperty().addListener(evenementActualisation);
-        ajouter(grilleSecondaire, grillePrincipale);
+        ajouter(grilleSecondaire);
+        ajouter(grillePrincipale);
         ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL,
                 grillePrincipale.getEspacement().getY()));
         ajouter(Axe.nouvelAxe(Axe.Sens.VERTICAL,

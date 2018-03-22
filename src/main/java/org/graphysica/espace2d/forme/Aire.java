@@ -28,6 +28,8 @@ import org.graphysica.espace2d.Repere;
 
 /**
  * Une aire représente un polygone formé d'une séquence de points dans l'espace.
+ * Pour représenter un polygone et ses côtés, il faudra utiliser à la fois une
+ * aire et des segments de droite.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -45,16 +47,8 @@ public class Aire extends Forme {
     private final ObservableList<ObjectProperty<Vector2D>> points
             = FXCollections.observableArrayList();
 
-//    /**
-//     * Construit une aire sur un ensemble de vecteurs observables.
-//     *
-//     * @param points l'ensemble des positions traçant le polygone de l'aire.
-//     */
-//    public Aire(@NotNull final ObjectProperty<Vector2D>... points) {
-//        this.points.addAll(points);
-//        setCouleur(COULEUR_PAR_DEFAUT);
-//    }
-
+    // TODO: Constructeur d'aire de prévisualisation
+    
     /**
      * Construit une aire sur un ensemble défini de points.
      *
