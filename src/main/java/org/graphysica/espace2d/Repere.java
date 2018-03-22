@@ -32,21 +32,48 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 public final class Repere {
 
     /**
+     * La puissance de graduation du repère.
+     *
+     * @deprecated TODO: Trouver un moyen de s'en débarasser
+     */
+    public static final int PUISSANCE = 5;
+
+    /**
      * L'origine virtuelle de l'espace exprimée en pixels selon l'origine de
      * l'écran. Par défaut, l'origine de l'espace est au centre du panneau.
      */
     private final ObjectProperty<Vector2D> origineVirtuelle
-            = new SimpleObjectProperty<>();
+            = new SimpleObjectProperty<>(Vector2D.ZERO);
 
     /**
      * L'échelle de l'espace exprimée en pixels par mètre.
      */
     private final ObjectProperty<Vector2D> echelle
-            = new SimpleObjectProperty<>();
+            = new SimpleObjectProperty<>(new Vector2D(100, 100));
+
+    /**
+     * Construit un repère centré à l'origine réelle. L'origine et l'échelle
+     * sont alors définies par défaut.
+     */
+    public Repere() {
+    }
 
     /**
      * Construit un repère dans un espace virtuel aux dimensions définies.
-     * L'origine du repère est alors centré à l'origine.
+     * L'origine virtuelle du repère est alors centrée dans les contraintes
+     * virtuelles de l'epace et l'échelle est définie par défaut.
+     *
+     * @param largeur la largeur de l'espace virtuel exprimée en pixels.
+     * @param hauteur la hauteur de l'espace virtuel exprimée en pixels.
+     */
+    public Repere(final double largeur, final double hauteur) {
+        centrer(largeur, hauteur);
+    }
+
+    /**
+     * Construit un repère dans un espace virtuel aux dimensions et à l'échelle
+     * définies. L'origine virtuelle du repère est alors centrée dans les
+     * contraintes virtuelles de l'epace.
      *
      * @param largeur la largeur de l'espace virtuel exprimée en pixels.
      * @param hauteur la hauteur de l'espace virtuel exprimée en pixels.
@@ -54,7 +81,7 @@ public final class Repere {
      */
     public Repere(final double largeur, final double hauteur,
             @NotNull final Vector2D echelle) {
-        centrer(largeur, hauteur);
+        this(largeur, hauteur);
         setEchelle(echelle);
     }
 
@@ -71,8 +98,8 @@ public final class Repere {
     }
 
     /**
-     * Positionne l'origine du repère au centre de contraintes d'un espace
-     * virtuel aux dimensions définies.
+     * Positionne l'origine virtuelle du repère au centre de contraintes d'un
+     * espace virtuel aux dimensions définies.
      *
      * @param largeur la largeur de l'espace virtuel exprimée en pixels.
      * @param hauteur la hauteur de l'espace virtuel exprimée en pixels.
@@ -221,6 +248,70 @@ public final class Repere {
     public Vector2D positionReelle(@NotNull final Vector2D positionVirtuelle) {
         return new Vector2D(abscisseReelle(positionVirtuelle.getX()),
                 ordonneeReelle(positionVirtuelle.getY()));
+    }
+
+    /**
+     * Calcule la position virtuelle des graduations horizontales de l'espace,
+     * qui correspond à des valeurs d'ordonnées de l'espace.
+     *
+     * @param hauteur la hauteur virtuelle de l'espace exprimée en pixels.
+     * @param espacementMinimal l'espacement virtuel minimal entre chaque
+     * graduation.
+     * @return l'ensemble des valeurs d'abscisse des graduations horizontales de
+     * la toile.
+     */
+    public double[] graduationsHorizontales(final double hauteur, 
+            final double espacementMinimal) {
+        final double espacementMinimalReel = espacementMinimal / getEchelle()
+                .getY();
+        final int exposant = (int) (Math.log(espacementMinimalReel)
+                / Math.log(PUISSANCE));
+        final double espacementReel = Math.pow(PUISSANCE, exposant);
+        final double espacementVirtuel = espacementReel * getEchelle().getY();
+        double ordonneeAncrage = getOrigineVirtuelle().getY()
+                % espacementVirtuel;
+        ordonneeAncrage = ordonneeAncrage > 0
+                ? ordonneeAncrage - espacementVirtuel : ordonneeAncrage;
+        final double[] graduationsHorizontales = new double[(int) (hauteur
+                / espacementVirtuel) + 2];
+        double y = ordonneeAncrage;
+        for (int i = 0; i < graduationsHorizontales.length; i++) {
+            graduationsHorizontales[i] = y;
+            y += espacementVirtuel;
+        }
+        return graduationsHorizontales;
+    }
+
+    /**
+     * Calcule la position virtuelle des graduations verticales de l'espace, qui
+     * correspondent à des valeurs d'abscisses de l'espace.
+     *
+     * @param largeur la largeur virtuelle de l'espace exprimée en pixels.
+     * @param espacementMinimal l'espacement virtuel minimal entre chaque
+     * graduation.
+     * @return l'ensemble des valeurs d'ordonnée des graduations verticales de
+     * la toile.
+     */
+    public double[] graduationsVerticales(final double largeur, 
+            final double espacementMinimal) {
+        final double espacementMinimalReel = espacementMinimal / getEchelle()
+                .getX();
+        final int exposant = (int) (Math.log(espacementMinimalReel)
+                / Math.log(PUISSANCE));
+        final double espacementReel = Math.pow(PUISSANCE, exposant);
+        final double espacementVirtuel = espacementReel * getEchelle().getX();
+        double abscisseAncrage = getOrigineVirtuelle().getX()
+                % espacementVirtuel;
+        abscisseAncrage = abscisseAncrage > 0
+                ? abscisseAncrage - espacementVirtuel : abscisseAncrage;
+        final double[] graduationsVerticales = new double[(int) (largeur
+                / espacementVirtuel) + 2];
+        double x = abscisseAncrage;
+        for (int i = 0; i < graduationsVerticales.length; i++) {
+            graduationsVerticales[i] = x;
+            x += espacementVirtuel;
+        }
+        return graduationsVerticales;
     }
 
     public Vector2D getOrigineVirtuelle() {

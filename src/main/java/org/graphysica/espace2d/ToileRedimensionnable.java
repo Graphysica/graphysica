@@ -16,12 +16,26 @@
  */
 package org.graphysica.espace2d;
 
+import com.sun.istack.internal.NotNull;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.scene.canvas.Canvas;
+
 /**
  * Une toile redimensionnable est actualisée lorsqu'elle est redimensionnée.
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class ToileRedimensionnable extends Toile {
+public abstract class ToileRedimensionnable extends Canvas 
+        implements Actualisable {
+    
+    /**
+     * L'événement d'actualisation de la toile redimmensionable.
+     */
+    protected final InvalidationListener evenementActualisation 
+            = (@NotNull final Observable observable) -> {
+        actualiser();
+    };
 
     /**
      * Construit une toile redimensionnable aux dimensions définies.

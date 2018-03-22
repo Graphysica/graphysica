@@ -32,8 +32,9 @@ public class Construction {
     
     /**
      * L'espace graphique de la construction.
+     * TODO: Déterminer les dimensions de l'espace selon le panneau du logiciel
      */
-    private final Espace espace = new Espace();
+    private final Espace espace = new Espace(500, 500);
     
     /**
      * Le gestionnaire des commandes de la construction.

@@ -17,20 +17,23 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.scene.canvas.Canvas;
 
 /**
  * Les classes implémentant cette interface peuvent être dessinées dans un
- * contexte graphique.
+ * contexte graphique d'espace.
  *
  * @author Marc-Antoine Ouimet
  */
 public interface Dessinable {
 
     /**
-     * Dessine l'objet dans un contexte graphique spécifié.
+     * Dessine l'objet dans un contexte graphique d'espace spécifié.
      *
      * @param toile la toile surlaquelle dessiner l'objet.
+     * @param repere le repère de l'espace.
      */
-    public void dessiner(@NotNull final Toile toile);
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere);
 
 }

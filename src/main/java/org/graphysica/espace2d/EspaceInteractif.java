@@ -30,7 +30,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  *
  * @author Marc-Antoine Ouimet
  */
-public class ToileInteractive extends ToileRedimensionnable {
+public class EspaceInteractif extends Espace {
 
     /**
      * Le facteur de zoom utilisé pour zoomer la toile.
@@ -49,7 +49,7 @@ public class ToileInteractive extends ToileRedimensionnable {
     private final ObjectProperty<Vector2D> positionReelleCurseur
             = new SimpleObjectProperty<>();
 
-    public ToileInteractive(final double largeur, final double hauteur) {
+    public EspaceInteractif(final double largeur, final double hauteur) {
         super(largeur, hauteur);
     }
 
@@ -98,18 +98,20 @@ public class ToileInteractive extends ToileRedimensionnable {
             @NotNull final Vector2D positionCurseur) {
         if (defilementVertical != 0) {
             final Vector2D translationOrigine = positionCurseur
-                    .subtract(origine.getValue());
-            origine.setValue(origine.getValue().add(translationOrigine));
+                    .subtract(repere.getOrigineVirtuelle());
+            repere.setOrigineVirtuelle(
+                    repere.getOrigineVirtuelle().add(translationOrigine));
             double facteurZoom = FACTEUR_ZOOM;
             if (defilementVertical < 0) {
                 facteurZoom = 1 / FACTEUR_ZOOM;
             }
-            setEchelle(new Vector2D(
-                    echelle.getValue().getX() * facteurZoom,
-                    echelle.getValue().getY() * facteurZoom));
-            final Vector2D nouvelleOrigine = origine.getValue().subtract(
-                    translationOrigine.scalarMultiply(facteurZoom));
-            origine.setValue(new Vector2D((int) nouvelleOrigine.getX(),
+            repere.setEchelle(new Vector2D(
+                    repere.getOrigineVirtuelle().getX() * facteurZoom,
+                    repere.getOrigineVirtuelle().getY() * facteurZoom));
+            final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
+                    .subtract( translationOrigine.scalarMultiply(facteurZoom));
+            repere.setOrigineVirtuelle(
+                    new Vector2D((int) nouvelleOrigine.getX(),
                     (int) nouvelleOrigine.getY()));
         }
     }
@@ -118,13 +120,14 @@ public class ToileInteractive extends ToileRedimensionnable {
      * Déplace l'espace de la toile selon la variation des positions du curseur.
      *
      * @param positionCurseur la position virtuelle actuelle du curseur.
-     * @see ToileInteractive#positionPrecendenteCurseur
+     * @see EspaceInteractif#positionPrecendenteCurseur
      */
     private void deplacer(@NotNull final Vector2D positionCurseur) {
         final Vector2D deplacement = positionCurseur.subtract(
                 positionPrecendenteCurseur);
-        final Vector2D nouvelleOrigine = origine.getValue().add(deplacement);
-        origine.setValue(new Vector2D((int) nouvelleOrigine.getX(),
+        final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
+                .add(deplacement);
+        repere.setOrigineVirtuelle(new Vector2D((int) nouvelleOrigine.getX(),
                 (int) nouvelleOrigine.getY()));
         positionPrecendenteCurseur = positionCurseur;
     }
@@ -157,7 +160,7 @@ public class ToileInteractive extends ToileRedimensionnable {
      */
     public Vector2D positionReelleCurseur(
             @NotNull final MouseEvent evenement) {
-        return positionReelle(positionVirtuelleCurseur(evenement));
+        return repere.positionReelle(positionVirtuelleCurseur(evenement));
     }
 
     /**
