@@ -19,8 +19,9 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Un segment de droite relie deux points distincts dans l'espace.
@@ -100,10 +101,11 @@ public class SegmentDroite extends Ligne {
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
+    public void dessiner(@NotNull final Canvas toile, 
+            @NotNull final Repere repere) {
         if (!isIndefinie()) {
-            origineTrace = toile.positionVirtuelle(getPoint1());
-            arriveeTrace = toile.positionVirtuelle(getPoint2());
+            origineTrace = repere.positionVirtuelle(getPoint1());
+            arriveeTrace = repere.positionVirtuelle(getPoint2());
             dessinerContinue(toile.getGraphicsContext2D());
         }
     }

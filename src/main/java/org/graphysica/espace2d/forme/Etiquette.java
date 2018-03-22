@@ -27,11 +27,12 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 
@@ -174,12 +175,13 @@ public class Etiquette extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
+    public void dessiner(@NotNull final Canvas toile, 
+            @NotNull final Repere repere) {
         if (imageFormule == null) {
             construireImage();
         }
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
-        final Vector2D position = toile.positionVirtuelle(getPositionAncrage())
+        final Vector2D position = repere.positionVirtuelle(getPositionAncrage())
                 .add(getPositionRelative());
         contexteGraphique.drawImage(imageFormule, (int) (position.getX()),
                 (int) (position.getY()));
@@ -248,7 +250,8 @@ public class Etiquette extends Forme {
         return positionAncrage.getValue();
     }
     
-    public final void setPositionAncrage(@NotNull final Vector2D positionAncrage) {
+    public final void setPositionAncrage(
+            @NotNull final Vector2D positionAncrage) {
         this.positionAncrage.setValue(positionAncrage);
     }
     

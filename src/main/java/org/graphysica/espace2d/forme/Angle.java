@@ -21,13 +21,14 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.util.FastMath;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Un angle décrit l'espace angulaire entre deux points à partir d'un sommet.
@@ -126,9 +127,11 @@ public class Angle extends Forme {
      * 0º et 180º.
      *
      * @param toile la toile sur laquelle dessiner l'angle.
+     * @param repere le repère de l'espace.
      */
     @Override
-    public void dessiner(@NotNull final Toile toile) {
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
         if (isDefini()) {
             // Adapter l'angle à la convention du tracé
             double angle = -getAngle();
@@ -139,7 +142,7 @@ public class Angle extends Forme {
                 angleInitial += 360;
             }
             final int rayon = taille.getValue() * MULTIPLICATEUR_RAYON;
-            final Vector2D centreVirtuel = toile.positionVirtuelle(
+            final Vector2D centreVirtuel = repere.positionVirtuelle(
                     getSommet());
             final GraphicsContext contexteGraphique = toile
                     .getGraphicsContext2D();

@@ -19,9 +19,10 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Une droite horizontale est perpendiculaire à toutes les droites verticales du
@@ -68,9 +69,10 @@ public class DroiteHorizontale extends Ligne implements
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
-        if (isVisible(toile)) {
-            final double ordonneeVirtuelle = toile.ordonneeVirtuelle(
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        if (isVisible(toile, repere)) {
+            final double ordonneeVirtuelle = repere.ordonneeVirtuelle(
                     getOrdonnee());
             origineTrace = new Vector2D(0, ordonneeVirtuelle);
             arriveeTrace = new Vector2D(toile.getWidth(), ordonneeVirtuelle);
@@ -95,8 +97,10 @@ public class DroiteHorizontale extends Ligne implements
         return ordonnee;
     }
 
-    public final boolean isVisible(@NotNull final Toile toile) {
-        final double ordonneeVirtuelle = toile.ordonneeVirtuelle(getOrdonnee());
+    public final boolean isVisible(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        final double ordonneeVirtuelle = repere.ordonneeVirtuelle(
+                getOrdonnee());
         return ordonneeVirtuelle >= 0 && ordonneeVirtuelle <= toile.getHeight();
     }
 

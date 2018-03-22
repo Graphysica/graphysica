@@ -19,9 +19,10 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Une droite verticale est perpendiculaire à toutes les droites horizontales du
@@ -68,9 +69,10 @@ public class DroiteVerticale extends Ligne implements
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
-        if (isVisible(toile)) {
-            final double abscisseVirtuelle = toile.abscisseVirtuelle(
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        if (isVisible(toile, repere)) {
+            final double abscisseVirtuelle = repere.abscisseVirtuelle(
                     getAbscisse());
             origineTrace = new Vector2D(abscisseVirtuelle, 0);
             arriveeTrace = new Vector2D(abscisseVirtuelle, toile.getHeight());
@@ -95,8 +97,10 @@ public class DroiteVerticale extends Ligne implements
         return abscisse;
     }
     
-    public boolean isVisible(@NotNull final Toile toile) {
-        final double abscisseVirtuelle = toile.abscisseVirtuelle(getAbscisse());
+    public boolean isVisible(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        final double abscisseVirtuelle = repere.abscisseVirtuelle(
+                getAbscisse());
         return abscisseVirtuelle >= 0 && abscisseVirtuelle <= toile.getWidth();
     }
 
