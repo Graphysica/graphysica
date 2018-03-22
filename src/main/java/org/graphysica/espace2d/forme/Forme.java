@@ -24,10 +24,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import org.graphysica.construction.Element;
-import org.graphysica.espace2d.Dessinable;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Une forme peut être dessinée à l'écran dans un espace avec une couleur
@@ -72,7 +72,8 @@ public abstract class Forme extends Element implements Dessinable {
     }
     
     @Override
-    public abstract void dessiner(@NotNull final Toile toile);
+    public abstract void dessiner(@NotNull final Canvas toile, 
+            @NotNull final Repere repere);
 
     public Set<Observable> getProprietesActualisation() {
         return proprietesActualisation;

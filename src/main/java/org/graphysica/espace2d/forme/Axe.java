@@ -25,7 +25,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Un axe permet de graduer l'espace avec des étiquettes et un sens de
@@ -101,10 +101,11 @@ public abstract class Axe extends Forme {
     /**
      * Calcule l'espacement minimal réel entre les graduations de l'axe.
      *
-     * @param toile la toile affichant cet axe.
+     * @param repere le repère de l'espace à graduer.
      * @return la valeur réelle d'espacement minimal des graduations de l'axe.
      */
-    protected abstract double espacementMinimalReel(@NotNull final Toile toile);
+    protected abstract double espacementMinimalReel(
+            @NotNull final Repere repere);
 
     /**
      * Récupère la chaîne de caractères de formattage des valeurs d'étiquette de
@@ -112,13 +113,13 @@ public abstract class Axe extends Forme {
      * d'arrondir leurs valeurs de telle sorte qu'un nombre minimal de décimales
      * soient affichées.
      *
-     * @param toile la toile sur laquelle l'axe est dessiné.
+     * @param repere le repère de l'espace à graduer.
      * @return le format du texte des étiquettes de graduation.
      */
-    protected String formatValeurs(@NotNull final Toile toile) {
-        final double espacementMinimalReel = espacementMinimalReel(toile);
+    protected String formatValeurs(@NotNull final Repere repere) {
+        final double espacementMinimalReel = espacementMinimalReel(repere);
         final int exposant = (int) (Math.log(espacementMinimalReel)
-                / Math.log(Toile.PUISSANCE));
+                / Math.log(Repere.PUISSANCE));
         if (exposant >= 0) {
             return "%.0f";
         } else {

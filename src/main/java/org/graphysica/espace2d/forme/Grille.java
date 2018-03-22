@@ -19,10 +19,11 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Une grille permet de subdiviser l'espace selon un espacement virtuel qui
@@ -63,11 +64,12 @@ public final class Grille extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
-        final double[] graduationsHorizontales = toile.graduationsHorizontales(
-                getEspacement().getY());
-        final double[] graduationsVerticales = toile.graduationsVerticales(
-                getEspacement().getX());
+    public void dessiner(@NotNull final Canvas toile, 
+            @NotNull final Repere repere) {
+        final double[] graduationsHorizontales = repere.graduationsHorizontales(
+                toile.getHeight(), getEspacement().getY());
+        final double[] graduationsVerticales = repere.graduationsVerticales(
+                toile.getWidth(), getEspacement().getX());
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
         contexteGraphique.setStroke(getCouleur());
         contexteGraphique.setLineWidth(epaisseur.getValue());

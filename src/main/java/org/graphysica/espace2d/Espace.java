@@ -16,77 +16,188 @@
  */
 package org.graphysica.espace2d;
 
+import org.graphysica.espace2d.forme.OrdreRendu;
+import org.graphysica.espace2d.forme.Grille;
 import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
-import javafx.scene.layout.AnchorPane;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.Axe;
+import org.slf4j.LoggerFactory;
 
 /**
- * Un espace est un panneau duquel l'utilisateur peut modifier les composantes
- * de sa construction.
+ * Un espace permet d'afficher un ensemble de formes dans un repère.
  *
  * @author Marc-Antoine Ouimet
  */
-public class Espace extends AnchorPane {
+public class Espace extends ToileRedimensionnable implements Actualisable {
 
     /**
-     * La toile des formes de l'espace.
+     * L'utilitaire d'enregistrement de traces d'exécution.
      */
-    private final Toile toile;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(
+            Espace.class);
 
     /**
-     * Construit un espace initialisé dont les dimensions sont liées à celles de
-     * la toile des formes.
+     * La liste observable des formes dessinées dans l'espace.
+     */
+    private final ObservableList<Forme> formes
+            = FXCollections.observableArrayList();
+
+    /**
+     * L'ordre de rendu des formes dams l'espace.
+     */
+    private final OrdreRendu ordreRendu = new OrdreRendu();
+
+    /**
+     * Le repère de l'espace.
+     */
+    protected Repere repere;
+
+    /**
+     * La grille secondaire de la toile. Représente les graduations plus
+     * précises de l'espace.
+     */
+    private final Grille grilleSecondaire = new Grille(
+            new Vector2D(repere.getEchelle().getX() / 4,
+                    repere.getEchelle().getY() / 4),
+            Color.gray(0.9));
+
+    /**
+     * La grille principale de la toile. Représente les graduations plus
+     * grossières de l'espace.
+     */
+    private final Grille grillePrincipale = new Grille(
+            new Vector2D(repere.getEchelle().getX(),
+                    repere.getEchelle().getY()),
+            Color.gray(0.5));
+
+    /**
+     * Construit un espace dont les dimensions virtuelles sont définies.
      *
-     * @param largeur la largeur initiale de l'espace, exprimée en pixels.
-     * @param hauteur la hauteur initiale de l'espace, exprimée en pixels.
+     * @param largeur la largeur de l'espace exprimée en pixels.
+     * @param hauteur la hauteur de l'espace exprimée en pixels.
      */
     public Espace(final double largeur, final double hauteur) {
-        toile = new ToileInteractive(largeur, hauteur);
-        lierDimensions();
-        initialiser();
+        super(largeur, hauteur);
+        setRepere(new Repere(largeur, hauteur));
     }
 
-    public Espace() {
-        toile = new ToileInteractive(getWidth(), getHeight());
-        lierDimensions();
-        initialiser();
-    }
-
-    public void deplacer() {
-        toile.setOrigine(toile.getOrigine().add(new Vector2D(1, 2)));
-    }
-
-    public void ajouter(@NotNull final Forme forme) {
-        toile.ajouter(forme);
-    }
-
-    public void ajouter(@NotNull final Forme... formes) {
-        toile.ajouter(formes);
-    }
-
-    public void retirer(@NotNull final Forme forme) {
-        toile.retirer(forme);
-    }
-
-    public void retirer(@NotNull final Forme... formes) {
-        toile.retirer(formes);
-    }
-
-    private void initialiser() {
-        getChildren().add(toile);
+    {
+        formes.addListener(evenementActualisation);
+        ajouter(grilleSecondaire);
+        ajouter(grillePrincipale);
+        ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL,
+                grillePrincipale.getEspacement().getY()));
+        ajouter(Axe.nouvelAxe(Axe.Sens.VERTICAL,
+                grillePrincipale.getEspacement().getX()));
     }
 
     /**
-     * Lie les dimensions de la toile aux dimensions de l'espace.
+     * Actualise l'affichage de cette toile en redessinant chacune de ses
+     * formes. Si la classe d'une forme ne fait pas partie des définitions de
+     * l'ordre de rendu, elle n'est pas dessinée.
+     *
+     * @see Espace#ordreRendu
+     * @see OrdreRendu
      */
-    private void lierDimensions() {
-        toile.widthProperty().bind(widthProperty());
-        toile.heightProperty().bind(heightProperty());
+    @Override
+    public void actualiser() {
+        effacerAffichage();
+        int formesAffichables = 0;
+        for (final Class classe : ordreRendu) {
+            for (final Forme forme : formes) {
+                if (classe.isInstance(forme)) {
+                    formesAffichables++;
+                    if (forme.isAffichee()) {
+                        forme.dessiner(this, repere);
+                    }
+                }
+            }
+        }
+        if (formesAffichables != formes.size()) {
+            LOGGER.warn(String.format("Des classes de formes ne sont pas "
+                    + "comprises dans l'ordre de rendu de la toile. "
+                    + "%d formes sur %d sont affichables.", formesAffichables,
+                    formes.size()));
+        }
     }
 
-    public Toile getToile() {
-        return toile;
+    /**
+     * Réinitialise l'image rendue par cette toile.
+     */
+    private void effacerAffichage() {
+        getGraphicsContext2D().setFill(Color.WHITE);
+        getGraphicsContext2D().fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    /**
+     * Ajoute une forme à la toile et lie ses propriétés à l'actualisation de la
+     * toile.
+     *
+     * @param forme la forme à ajouter à la toile.
+     */
+    public void ajouter(@NotNull final Forme forme) {
+        this.formes.add(forme);
+        forme.getProprietesActualisation().forEach((propriete) -> {
+            propriete.addListener(evenementActualisation);
+        });
+    }
+
+    /**
+     * Ajoute des formes à la toile et lie leurs propriétés à l'actualisation de
+     * la toile.
+     *
+     * @param formes les formes à ajouter à la toile.
+     */
+    public void ajouter(@NotNull final Forme... formes) {
+        for (final Forme forme : formes) {
+            ajouter(forme);
+        }
+    }
+
+    /**
+     * Retire une forme de la toile et délie ses propriétés de l'actualisation
+     * de la toile.
+     *
+     * @param forme la forme à retirer de la toile.
+     */
+    public void retirer(@NotNull final Forme forme) {
+        final boolean retiree = formes.remove(forme);
+        if (retiree) {
+            forme.getProprietesActualisation().forEach((propriete) -> {
+                propriete.removeListener(evenementActualisation);
+            });
+        }
+    }
+
+    /**
+     * Retire les formes de la toile et délie leurs propriétés de
+     * l'actualisation de la toile.
+     *
+     * @param formes les formes à retirer de la toile.
+     */
+    public void retirer(@NotNull final Forme... formes) {
+        for (final Forme forme : formes) {
+            retirer(forme);
+        }
+    }
+
+    /**
+     * Modifie le repère de cet espace. Délie l'événemenet d'actualisation de
+     * l'espace du précédent repère et ajoute l'événement d'actualisation au
+     * nouveau repère.
+     *
+     * @param repere le nouveau repère de l'espace.
+     */
+    public final void setRepere(@NotNull final Repere repere) {
+        this.repere.echelleProperty().unbind();
+        this.repere.origineVirtuelleProperty().unbind();
+        this.repere = repere;
+        repere.echelleProperty().addListener(evenementActualisation);
+        repere.origineVirtuelleProperty().addListener(evenementActualisation);
     }
 
 }

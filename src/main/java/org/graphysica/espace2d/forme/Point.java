@@ -17,13 +17,13 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Un point représente une position dans l'espace.
@@ -126,9 +126,10 @@ public final class Point extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
+    public void dessiner(@NotNull final Canvas toile, 
+            @NotNull final Repere repere) {
         dessinerRond(toile.getGraphicsContext2D(),
-                toile.positionVirtuelle(getPosition()));
+                repere.positionVirtuelle(getPosition()));
     }
 
     /**

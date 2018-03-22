@@ -20,13 +20,16 @@ import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Une aire représente un polygone formé d'une séquence de points dans l'espace.
+ * Pour représenter un polygone et ses côtés, il faudra utiliser à la fois une
+ * aire et des segments de droite.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -44,16 +47,8 @@ public class Aire extends Forme {
     private final ObservableList<ObjectProperty<Vector2D>> points
             = FXCollections.observableArrayList();
 
-//    /**
-//     * Construit une aire sur un ensemble de vecteurs observables.
-//     *
-//     * @param points l'ensemble des positions traçant le polygone de l'aire.
-//     */
-//    public Aire(@NotNull final ObjectProperty<Vector2D>... points) {
-//        this.points.addAll(points);
-//        setCouleur(COULEUR_PAR_DEFAUT);
-//    }
-
+    // TODO: Constructeur d'aire de prévisualisation
+    
     /**
      * Construit une aire sur un ensemble défini de points.
      *
@@ -85,11 +80,12 @@ public class Aire extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
         contexteGraphique.setFill(getCouleur());
-        contexteGraphique.fillPolygon(toile.abscissesVirtuelles(abscisses()),
-                toile.ordonneesVirtuelles(ordonnees()), points.size());
+        contexteGraphique.fillPolygon(repere.abscissesVirtuelles(abscisses()),
+                repere.ordonneesVirtuelles(ordonnees()), points.size());
     }
 
     /**

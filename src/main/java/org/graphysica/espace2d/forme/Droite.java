@@ -18,8 +18,9 @@ package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Une droite bissecte l'espace en traversant deux points distincts.
@@ -71,9 +72,10 @@ public final class Droite extends SegmentDroite {
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
         if (!isIndefinie()) {
-            calculerPositionTraces(toile);
+            calculerPositionTraces(toile, repere);
             dessinerContinue(toile.getGraphicsContext2D());
         }
     }
@@ -82,12 +84,14 @@ public final class Droite extends SegmentDroite {
      * Calcule la position des points de trace de la droite.
      *
      * @param toile les contraintes du tracé de la droite.
+     * @param repere le repère de l'espace de dessin de la droite.
      * @see Droite#origineTrace
      * @see Droite#arriveeTrace
      */
-    private void calculerPositionTraces(final Toile toile) {
-        final Vector2D point1Virtuel = toile.positionVirtuelle(getPoint1());
-        final Vector2D point2Virtuel = toile.positionVirtuelle(getPoint2());
+    private void calculerPositionTraces(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        final Vector2D point1Virtuel = repere.positionVirtuelle(getPoint1());
+        final Vector2D point2Virtuel = repere.positionVirtuelle(getPoint2());
         variationAbscisses = point2Virtuel.getX() - point1Virtuel.getX();
         variationOrdonnees = point2Virtuel.getY() - point1Virtuel.getY();
         if (Math.abs(variationAbscisses) > Math.abs(variationOrdonnees)) {

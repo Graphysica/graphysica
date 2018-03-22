@@ -18,9 +18,10 @@ package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Toile;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Une flèche relie un point d'origine vers un point d'arrivée. La direction de
@@ -57,15 +58,16 @@ public class Fleche extends SegmentDroite {
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
-        super.dessiner(toile);
-        tete.dessiner(toile);
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        super.dessiner(toile, repere);
+        tete.dessiner(toile, repere);
     }
-    
+
     public void setOrigine(@NotNull final Vector2D origine) {
         this.point1.setValue(origine);
     }
-    
+
     public void setArrivee(@NotNull final Vector2D arrivee) {
         this.point2.setValue(arrivee);
     }
@@ -144,12 +146,13 @@ public class Fleche extends SegmentDroite {
         }
 
         @Override
-        public void dessiner(@NotNull final Toile toile) {
+        public void dessiner(@NotNull final Canvas toile,
+                @NotNull final Repere repere) {
             final GraphicsContext contexteGraphique = toile
                     .getGraphicsContext2D();
             contexteGraphique.setFill(Fleche.this.getCouleur());
-            final Vector2D[] pointsTrace = polygoneTete(toile.positionVirtuelle(
-                    getArrivee()));
+            final Vector2D[] pointsTrace = polygoneTete(
+                    repere.positionVirtuelle(getArrivee()));
             contexteGraphique.fillPolygon(abscisses(pointsTrace),
                     ordonnees(pointsTrace), pointsTrace.length);
         }
