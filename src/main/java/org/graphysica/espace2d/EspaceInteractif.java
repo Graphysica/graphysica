@@ -54,11 +54,11 @@ public class EspaceInteractif extends Espace {
     }
 
     {
-        setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
-            actualiserPositionCurseur(evenement);
-        });
         setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
             setCursor(Cursor.CROSSHAIR);
+        });
+        setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
+            actualiserPositionCurseur(evenement);
         });
         setOnScroll((@NotNull final ScrollEvent evenement) -> {
             final double defilementVertical = evenement.getDeltaY();
@@ -69,14 +69,12 @@ public class EspaceInteractif extends Espace {
         setOnMousePressed((@NotNull final MouseEvent evenement) -> {
             if (evenement.isMiddleButtonDown()) {
                 setCursor(Cursor.CLOSED_HAND);
-                enregistrerPositionCurseur(evenement);
             }
         });
         setOnMouseReleased((@NotNull final MouseEvent evenement) -> {
             setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseDragged((@NotNull final MouseEvent evenement) -> {
-            actualiserPositionCurseur(evenement);
             if (evenement.isMiddleButtonDown()) {
                 final Vector2D positionCurseur = new Vector2D(evenement.getX(),
                         evenement.getY());
@@ -105,11 +103,10 @@ public class EspaceInteractif extends Espace {
             if (defilementVertical < 0) {
                 facteurZoom = 1 / FACTEUR_ZOOM;
             }
-            repere.setEchelle(new Vector2D(
-                    repere.getOrigineVirtuelle().getX() * facteurZoom,
-                    repere.getOrigineVirtuelle().getY() * facteurZoom));
+            repere.setEchelle(repere.getEchelle().scalarMultiply(
+                    facteurZoom));
             final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
-                    .subtract( translationOrigine.scalarMultiply(facteurZoom));
+                    .subtract(translationOrigine.scalarMultiply(facteurZoom));
             repere.setOrigineVirtuelle(
                     new Vector2D((int) nouvelleOrigine.getX(),
                     (int) nouvelleOrigine.getY()));
@@ -168,6 +165,7 @@ public class EspaceInteractif extends Espace {
      */
     private void actualiserPositionCurseur(
             @NotNull final MouseEvent evenement) {
+        enregistrerPositionCurseur(evenement);
         positionReelleCurseur.setValue(positionReelleCurseur(evenement));
     }
 

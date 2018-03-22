@@ -37,7 +37,8 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     /**
      * L'utilitaire d'enregistrement de trace d'exécution.
      */
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Espace.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(
+            Espace.class);
 
     /**
      * La liste observable des formes dessinées sur la toile.
@@ -75,7 +76,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
 
     public Espace(final double largeur, final double hauteur) {
         super(largeur, hauteur);
-        repere = new Repere(largeur, hauteur);
+        setRepere(new Repere(largeur, hauteur));
     }
 
     {
@@ -83,9 +84,9 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
         repere.origineVirtuelleProperty().addListener(evenementActualisation);
         repere.echelleProperty().addListener(evenementActualisation);
         ajouter(grilleSecondaire, grillePrincipale);
-        ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL, 
+        ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL,
                 grillePrincipale.getEspacement().getY()));
-        ajouter(Axe.nouvelAxe(Axe.Sens.VERTICAL, 
+        ajouter(Axe.nouvelAxe(Axe.Sens.VERTICAL,
                 grillePrincipale.getEspacement().getX()));
     }
 
@@ -177,6 +178,21 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
         for (final Forme forme : formes) {
             retirer(forme);
         }
+    }
+
+    /**
+     * Modifie le repère de cet espace. Délie l'événemenet d'actualisation de
+     * l'espace du précédent repère et ajoute l'événement d'actualisation au
+     * nouveau repère.
+     *
+     * @param repere le nouveau repère de l'espace.
+     */
+    public final void setRepere(@NotNull final Repere repere) {
+        this.repere.echelleProperty().unbind();
+        this.repere.origineVirtuelleProperty().unbind();
+        this.repere = repere;
+        repere.echelleProperty().addListener(evenementActualisation);
+        repere.origineVirtuelleProperty().addListener(evenementActualisation);
     }
 
 }
