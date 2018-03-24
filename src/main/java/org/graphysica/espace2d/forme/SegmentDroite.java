@@ -20,6 +20,7 @@ import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
+import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 
@@ -126,30 +127,11 @@ public class SegmentDroite extends Ligne {
     }
 
     @Override
-    public boolean isSelectionne(@NotNull final Vector2D curseur,
-            @NotNull final Repere repere) {
-        return distance(curseur, repere) <= DISTANCE_SELECTION;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see
-     * org.apache.commons.math3.geometry.euclidean.twod.Segment#distance(org.apache.commons.math3.geometry.euclidean.twod.Vector2D)
-     */
-    @Override
     public double distance(@NotNull final Vector2D curseur,
             @NotNull final Repere repere) {
         final Vector2D p1 = repere.positionVirtuelle(getPoint1());
         final Vector2D p2 = repere.positionVirtuelle(getPoint2());
-        final Vector2D delta = p2.subtract(p1);
-        final double r = curseur.subtract(p1).dotProduct(delta)
-                / delta.getNormSq();
-        if (r < 0 || r > 1) {
-            return Math.min(p1.distance(curseur), p2.distance(curseur));
-        } else {
-            return p1.add(delta.scalarMultiply(r)).distance(curseur);
-        }
+        return new Segment(p1, p2, null).distance(curseur);
     }
 
     public Vector2D getPoint1() {
