@@ -26,6 +26,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.construction.Element;
 import org.graphysica.espace2d.Repere;
 
@@ -35,7 +36,7 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Forme extends Element implements Dessinable, 
+public abstract class Forme extends Element implements Dessinable,
         Selectionnable {
 
     /**
@@ -57,13 +58,19 @@ public abstract class Forme extends Element implements Dessinable,
             = new SimpleObjectProperty<>(COULEUR_PAR_DEFAUT);
 
     /**
+     * Le seuil de distance de sélection entre la position virtuelle du curseur
+     * et la forme exprimée en pixels.
+     */
+    private static final double DISTANCE_SELECTION = 5;
+
+    /**
      * Si la forme est affichée.
      */
     private final BooleanProperty affichee = new SimpleBooleanProperty(true);
 
     public Forme() {
     }
-    
+
     public Forme(@NotNull final Color couleur) {
         setCouleur(couleur);
     }
@@ -71,15 +78,21 @@ public abstract class Forme extends Element implements Dessinable,
     {
         proprietesActualisation.add(couleur);
     }
-    
+
     @Override
-    public abstract void dessiner(@NotNull final Canvas toile, 
+    public abstract void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere);
+
+    @Override
+    public boolean isSelectionne(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        return distance(curseur, repere) <= DISTANCE_SELECTION;
+    }
 
     public Set<Observable> getProprietesActualisation() {
         return proprietesActualisation;
     }
-    
+
     public final Color getCouleur() {
         return couleur.getValue();
     }
