@@ -167,8 +167,7 @@ public final class Repere {
     }
 
     /**
-     * Détermine la position sur la toile d'une position réelle selon l'échelle
-     * et l'origine de la toile.
+     * Détermine la position virtuelle d'une position réelle.
      *
      * @param positionReelle la position réelle dont on cherche la position
      * virtuelle.
@@ -177,6 +176,22 @@ public final class Repere {
     public Vector2D positionVirtuelle(@NotNull final Vector2D positionReelle) {
         return new Vector2D(abscisseVirtuelle(positionReelle.getX()),
                 ordonneeVirtuelle(positionReelle.getY()));
+    }
+
+    /**
+     * Détermine les positions virtuelles d'un ensemble de positions réelles.
+     *
+     * @param positions les positions réelles dont on cherche les positions
+     * virtuelles.
+     * @return les positions virtuelles.
+     */
+    public Vector2D[] positionsVirtuelles(
+            @NotNull final Vector2D... positions) {
+        final Vector2D[] positionsVirtuelles = new Vector2D[positions.length];
+        for (int i = 0; i < positionsVirtuelles.length; i++) {
+            positionsVirtuelles[i] = positionVirtuelle(positions[i]);
+        }
+        return positionsVirtuelles;
     }
 
     /**
@@ -238,8 +253,7 @@ public final class Repere {
     }
 
     /**
-     * Détermine la position réelle d'une position sur la toile selon l'échelle
-     * et l'origine de la toile.
+     * Détermine la position réelle d'une position virtuelle.
      *
      * @param positionVirtuelle la position virtuelle dont on cherche la
      * position réelle.
@@ -248,6 +262,22 @@ public final class Repere {
     public Vector2D positionReelle(@NotNull final Vector2D positionVirtuelle) {
         return new Vector2D(abscisseReelle(positionVirtuelle.getX()),
                 ordonneeReelle(positionVirtuelle.getY()));
+    }
+
+    /**
+     * Détermine les positions réelles d'un ensemble de positions virtuelles.
+     *
+     * @param positions les positions virtuelles dont on cherche les positions
+     * réelles.
+     * @return les positions réelles.
+     */
+    public Vector2D[] positionsReelles(
+            @NotNull final Vector2D... positions) {
+        final Vector2D[] positionsReelles = new Vector2D[positions.length];
+        for (int i = 0; i < positionsReelles.length; i++) {
+            positionsReelles[i] = positionReelle(positions[i]);
+        }
+        return positionsReelles;
     }
 
     /**
@@ -260,7 +290,7 @@ public final class Repere {
      * @return l'ensemble des valeurs d'abscisse des graduations horizontales de
      * la toile.
      */
-    public double[] graduationsHorizontales(final double hauteur, 
+    public double[] graduationsHorizontales(final double hauteur,
             final double espacementMinimal) {
         final double espacementMinimalReel = espacementMinimal / getEchelle()
                 .getY();
@@ -292,7 +322,7 @@ public final class Repere {
      * @return l'ensemble des valeurs d'ordonnée des graduations verticales de
      * la toile.
      */
-    public double[] graduationsVerticales(final double largeur, 
+    public double[] graduationsVerticales(final double largeur,
             final double espacementMinimal) {
         final double espacementMinimalReel = espacementMinimal / getEchelle()
                 .getX();
