@@ -47,6 +47,18 @@ public final class Grille extends Forme {
     private final Taille epaisseur = Taille.de("grille");
 
     /**
+     * L'ensemble des graduations virtuelles horizontales de la grille en ordre
+     * croissant, recalculé à chaque dessin de la grille.
+     */
+    private double[] graduationsHorizontales;
+
+    /**
+     * L'ensemble des graduations virtuelles verticales de la grille en ordre
+     * croissant, recalculé à chaque dessin de la grille.
+     */
+    private double[] graduationsVerticales;
+
+    /**
      * Construit une grille dont l'espacement et la couleur sont définis.
      *
      * @param espacement l'espacement virtuel entre chaque graduation de la
@@ -64,11 +76,11 @@ public final class Grille extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile, 
+    public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final double[] graduationsHorizontales = repere.graduationsHorizontales(
+        graduationsHorizontales = repere.graduationsHorizontales(
                 toile.getHeight(), getEspacement().getY());
-        final double[] graduationsVerticales = repere.graduationsVerticales(
+        graduationsVerticales = repere.graduationsVerticales(
                 toile.getWidth(), getEspacement().getX());
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
         contexteGraphique.setStroke(getCouleur());
@@ -79,6 +91,23 @@ public final class Grille extends Forme {
         for (final double x : graduationsVerticales) {
             contexteGraphique.strokeLine(x, 0, x, toile.getHeight());
         }
+    }
+
+    @Override
+    public double distance(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        double distanceHorizontale = Double.MAX_VALUE;
+        for (final double graduationHorizontale : graduationsHorizontales) {
+            distanceHorizontale = Math.min(distanceHorizontale,
+                    Math.abs(curseur.getX() - graduationHorizontale));
+        }
+        double distanceVerticale = Double.MAX_VALUE;
+        for (final double graduationVerticale : graduationsVerticales) {
+            distanceVerticale = Math.min(distanceVerticale,
+                    Math.abs(curseur.getY() - graduationVerticale));
+        }
+        return Math.min(Math.min(distanceHorizontale, distanceVerticale),
+                new Vector2D(distanceHorizontale, distanceVerticale).getNorm());
     }
 
     public final Vector2D getEspacement() {
