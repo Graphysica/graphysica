@@ -36,7 +36,7 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Forme extends Element implements Dessinable,
+public abstract class Forme extends Element implements Dessinable, Surbrillable,
         Selectionnable {
 
     /**
@@ -67,7 +67,13 @@ public abstract class Forme extends Element implements Dessinable,
      * Si la forme est affichée.
      */
     private final BooleanProperty affichee = new SimpleBooleanProperty(true);
-
+    
+    /**
+     * Si la forme est en surbrillance.
+     */
+    private final BooleanProperty enSurbrillance 
+            = new SimpleBooleanProperty(false);
+    
     public Forme() {
     }
 
@@ -77,12 +83,18 @@ public abstract class Forme extends Element implements Dessinable,
 
     {
         proprietesActualisation.add(couleur);
+        proprietesActualisation.add(affichee);
+        proprietesActualisation.add(enSurbrillance);
     }
 
     @Override
     public abstract void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere);
 
+    @Override
+    public abstract void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere);
+    
     @Override
     public boolean isSelectionne(@NotNull final Vector2D curseur,
             @NotNull final Repere repere) {
@@ -117,4 +129,14 @@ public abstract class Forme extends Element implements Dessinable,
         return affichee;
     }
 
+    @Override
+    public boolean isEnSurbrillance() {
+        return enSurbrillance.getValue();
+    }
+
+    @Override
+    public void setEnSurbrillance(final boolean enSurbrillance) {
+        this.enSurbrillance.setValue(enSurbrillance);
+    }
+    
 }
