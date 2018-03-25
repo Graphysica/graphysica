@@ -31,6 +31,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -134,30 +135,30 @@ public class Etiquette extends Forme {
         this(texte, taille, positionAncrage);
         setCouleur(couleur);
     }
-    
-    public Etiquette(@NotNull final String texte, 
+
+    public Etiquette(@NotNull final String texte,
             @NotNull final Vector2D positionAncrage) {
         this(texte);
         setPositionAncrage(positionAncrage);
     }
-    
+
     public Etiquette(@NotNull final String texte,
-            @NotNull final Vector2D positionAncrage, 
+            @NotNull final Vector2D positionAncrage,
             @NotNull final Vector2D positionRelative) {
         this(texte, positionAncrage);
         setPositionRelative(positionRelative);
     }
-    
+
     public Etiquette(@NotNull final String texte,
-            @NotNull final Vector2D positionAncrage, 
+            @NotNull final Vector2D positionAncrage,
             @NotNull final Vector2D positionRelative,
             final int taille) {
         this(texte, positionAncrage, positionRelative);
         setTailleCaractere(taille);
     }
-    
+
     public Etiquette(@NotNull final String texte,
-            @NotNull final Vector2D positionAncrage, 
+            @NotNull final Vector2D positionAncrage,
             @NotNull final Vector2D positionRelative,
             final int taille, @NotNull final Color couleur) {
         this(texte, positionAncrage, positionRelative, taille);
@@ -175,7 +176,7 @@ public class Etiquette extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile, 
+    public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (imageFormule == null) {
             construireImage();
@@ -208,6 +209,32 @@ public class Etiquette extends Forme {
         return new java.awt.Color((float) couleur.getRed(),
                 (float) couleur.getGreen(), (float) couleur.getBlue(),
                 (float) couleur.getOpacity());
+    }
+
+    @Override
+    public double distance(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        final Vector2D coinSuperieurGauche = repere.positionVirtuelle(
+                getPositionAncrage()).add(getPositionRelative());
+        final Vector2D coinSuperieurDroit = coinSuperieurGauche.add(
+                new Vector2D(getLargeur(), 0));
+        final Vector2D coinInferieurDroit = coinSuperieurDroit.add(
+                new Vector2D(0, getHauteur()));
+        final Vector2D coinInferieurGauche = coinInferieurDroit.add(
+                new Vector2D(-getLargeur(), 0));
+        if (curseur.getX() >= coinSuperieurGauche.getX()
+                && curseur.getX() <= coinSuperieurDroit.getX()
+                && curseur.getY() >= coinSuperieurDroit.getY()
+                && curseur.getY() <= coinInferieurDroit.getY()) {
+            return 0;
+        }
+        return Math.min(new Segment(coinSuperieurGauche, coinSuperieurDroit,
+                null).distance(curseur), Math.min(new Segment(
+                coinSuperieurDroit, coinInferieurDroit, null).distance(curseur),
+                Math.min(new Segment(coinInferieurDroit, coinInferieurGauche,
+                        null).distance(curseur), new Segment(
+                        coinInferieurGauche, coinSuperieurGauche, null)
+                        .distance(curseur))));
     }
 
     public final String getTexte() {
@@ -249,16 +276,16 @@ public class Etiquette extends Forme {
     public final Vector2D getPositionAncrage() {
         return positionAncrage.getValue();
     }
-    
+
     public final void setPositionAncrage(
             @NotNull final Vector2D positionAncrage) {
         this.positionAncrage.setValue(positionAncrage);
     }
-    
+
     public final double getLargeur() {
         return imageFormule.getWidth();
     }
-    
+
     public final double getHauteur() {
         return imageFormule.getHeight();
     }
