@@ -62,7 +62,7 @@ public final class Point extends Forme {
      * La taille du point.
      */
     private final Taille taille = Taille.de("point");
-    
+
     /**
      * Construit un point de couleur, de taille et de position définies par
      * défaut.
@@ -89,7 +89,7 @@ public final class Point extends Forme {
      * @param position la position réelle du point.
      * @param couleur la couleur du point.
      */
-    public Point(@NotNull final Vector2D position, 
+    public Point(@NotNull final Vector2D position,
             @NotNull final Color couleur) {
         this(position);
         setCouleur(couleur);
@@ -103,7 +103,7 @@ public final class Point extends Forme {
      * @param couleur la couleur du point.
      * @param taille la taille du point.
      */
-    public Point(@NotNull final Vector2D position, 
+    public Point(@NotNull final Vector2D position,
             @NotNull final Color couleur, final int taille) {
         this(position, couleur);
         this.taille.setValue(taille);
@@ -126,34 +126,41 @@ public final class Point extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile, 
+    public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        dessinerRond(toile.getGraphicsContext2D(),
-                repere.positionVirtuelle(getPosition()));
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
+                COULEUR_BORDURE, getTaille() + TAILLE_BORDURE);
+        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
+                getCouleur(), getTaille());
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        final int rayon = getTaille() + 6;
+        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
+                getCouleur().deriveColor(1, 1, 1, 0.3), rayon);
     }
 
     /**
-     * Dessine le point en tant que rond.
+     * Dessine un rond sur une toile centré à une position virtuelle, de couleur
+     * et de rayon virtuel spécifiés.
      *
-     * @param contexteGraphique le contexte graphique de dessin du point.
-     * @param positionVirtuelle la position du point dans le contexte graphique.
+     * @param toile la toile surlaquelle dessiner le rond.
+     * @param positionVirtuelle la position virtuelle du centre du rond.
+     * @param couleur la couleur du rond.
+     * @param rayon le rayon du rond.
      */
-    private void dessinerRond(@NotNull final GraphicsContext contexteGraphique,
-            @NotNull final Vector2D positionVirtuelle) {
-        contexteGraphique.setFill(COULEUR_BORDURE);
-        contexteGraphique.fillOval(
-                positionVirtuelle.getX() - getTaille() - TAILLE_BORDURE,
-                positionVirtuelle.getY() - getTaille() - TAILLE_BORDURE,
-                2 * (getTaille() + TAILLE_BORDURE),
-                2 * (getTaille() + TAILLE_BORDURE)
-        );
-        contexteGraphique.setFill(getCouleur());
-        contexteGraphique.fillOval(
-                positionVirtuelle.getX() - getTaille(),
-                positionVirtuelle.getY() - getTaille(),
-                2 * getTaille(),
-                2 * getTaille()
-        );
+    private static void dessinerRond(@NotNull final Canvas toile,
+            @NotNull final Vector2D positionVirtuelle,
+            @NotNull final Color couleur, final double rayon) {
+        final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
+        contexteGraphique.setFill(couleur);
+        contexteGraphique.fillOval(positionVirtuelle.getX() - rayon,
+                positionVirtuelle.getY() - rayon, 2 * rayon, 2 * rayon);
     }
 
     @Override
@@ -161,7 +168,7 @@ public final class Point extends Forme {
             @NotNull final Repere repere) {
         final Vector2D positionVirtuelle = repere.positionVirtuelle(
                 getPosition());
-        return positionVirtuelle.distance(curseur);
+        return Math.max(0, positionVirtuelle.distance(curseur) - 5);
     }
 
     /**
