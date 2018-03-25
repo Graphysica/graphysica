@@ -186,7 +186,7 @@ public class Aire extends Forme {
      *
      * @return les points délimitant cette aire.
      */
-    private Vector2D[] getPoints() {
+    public Vector2D[] getPoints() {
         final Vector2D[] pointsReels = new Vector2D[points.size()];
         int i = 0;
         for (final ObjectProperty<Vector2D> point : points) {

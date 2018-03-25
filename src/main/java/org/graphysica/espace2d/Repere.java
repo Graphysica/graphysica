@@ -282,7 +282,9 @@ public final class Repere {
 
     /**
      * Calcule la position virtuelle des graduations horizontales de l'espace,
-     * qui correspond à des valeurs d'ordonnées de l'espace.
+     * qui correspond à des valeurs d'ordonnées de l'espace. Ces valeurs
+     * d'ordonnée de l'espace sont déterminées en ordre croissant à partir de la
+     * hauteur de leur écran d'affichage
      *
      * @param hauteur la hauteur virtuelle de l'espace exprimée en pixels.
      * @param espacementMinimal l'espacement virtuel minimal entre chaque
@@ -314,7 +316,9 @@ public final class Repere {
 
     /**
      * Calcule la position virtuelle des graduations verticales de l'espace, qui
-     * correspondent à des valeurs d'abscisses de l'espace.
+     * correspondent à des valeurs d'abscisses de l'espace. Ces valeurs
+     * d'abscisse de l'espace sont déterminées en ordre croissant à partir de la
+     * largeur de leur écran d'affichage.
      *
      * @param largeur la largeur virtuelle de l'espace exprimée en pixels.
      * @param espacementMinimal l'espacement virtuel minimal entre chaque
