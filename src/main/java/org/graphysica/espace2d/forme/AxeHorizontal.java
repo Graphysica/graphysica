@@ -31,7 +31,7 @@ import org.graphysica.espace2d.Repere;
  * @author Marc-Antoine Ouimet
  */
 public class AxeHorizontal extends Axe {
-
+    
     /**
      * Construit un axe horizontal dont l'espacement minimal virtuel est défini.
      *
@@ -105,7 +105,7 @@ public class AxeHorizontal extends Axe {
     private void actualiserPositionEtiquettes(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         final double ordonneeReelleAxe = positionReelleAxe(toile, repere);
-        final double ordonneeVirtuelleAxe = positionVirtuelleAxe(toile, repere);
+        positionVirtuelle = positionVirtuelleAxe(toile, repere);
         final Iterator<Map.Entry<Double, Etiquette>> iteration = etiquettes
                 .entrySet().iterator();
         while (iteration.hasNext()) {
@@ -114,11 +114,11 @@ public class AxeHorizontal extends Axe {
             final Etiquette etiquette = entree.getValue();
             etiquette.setPositionAncrage(
                     new Vector2D(valeur, ordonneeReelleAxe));
-            if (ordonneeVirtuelleAxe >= toile.getHeight()
+            if (positionVirtuelle >= toile.getHeight()
                     - etiquette.getHauteur()) {
                 etiquette.setPositionRelative(new Vector2D(
                         -etiquette.getLargeur() / 2,
-                        toile.getHeight() - ordonneeVirtuelleAxe
+                        toile.getHeight() - positionVirtuelle
                         - etiquette.getHauteur()));
             } else {
                 etiquette.setPositionRelative(new Vector2D(
@@ -156,6 +156,12 @@ public class AxeHorizontal extends Axe {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public double distance(@NotNull final Vector2D curseur, 
+            @NotNull final Repere repere) {
+        return Math.abs(curseur.getY() - positionVirtuelle);
     }
 
 }

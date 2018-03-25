@@ -62,6 +62,11 @@ public abstract class Axe extends Forme {
      */
     private final IntegerProperty tailleCaracteres
             = new SimpleIntegerProperty(14);
+    
+    /**
+     * La position virtuelle de l'axe recalculée à chaque dessin de l'axe.
+     */
+    protected double positionVirtuelle;
 
     /**
      * L'énumération des sens possibles d'un axe.
