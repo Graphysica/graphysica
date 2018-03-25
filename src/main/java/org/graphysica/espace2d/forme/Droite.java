@@ -19,6 +19,7 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
+import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 
@@ -117,7 +118,12 @@ public final class Droite extends SegmentDroite {
             origineTrace = new Vector2D(xP, 0); //P
             arriveeTrace = new Vector2D(xQ, toile.getHeight()); //Q
         }
-
     }
 
+    @Override
+    public double distance(@NotNull final Vector2D curseur, 
+            @NotNull final Repere repere) {
+        return new Segment(origineTrace, arriveeTrace, null).distance(curseur);
+    }
+    
 }
