@@ -14,18 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.construction.commande;
 
 /**
- * Les classes implémentant cette interface peuvent être actualisées.
+ * Les classes implémentant cette interface peuvent annuler et refaire des
+ * actions.
  *
- * @author Marc-Antoine Ouimet
+ * @author Marc-Antoine
  */
-interface Actualisable {
-
+public interface Annulable {
+    
     /**
-     * Actualise l'objet.
+     * Annule la dernière action effectuée.
      */
-    public void actualiser();
+    public void annuler();
+    
+    /**
+     * Refait la dernière action annulée.
+     */
+    public void refaire();
 
 }

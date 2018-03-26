@@ -14,18 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.construction.commande;
 
 /**
- * Les classes implémentant cette interface peuvent être actualisées.
+ * Une commande annulable est une action exécutable sur la construction qui peut
+ * être annulée par la suite.
  *
- * @author Marc-Antoine Ouimet
+ * @author Marc-Antoine
  */
-interface Actualisable {
+public abstract class CommandeAnnulable extends Commande implements Annulable {
 
-    /**
-     * Actualise l'objet.
-     */
-    public void actualiser();
-
+    @Override
+    public boolean estAnnulable() {
+        return true;
+    }
+    
 }

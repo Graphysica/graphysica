@@ -14,18 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.construction.commande;
 
 /**
- * Les classes implémentant cette interface peuvent être actualisées.
+ * Les classes implémentant cette inferface peuvent être exécutées.
  *
- * @author Marc-Antoine Ouimet
+ * @author Marc-Antoine
  */
-interface Actualisable {
-
+public interface Executable {
+    
     /**
-     * Actualise l'objet.
+     * Exécute l'action.
      */
-    public void actualiser();
+    public void executer();
 
 }

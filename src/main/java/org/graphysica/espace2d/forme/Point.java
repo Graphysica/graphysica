@@ -14,14 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Un point représente une position dans l'espace.
@@ -59,8 +61,7 @@ public final class Point extends Forme {
     /**
      * La taille du point.
      */
-    private final ObjectProperty<Taille> taille
-            = new SimpleObjectProperty<>(Taille.de("point"));
+    private final Taille taille = Taille.de("point");
 
     /**
      * Construit un point de couleur, de taille et de position définies par
@@ -85,10 +86,11 @@ public final class Point extends Forme {
      * Construit un point de taille définie par défaut à la position et de
      * couleur spécifiées.
      *
-     * @param couleur la couleur du point.
      * @param position la position réelle du point.
+     * @param couleur la couleur du point.
      */
-    public Point(@NotNull final Color couleur, @NotNull Vector2D position) {
+    public Point(@NotNull final Vector2D position,
+            @NotNull final Color couleur) {
         this(position);
         setCouleur(couleur);
     }
@@ -97,49 +99,76 @@ public final class Point extends Forme {
      * Construit un point dont la taille, la couleur et la position sont
      * définies.
      *
-     * @param taille la taille du point.
-     * @param couleur la couleur du point.
      * @param position la position réelle du point.
+     * @param couleur la couleur du point.
+     * @param taille la taille du point.
      */
-    public Point(final int taille, @NotNull final Color couleur,
-            @NotNull Vector2D position) {
-        this(couleur, position);
-        this.taille.setValue(new Taille(taille));
+    public Point(@NotNull final Vector2D position,
+            @NotNull final Color couleur, final int taille) {
+        this(position, couleur);
+        this.taille.setValue(taille);
     }
-    
+
+    /**
+     * Construit une prévisualisation de point positionné à la position du
+     * curseur.
+     *
+     * @param curseur la position réelle du curseur.
+     */
+    public Point(@NotNull final ObjectProperty<Vector2D> curseur) {
+        setCouleur(COULEUR_PAR_DEFAUT);
+        position.bind(curseur);
+    }
+
     {
         proprietesActualisation.add(position);
         proprietesActualisation.add(taille);
     }
 
     @Override
-    public void dessiner(@NotNull final Toile toile) {
-        dessinerRond(toile.getGraphicsContext2D(),
-                toile.positionVirtuelle(getPosition()));
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
+                COULEUR_BORDURE, getTaille() + TAILLE_BORDURE);
+        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
+                getCouleur(), getTaille());
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        final int rayon = getTaille() + 6;
+        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
+                getCouleur().deriveColor(1, 1, 1, 0.3), rayon);
     }
 
     /**
-     * Dessine le point en tant que rond.
+     * Dessine un rond sur une toile centré à une position virtuelle, de couleur
+     * et de rayon virtuel spécifiés.
      *
-     * @param contexteGraphique le contexte graphique de dessin du point.
-     * @param positionVirtuelle la position du point dans le contexte graphique.
+     * @param toile la toile surlaquelle dessiner le rond.
+     * @param positionVirtuelle la position virtuelle du centre du rond.
+     * @param couleur la couleur du rond.
+     * @param rayon le rayon du rond.
      */
-    private void dessinerRond(@NotNull final GraphicsContext contexteGraphique,
-            @NotNull final Vector2D positionVirtuelle) {
-        contexteGraphique.setFill(COULEUR_BORDURE);
-        contexteGraphique.fillOval(
-                positionVirtuelle.getX() - getTaille() - TAILLE_BORDURE,
-                positionVirtuelle.getY() - getTaille() - TAILLE_BORDURE,
-                2 * (getTaille() + TAILLE_BORDURE),
-                2 * (getTaille() + TAILLE_BORDURE)
-        );
-        contexteGraphique.setFill(getCouleur());
-        contexteGraphique.fillOval(
-                positionVirtuelle.getX() - getTaille(),
-                positionVirtuelle.getY() - getTaille(),
-                2 * getTaille(),
-                2 * getTaille()
-        );
+    private static void dessinerRond(@NotNull final Canvas toile,
+            @NotNull final Vector2D positionVirtuelle,
+            @NotNull final Color couleur, final double rayon) {
+        final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
+        contexteGraphique.setFill(couleur);
+        contexteGraphique.fillOval(positionVirtuelle.getX() - rayon,
+                positionVirtuelle.getY() - rayon, 2 * rayon, 2 * rayon);
+    }
+
+    @Override
+    public double distance(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        final Vector2D positionVirtuelle = repere.positionVirtuelle(
+                getPosition());
+        return Math.max(0, positionVirtuelle.distance(curseur) - 5);
     }
 
     /**
@@ -163,10 +192,6 @@ public final class Point extends Forme {
         this.position.setValue(position);
     }
 
-    public final void setPosition(final double abscisse, final double ordonnee) {
-        position.setValue(new Vector2D(abscisse, ordonnee));
-    }
-
     public double getAbscisse() {
         return position.getValue().getX();
     }
@@ -176,14 +201,14 @@ public final class Point extends Forme {
     }
 
     private int getTaille() {
-        return taille.getValue().getTaille();
+        return taille.getValue();
     }
 
-    public void setTaille(@NotNull final Taille taille) {
+    public void setTaille(final int taille) {
         this.taille.setValue(taille);
     }
 
-    public ObjectProperty<Taille> tailleProperty() {
+    public Taille tailleProperty() {
         return taille;
     }
 

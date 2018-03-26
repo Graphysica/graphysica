@@ -14,23 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
-
-import com.sun.istack.internal.NotNull;
-
 /**
- * Les classes implémentant cette interface peuvent être dessinées dans un
- * contexte graphique.
- *
- * @author Marc-Antoine Ouimet
+ * Classes de formes aux coordonnées réelles pouvant être dessinées sur une toile avec un repère.
  */
-public interface Dessinable {
-
-    /**
-     * Dessine l'objet dans un contexte graphique spécifié.
-     *
-     * @param toile la toile surlaquelle dessiner l'objet.
-     */
-    public void dessiner(@NotNull final Toile toile);
-
-}
+package org.graphysica.espace2d.forme;

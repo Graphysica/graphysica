@@ -14,18 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.construction;
 
 /**
- * Les classes implémentant cette interface peuvent être actualisées.
+ * Un élément peut être créé et manipulé dans une construction.
  *
- * @author Marc-Antoine Ouimet
+ * @author Marc-Antoine
  */
-interface Actualisable {
-
-    /**
-     * Actualise l'objet.
-     */
-    public void actualiser();
+public abstract class Element {
 
 }

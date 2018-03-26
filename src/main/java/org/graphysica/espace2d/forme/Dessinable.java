@@ -14,18 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.forme;
+
+import com.sun.istack.internal.NotNull;
+import javafx.scene.canvas.Canvas;
+import org.graphysica.espace2d.Repere;
 
 /**
- * Les classes implémentant cette interface peuvent être actualisées.
+ * Les classes implémentant cette interface peuvent être dessinées dans un
+ * contexte graphique d'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-interface Actualisable {
+interface Dessinable {
 
     /**
-     * Actualise l'objet.
+     * Dessine l'objet dans un contexte graphique d'espace spécifié.
+     *
+     * @param toile la toile surlaquelle dessiner l'objet.
+     * @param repere le repère de l'espace.
      */
-    public void actualiser();
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere);
 
 }
