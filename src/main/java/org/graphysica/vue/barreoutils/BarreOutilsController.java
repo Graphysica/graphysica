@@ -29,7 +29,7 @@ import javafx.scene.image.ImageView;
 /**
  * FXML Controller class
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public class BarreOutilsController implements Initializable {
 
