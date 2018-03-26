@@ -21,6 +21,8 @@ import com.sun.istack.internal.Nullable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Cursor;
@@ -55,6 +57,12 @@ public class EspaceInteractif extends Espace {
             = new SimpleObjectProperty<>();
 
     /**
+     * La position réelle actuelle du curseur.
+     */
+    private final ObjectProperty<Vector2D> positionReelleCurseur
+            = new SimpleObjectProperty<>();
+
+    /**
      * Construit un espace 2D interactif aux dimensions virtuelles définies.
      *
      * @param largeur la largeur virtuelle de l'espace.
@@ -65,6 +73,11 @@ public class EspaceInteractif extends Espace {
     }
 
     {
+        positionActuelleCurseur.addListener(
+                (@NotNull final Observable observable) -> {
+                    setPositionReelleCurseur(repere.positionReelle(
+                            getPositionActuelleCurseur()));
+                });
         setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
             setCursor(Cursor.CROSSHAIR);
         });
@@ -221,7 +234,7 @@ public class EspaceInteractif extends Espace {
         return new Vector2D(evenement.getX(), evenement.getY());
     }
 
-    public final Vector2D getPositionPrecedenteCurseur() {
+    private Vector2D getPositionPrecedenteCurseur() {
         return positionPrecendenteCurseur.getValue();
     }
 
@@ -230,7 +243,7 @@ public class EspaceInteractif extends Espace {
         this.positionPrecendenteCurseur.setValue(positionPrecedenteCurseur);
     }
 
-    public final Vector2D getPositionActuelleCurseur() {
+    private Vector2D getPositionActuelleCurseur() {
         return positionActuelleCurseur.getValue();
     }
 
@@ -239,8 +252,13 @@ public class EspaceInteractif extends Espace {
         this.positionActuelleCurseur.setValue(positionActuelleCurseur);
     }
 
-    public final ObjectProperty<Vector2D> positionActuelleCurseurProperty() {
-        return positionActuelleCurseur;
+    public final Vector2D getPositionReelleCurseur() {
+        return positionReelleCurseur.getValue();
+    }
+
+    private void setPositionReelleCurseur(
+            @NotNull final Vector2D positionReelleCurseur) {
+        this.positionReelleCurseur.setValue(positionReelleCurseur);
     }
 
 }
