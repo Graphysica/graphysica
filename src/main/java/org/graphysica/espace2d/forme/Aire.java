@@ -48,8 +48,7 @@ public class Aire extends Forme {
      * L'ensemble ordonné des points délimitant cette aire.
      */
     private final ObservableSet<ObjectProperty<Vector2D>> points
-            = FXCollections.observableSet(
-                    new LinkedHashSet<ObjectProperty<Vector2D>>());
+            = FXCollections.observableSet(new LinkedHashSet<>());
 
     // TODO: Constructeur d'aire de prévisualisation
     /**
@@ -85,10 +84,34 @@ public class Aire extends Forme {
     @Override
     public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+        dessinerAire(toile, repere.positionsVirtuelles(getPoints()),
+                getCouleur());
+    }
+
+    /**
+     * Dessine une aire aux contraintes et à la couleur définis sur une toile.
+     *
+     * @param toile la toile sur laquelle dessiner l'aire.
+     * @param pointsVirtuels les points virtuels délimitant l'aire.
+     * @param couleur la couleur de l'aire.
+     */
+    private static void dessinerAire(@NotNull final Canvas toile,
+            @NotNull final Vector2D[] pointsVirtuels,
+            @NotNull final Color couleur) {
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
-        contexteGraphique.setFill(getCouleur());
-        contexteGraphique.fillPolygon(repere.abscissesVirtuelles(abscisses()),
-                repere.ordonneesVirtuelles(ordonnees()), points.size());
+        contexteGraphique.setFill(couleur);
+        contexteGraphique.fillPolygon(abscisses(pointsVirtuels),
+                ordonnees(pointsVirtuels), pointsVirtuels.length);
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        dessinerAire(toile, repere.positionsVirtuelles(getPoints()),
+                getCouleur().darker());
     }
 
     /**
@@ -96,11 +119,11 @@ public class Aire extends Forme {
      *
      * @return les abscisses de points.
      */
-    private double[] abscisses() {
-        final double[] abscisses = new double[points.size()];
+    private static double[] abscisses(@NotNull final Vector2D[] points) {
+        final double[] abscisses = new double[points.length];
         int i = 0;
-        for (final ObjectProperty<Vector2D> point : points) {
-            abscisses[i] = point.getValue().getX();
+        for (final Vector2D point : points) {
+            abscisses[i] = point.getX();
             i++;
         }
         return abscisses;
@@ -111,11 +134,11 @@ public class Aire extends Forme {
      *
      * @return les ordonnées de points.
      */
-    private double[] ordonnees() {
-        final double[] ordonnees = new double[points.size()];
+    private static double[] ordonnees(@NotNull final Vector2D[] points) {
+        final double[] ordonnees = new double[points.length];
         int i = 0;
-        for (final ObjectProperty<Vector2D> point : points) {
-            ordonnees[i] = point.getValue().getY();
+        for (final Vector2D point : points) {
+            ordonnees[i] = point.getY();
             i++;
         }
         return ordonnees;
