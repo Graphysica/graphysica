@@ -18,9 +18,11 @@ package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.IntegerProperty;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.Repere;
 
 /**
  * Une ligne a une épaisseur et une couleur par défaut pour relier deux points
@@ -58,20 +60,37 @@ public abstract class Ligne extends Forme {
     {
         proprietesActualisation.add(epaisseur);
     }
-
+    
     /**
-     * Dessine la ligne en tant que tracé continu.
+     * Dessine une ligne définie par son origine et son arrivée virtuelles, sa
+     * couleur et son épaisseur sur une toile. Dans le cas d'une droite,
+     * l'origine et l'arrivée devraient se situer aux bords de la toile.
      *
-     * @param contexteGraphique le contexte de dessin de la ligne.
+     * @param toile la toile sur laquelle dessiner la ligne.
+     * @param origine l'origine virtuelle de la ligne.
+     * @param arrivee l'arrivée virtuelle de la ligne.
+     * @param couleur la couleur de la ligne.
+     * @param epaisseur l'épaisseur de la ligne.
      */
-    protected void dessinerContinue(
-            @NotNull final GraphicsContext contexteGraphique) {
-        contexteGraphique.setStroke(getCouleur());
-        contexteGraphique.setLineWidth(getEpaisseur());
-        contexteGraphique.strokeLine(origineTrace.getX(),
-                origineTrace.getY(), arriveeTrace.getX(),
-                arriveeTrace.getY());
+    protected static void dessinerLigne(@NotNull final Canvas toile,
+            @NotNull final Vector2D origine, @NotNull final Vector2D arrivee,
+            @NotNull final Color couleur, final double epaisseur) {
+        final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
+        contexteGraphique.setStroke(couleur);
+        contexteGraphique.setLineWidth(epaisseur);
+        contexteGraphique.strokeLine(origine.getX(), origine.getY(),
+                arrivee.getX(), arrivee.getY());
     }
+    
+    /**
+     * Calcule la position virtuelle de l'origine et de l'arrivée de la trace de
+     * cette ligne.
+     *
+     * @param toile la toile sur laquelle dessiner la ligne.
+     * @param repere le repère de l'espace.
+     */
+    protected abstract void calculerOrigineEtArrivee(@NotNull final Canvas toile,
+            @NotNull final Repere repere);
 
     /**
      * Récupère un vecteur dont l'orientation est la même que celle de la ligne.
