@@ -37,7 +37,7 @@ import org.graphysica.espace2d.Repere;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Forme extends Element implements Dessinable, Surbrillable,
-        Selectionnable {
+        Selectionnable, Previsualisable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation
@@ -72,6 +72,12 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
      * Si la forme est en surbrillance.
      */
     private final BooleanProperty enSurbrillance 
+            = new SimpleBooleanProperty(false);
+    
+    /**
+     * Si la forme est en prévisualisation.
+     */
+    private final BooleanProperty enPrevisualisation 
             = new SimpleBooleanProperty(false);
     
     public Forme() {
@@ -137,6 +143,16 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     @Override
     public void setEnSurbrillance(final boolean enSurbrillance) {
         this.enSurbrillance.setValue(enSurbrillance);
+    }
+
+    @Override
+    public boolean isEnPrevisualisation() {
+        return enPrevisualisation.getValue();
+    }
+
+    @Override
+    public void setEnPrevisualisation(final boolean enPrevisualisation) {
+        this.enPrevisualisation.setValue(enPrevisualisation);
     }
     
 }
