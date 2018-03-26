@@ -35,7 +35,7 @@ public class Fleche extends SegmentDroite {
     /**
      * La tête de cette flèche.
      */
-    private final Tete tete = new Tete();
+    private final Triangle tete = new Triangle();
 
     public Fleche(@NotNull final Vector2D point1,
             @NotNull final Vector2D point2) {
@@ -55,6 +55,13 @@ public class Fleche extends SegmentDroite {
     public Fleche(@NotNull final Point point,
             @NotNull final ObjectProperty<Vector2D> curseur) {
         super(point, curseur);
+    }
+
+    @Override
+    public double distance(@NotNull final Vector2D curseur, 
+            @NotNull final Repere repere) {
+        return Math.min(super.distance(curseur, repere), 
+                tete.distance(curseur, repere));
     }
 
     @Override
@@ -83,7 +90,7 @@ public class Fleche extends SegmentDroite {
     /**
      * Une tête de flèche, représentée par un triangle.
      */
-    private class Tete extends Forme {
+    private class Triangle extends Aire {
 
         /**
          * La hauteur virtuelle du triangle.
@@ -155,6 +162,12 @@ public class Fleche extends SegmentDroite {
                     repere.positionVirtuelle(getArrivee()));
             contexteGraphique.fillPolygon(abscisses(pointsTrace),
                     ordonnees(pointsTrace), pointsTrace.length);
+        }
+
+        @Override
+        public double distance(@NotNull final Vector2D curseur, 
+                @NotNull final Repere repere) {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
 
         public int getHauteur() {

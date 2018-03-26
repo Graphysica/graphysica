@@ -20,6 +20,7 @@ import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
+import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 
@@ -101,21 +102,35 @@ public class SegmentDroite extends Ligne {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile, 
+    public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (!isIndefinie()) {
-            origineTrace = repere.positionVirtuelle(getPoint1());
-            arriveeTrace = repere.positionVirtuelle(getPoint2());
-            dessinerContinue(toile.getGraphicsContext2D());
+            if (isEnSurbrillance()) {
+                dessinerSurbrillance(toile, repere);
+            }
+            calculerOrigineEtArrivee(toile, repere);
+            dessinerLigne(toile, origineTrace, arriveeTrace, getCouleur(),
+                    getEpaisseur());
         }
     }
 
-    public Vector2D getPoint1() {
-        return point1.getValue();
+    @Override
+    protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        origineTrace = repere.positionVirtuelle(getPoint1());
+        arriveeTrace = repere.positionVirtuelle(getPoint2());
     }
 
-    public Vector2D getPoint2() {
-        return point2.getValue();
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        if (!isIndefinie()) {
+            calculerOrigineEtArrivee(toile, repere);
+            dessinerLigne(toile, origineTrace, arriveeTrace,
+                    getCouleur().deriveColor(1, 1, 1, 0.3), getEpaisseur() + 2);
+            dessinerLigne(toile, origineTrace, arriveeTrace, getCouleur(),
+                    getEpaisseur());
+        }
     }
 
     /**
@@ -131,6 +146,22 @@ public class SegmentDroite extends Ligne {
     @Override
     public Vector2D getVecteurDirecteur() {
         return getPoint1().subtract(getPoint2());
+    }
+
+    @Override
+    public double distance(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        final Vector2D p1 = repere.positionVirtuelle(getPoint1());
+        final Vector2D p2 = repere.positionVirtuelle(getPoint2());
+        return new Segment(p1, p2, null).distance(curseur);
+    }
+
+    public Vector2D getPoint1() {
+        return point1.getValue();
+    }
+
+    public Vector2D getPoint2() {
+        return point2.getValue();
     }
 
 }

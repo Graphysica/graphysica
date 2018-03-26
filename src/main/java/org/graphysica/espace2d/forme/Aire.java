@@ -17,12 +17,15 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 
@@ -42,13 +45,12 @@ public class Aire extends Forme {
             0.04, 0.4);
 
     /**
-     * La liste ordonnée des points délimitant cette aire.
+     * L'ensemble ordonné des points délimitant cette aire.
      */
-    private final ObservableList<ObjectProperty<Vector2D>> points
-            = FXCollections.observableArrayList();
+    private final ObservableSet<ObjectProperty<Vector2D>> points
+            = FXCollections.observableSet(new LinkedHashSet<>());
 
     // TODO: Constructeur d'aire de prévisualisation
-    
     /**
      * Construit une aire sur un ensemble défini de points.
      *
@@ -76,16 +78,40 @@ public class Aire extends Forme {
     }
 
     {
-        proprietesActualisation.add(this.points);
+        proprietesActualisation.add(points);
     }
 
     @Override
     public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+        dessinerAire(toile, repere.positionsVirtuelles(getPoints()),
+                getCouleur());
+    }
+
+    /**
+     * Dessine une aire aux contraintes et à la couleur définis sur une toile.
+     *
+     * @param toile la toile sur laquelle dessiner l'aire.
+     * @param pointsVirtuels les points virtuels délimitant l'aire.
+     * @param couleur la couleur de l'aire.
+     */
+    private static void dessinerAire(@NotNull final Canvas toile,
+            @NotNull final Vector2D[] pointsVirtuels,
+            @NotNull final Color couleur) {
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
-        contexteGraphique.setFill(getCouleur());
-        contexteGraphique.fillPolygon(repere.abscissesVirtuelles(abscisses()),
-                repere.ordonneesVirtuelles(ordonnees()), points.size());
+        contexteGraphique.setFill(couleur);
+        contexteGraphique.fillPolygon(abscisses(pointsVirtuels),
+                ordonnees(pointsVirtuels), pointsVirtuels.length);
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        dessinerAire(toile, repere.positionsVirtuelles(getPoints()),
+                getCouleur().darker());
     }
 
     /**
@@ -93,10 +119,12 @@ public class Aire extends Forme {
      *
      * @return les abscisses de points.
      */
-    private double[] abscisses() {
-        final double[] abscisses = new double[points.size()];
-        for (int i = 0; i < abscisses.length; i++) {
-            abscisses[i] = points.get(i).getValue().getX();
+    private static double[] abscisses(@NotNull final Vector2D[] points) {
+        final double[] abscisses = new double[points.length];
+        int i = 0;
+        for (final Vector2D point : points) {
+            abscisses[i] = point.getX();
+            i++;
         }
         return abscisses;
     }
@@ -106,12 +134,89 @@ public class Aire extends Forme {
      *
      * @return les ordonnées de points.
      */
-    private double[] ordonnees() {
-        final double[] ordonnees = new double[points.size()];
-        for (int i = 0; i < ordonnees.length; i++) {
-            ordonnees[i] = points.get(i).getValue().getY();
+    private static double[] ordonnees(@NotNull final Vector2D[] points) {
+        final double[] ordonnees = new double[points.length];
+        int i = 0;
+        for (final Vector2D point : points) {
+            ordonnees[i] = point.getY();
+            i++;
         }
         return ordonnees;
+    }
+
+    @Override
+    public double distance(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        if (positionDansAire(curseur, repere)) {
+            return 0;
+        }
+        Vector2D premierPoint = null;
+        Vector2D point1 = null;
+        Vector2D point2;
+        double distance = Double.MAX_VALUE;
+        int i = 0;
+        final Iterator<ObjectProperty<Vector2D>> iteration = points.iterator();
+        while (i < points.size()) {
+            if (i == 0) {
+                point1 = repere.positionVirtuelle(iteration.next().getValue());
+                premierPoint = point1;
+            }
+            i++;
+            if (i < points.size()) {
+                point2 = repere.positionVirtuelle(iteration.next().getValue());
+            } else {
+                point2 = premierPoint;
+            }
+            distance = Math.min(distance,
+                    new Segment(point1, point2, null).distance(curseur));
+            point1 = point2;
+        }
+        return distance;
+    }
+
+    /**
+     * Détermine si la position du curseur se retrouve dans l'aire. Cette
+     * méthode est une implémentation de
+     * <a href="https://wrf.ecse.rpi.edu//Research/Short_Notes/pnpoly.html">l'algorithme
+     * de W. Randolph Franklin</a>.
+     *
+     * @param curseur la position virtuelle du curseur.
+     * @param repere le repère de l'espace.
+     * @return {@code true} si le curseur est dans cette aire.
+     */
+    private boolean positionDansAire(@NotNull final Vector2D curseur,
+            @NotNull final Repere repere) {
+        boolean dansAire = false;
+        final int npol = points.size();
+        final Vector2D[] pts = repere.positionsVirtuelles(getPoints());
+        for (int i = 0, j = npol - 1; i < npol; j = i++) {
+            if ((((pts[i].getY() <= curseur.getY())
+                    && (curseur.getY() < pts[j].getY()))
+                    || ((pts[j].getY() <= curseur.getY())
+                    && (curseur.getY() < pts[i].getY())))
+                    && (curseur.getX() < (pts[j].getX() - pts[i].getX())
+                    * (curseur.getY() - pts[i].getY())
+                    / (pts[j].getY() - pts[i].getY()) + pts[i].getX())) {
+                dansAire = !dansAire;
+            }
+        }
+        return dansAire;
+    }
+
+    /**
+     * Récupère l'ensemble des positions réelles des points délimitant cette
+     * aire.
+     *
+     * @return les points délimitant cette aire.
+     */
+    public Vector2D[] getPoints() {
+        final Vector2D[] pointsReels = new Vector2D[points.size()];
+        int i = 0;
+        for (final ObjectProperty<Vector2D> point : points) {
+            pointsReels[i] = point.getValue();
+            i++;
+        }
+        return pointsReels;
     }
 
 }

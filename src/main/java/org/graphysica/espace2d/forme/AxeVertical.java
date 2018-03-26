@@ -105,7 +105,7 @@ public class AxeVertical extends Axe {
     private void actualiserPositionEtiquettes(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         final double abscisseReelleAxe = positionReelleAxe(toile, repere);
-        final double abscisseVirtuelleAxe = positionVirtuelleAxe(toile, repere);
+        positionVirtuelle = positionVirtuelleAxe(toile, repere);
         final Iterator<Map.Entry<Double, Etiquette>> iteration = etiquettes
                 .entrySet().iterator();
         while (iteration.hasNext()) {
@@ -114,10 +114,10 @@ public class AxeVertical extends Axe {
             final Etiquette etiquette = entree.getValue();
             etiquette.setPositionAncrage(
                     new Vector2D(abscisseReelleAxe, valeur));
-            if (abscisseVirtuelleAxe >= toile.getWidth()
+            if (positionVirtuelle >= toile.getWidth()
                     - etiquette.getLargeur()) {
                 etiquette.setPositionRelative(new Vector2D(
-                        toile.getWidth() - abscisseVirtuelleAxe
+                        toile.getWidth() - positionVirtuelle
                         - etiquette.getLargeur(),
                         -etiquette.getHauteur() / 2));
             } else {
@@ -158,4 +158,10 @@ public class AxeVertical extends Axe {
         }
     }
 
+    @Override
+    public double distance(@NotNull final Vector2D curseur, 
+            @NotNull final Repere repere) {
+        return Math.abs(curseur.getX() - positionVirtuelle);
+    }
+    
 }

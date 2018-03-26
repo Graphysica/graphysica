@@ -33,7 +33,7 @@ import javafx.scene.canvas.Canvas;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class ToileRedimensionnable extends Canvas
+abstract class ToileRedimensionnable extends Canvas
         implements Actualisable {
 
     /**

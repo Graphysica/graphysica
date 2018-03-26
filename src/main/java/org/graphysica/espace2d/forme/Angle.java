@@ -260,4 +260,11 @@ public class Angle extends Forme {
         return !(point1.equals(sommet) || point2.equals(sommet));
     }
 
+    @Override
+    public double distance(@NotNull final Vector2D curseur, 
+            @NotNull final Repere repere) {
+        // TODO: Déterminer la distance entre le curseur et un secteur
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

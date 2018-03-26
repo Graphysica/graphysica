@@ -43,7 +43,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     /**
      * La liste observable des formes dessinées dans l'espace.
      */
-    private final ObservableList<Forme> formes
+    protected final ObservableList<Forme> formes
             = FXCollections.observableArrayList();
 
     /**
@@ -54,25 +54,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     /**
      * Le repère de l'espace.
      */
-    protected Repere repere;
-
-    /**
-     * La grille secondaire de la toile. Représente les graduations plus
-     * précises de l'espace.
-     */
-    private final Grille grilleSecondaire = new Grille(
-            new Vector2D(repere.getEchelle().getX() / 4,
-                    repere.getEchelle().getY() / 4),
-            Color.gray(0.9));
-
-    /**
-     * La grille principale de la toile. Représente les graduations plus
-     * grossières de l'espace.
-     */
-    private final Grille grillePrincipale = new Grille(
-            new Vector2D(repere.getEchelle().getX(),
-                    repere.getEchelle().getY()),
-            Color.gray(0.5));
+    protected Repere repere = new Repere();
 
     /**
      * Construit un espace dont les dimensions virtuelles sont définies.
@@ -87,12 +69,14 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
 
     {
         formes.addListener(evenementActualisation);
-        ajouter(grilleSecondaire);
-        ajouter(grillePrincipale);
-        ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL,
-                grillePrincipale.getEspacement().getY()));
-        ajouter(Axe.nouvelAxe(Axe.Sens.VERTICAL,
-                grillePrincipale.getEspacement().getX()));
+        ajouter(new Grille(
+            new Vector2D(25, 25),
+            Color.gray(0.9)));
+        ajouter(new Grille(
+            new Vector2D(100, 100),
+            Color.gray(0.5)));
+        ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL, 100));
+        ajouter(Axe.nouvelAxe(Axe.Sens.VERTICAL, 100));
     }
 
     /**

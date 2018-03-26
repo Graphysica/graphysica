@@ -33,7 +33,7 @@ import org.graphysica.espace2d.forme.Point;
  *
  * @author Marc-Antoine Ouimet
  */
-public class OrdreRendu extends LinkedHashSet<Class> {
+class OrdreRendu extends LinkedHashSet<Class> {
 
     {
         add(Grille.class);
