@@ -67,7 +67,7 @@ public class AxeVertical extends Axe {
             etiquette.dessiner(toile, repere);
         });
     }
-    
+
     /**
      * Dessine des marques de graduations sur l'axe.
      *

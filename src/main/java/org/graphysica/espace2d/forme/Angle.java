@@ -37,7 +37,7 @@ import org.graphysica.espace2d.Repere;
  */
 @SuppressWarnings("unchecked")
 public class Angle extends Forme {
-    
+
     /**
      * La couleur par défaut d'un angle.
      */
@@ -166,7 +166,6 @@ public class Angle extends Forme {
                     ArcType.ROUND);
         }
     }
-
 
     @Override
     public void dessinerSurbrillance(@NotNull final Canvas toile,

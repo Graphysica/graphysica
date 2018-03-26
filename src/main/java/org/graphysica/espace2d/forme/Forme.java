@@ -79,7 +79,7 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
      */
     private final BooleanProperty enPrevisualisation 
             = new SimpleBooleanProperty(false);
-    
+
     public Forme() {
     }
 

@@ -79,7 +79,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
         ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL, 100));
         ajouter(Axe.nouvelAxe(Axe.Sens.VERTICAL, 100));
     }
-    
+
     /**
      * Actualise l'affichage de cette toile en redessinant chacune de ses
      * formes. Si la classe d'une forme ne fait pas partie des définitions de
