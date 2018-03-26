@@ -20,7 +20,9 @@ import com.sun.istack.internal.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.graphysica.espace2d.Point;
 import org.graphysica.espace2d.Taille;
 import org.slf4j.Logger;
@@ -30,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Victor Babin <vicbab@Graphysica>
  */
-public class Outil {
+public class Outil extends Button {
 
     public enum Buttons {
         POINT, SELECTION, SEGMENT, DROITE,
@@ -42,6 +44,7 @@ public class Outil {
     }
     private static final Logger LOGGER = LoggerFactory.getLogger(Taille.class);
     private Image img;
+    private String name;
     
     /**
      * Si le bouton est actif.
@@ -59,10 +62,10 @@ public class Outil {
      * @param propriete la propriété à charger
      * @return la valeur de la propriété
      */
-    private static String chargerProprieteOutil(@NotNull final String propriete) {
+    private String chargerProprieteOutil(@NotNull final String propriete) {
         try {
             final Properties proprietes = new Properties();
-            final InputStream entree = Point.class
+            final InputStream entree = Outil.class
                     .getResourceAsStream(CHEMIN_PROPRIETES);
             if (entree != null) {
                 proprietes.load(entree);
@@ -83,8 +86,21 @@ public class Outil {
         return "RIEN";
     }
 
-    private static void chargerImages(String propriete) {
-        String img = chargerProprieteOutil(propriete) + ".png";
+    public Image chargerImage() {
+        return new Image("/images/icons/" + chargerProprieteOutil(name) + ".png");
     }
 
+    public Outil(String name, String text) {
+        super("");
+        this.name = name;
+        this.img = chargerImage();
+        ImageView image = new ImageView("/images/icons/tag.png");
+        image.setPreserveRatio(true);
+//        image.setImage(img);
+        getChildren().add(image);
+        this.setPrefSize(100, 100);
+    }
+
+    
+    
 }

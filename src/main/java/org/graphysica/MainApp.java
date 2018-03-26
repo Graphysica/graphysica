@@ -6,6 +6,7 @@ import static javafx.application.Application.launch;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
@@ -20,6 +21,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.Point;
 import org.graphysica.espace2d.SegmentDroite;
+import org.graphysica.vue.barreoutils.Outil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +51,7 @@ public class MainApp extends Application {
         stage.setScene(scene);
         stage.show();
         
+        
 //        showDialog();
     }
 
@@ -69,7 +72,9 @@ public class MainApp extends Application {
         information = FXMLLoader.load(getClass().getResource("/fxml/Information.fxml"));
         splitPane = new SplitPane(information, espace);
         chronometre = FXMLLoader.load(getClass().getResource("/fxml/Chronometre.fxml"));
-        toolBar = FXMLLoader.load(getClass().getResource("/fxml/BarreOutils.fxml"));
+//        toolBar = FXMLLoader.load(getClass().getResource("/fxml/BarreOutils.fxml"));
+        toolBar = new ToolBar(new Outil("sol", ""), new Outil("perpendiculaire", ""));
+        
         
         initialiserDimensions();
         ajouterObjetsEspace();
