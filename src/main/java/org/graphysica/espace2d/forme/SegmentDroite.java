@@ -127,9 +127,8 @@ public class SegmentDroite extends Ligne {
         if (!isIndefinie()) {
             calculerOrigineEtArrivee(toile, repere);
             dessinerLigne(toile, origineTrace, arriveeTrace,
-                    getCouleur().deriveColor(1, 1, 1, 0.3), getEpaisseur() + 2);
-            dessinerLigne(toile, origineTrace, arriveeTrace, getCouleur(),
-                    getEpaisseur());
+                    getCouleur().deriveColor(1, 1, 1, 0.3), 
+                    1.5 * getEpaisseur());
         }
     }
 

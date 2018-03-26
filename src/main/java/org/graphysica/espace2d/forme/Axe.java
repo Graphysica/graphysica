@@ -24,6 +24,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 
@@ -62,7 +63,7 @@ public abstract class Axe extends Forme {
      */
     private final IntegerProperty tailleCaracteres
             = new SimpleIntegerProperty(14);
-    
+
     /**
      * La position virtuelle de l'axe recalculée à chaque dessin de l'axe.
      */
@@ -101,6 +102,12 @@ public abstract class Axe extends Forme {
     {
         proprietesActualisation.add(espacement);
         proprietesActualisation.add(tailleCaracteres);
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        fleche.dessinerSurbrillance(toile, repere);
     }
 
     /**
@@ -143,6 +150,7 @@ public abstract class Axe extends Forme {
             final String format) {
         retirerEtiquettesObsoletes(valeurs);
         ajouterEtiquettes(valeurs, format);
+        // TODO: Régler #16
         etiquettes.remove(-0.0);
         etiquettes.remove(0.0);
     }

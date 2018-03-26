@@ -45,6 +45,9 @@ public class AxeVertical extends Axe {
     @Override
     public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
         final double[] graduationsHorizontales = repere
                 .graduationsHorizontales(toile.getHeight(), getEspacement());
         final double[] ordonneesReelles = repere.ordonneesReellees(
@@ -64,7 +67,7 @@ public class AxeVertical extends Axe {
             etiquette.dessiner(toile, repere);
         });
     }
-
+    
     /**
      * Dessine des marques de graduations sur l'axe.
      *
