@@ -36,6 +36,7 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
+@SuppressWarnings("unchecked")
 public class Aire extends Forme {
 
     /**

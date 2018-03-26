@@ -102,34 +102,10 @@ public class SegmentDroite extends Ligne {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
-            @NotNull final Repere repere) {
-        if (!isIndefinie()) {
-            if (isEnSurbrillance()) {
-                dessinerSurbrillance(toile, repere);
-            }
-            calculerOrigineEtArrivee(toile, repere);
-            dessinerLigne(toile, origineTrace, arriveeTrace, getCouleur(),
-                    getEpaisseur());
-        }
-    }
-
-    @Override
     protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         origineTrace = repere.positionVirtuelle(getPoint1());
         arriveeTrace = repere.positionVirtuelle(getPoint2());
-    }
-
-    @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
-            @NotNull final Repere repere) {
-        if (!isIndefinie()) {
-            calculerOrigineEtArrivee(toile, repere);
-            dessinerLigne(toile, origineTrace, arriveeTrace,
-                    getCouleur().deriveColor(1, 1, 1, 0.3), 
-                    1.5 * getEpaisseur());
-        }
     }
 
     /**

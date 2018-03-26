@@ -132,7 +132,7 @@ public final class Grille extends Forme {
             @NotNull final Repere repere) {
         calculerGraduations(toile, repere);
         dessinerGrille(toile, graduationsHorizontales, graduationsVerticales, 
-                getCouleur().deriveColor(1, 1, 1, 0.3), 2);
+                getCouleur().deriveColor(1, 1, 1, 0.3), 3);
     }
 
     @Override
@@ -149,7 +149,7 @@ public final class Grille extends Forme {
                     Math.abs(curseur.getX() - graduationVerticale));
         }
         return Math.min(Math.min(distanceVerticale, distanceHorizontale),
-                new Vector2D(distanceVerticale, distanceHorizontale).getNorm());
+                new Vector2D(distanceHorizontale, distanceVerticale).getNorm());
     }
 
     public final Vector2D getEspacement() {
