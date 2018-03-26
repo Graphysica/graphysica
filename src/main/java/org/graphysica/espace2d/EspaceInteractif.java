@@ -17,12 +17,17 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Une toile interactive permet à l'utilisateur d'interagir sur l'ensemble des
@@ -44,7 +49,7 @@ public class EspaceInteractif extends Espace {
     private Vector2D positionPrecendenteCurseur;
 
     /**
-     * La position réelle du curseur sur cette toile interactive.
+     * La position actuelle et réelle du curseur sur cette toile interactive.
      */
     private final ObjectProperty<Vector2D> positionReelleCurseur
             = new SimpleObjectProperty<>();
@@ -58,7 +63,8 @@ public class EspaceInteractif extends Espace {
             setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
-            actualiserPositionCurseur(evenement);
+            actualiserPositionActuelleCurseur(evenement);
+            actualiserSurbrillance();
         });
         setOnScroll((@NotNull final ScrollEvent evenement) -> {
             final double defilementVertical = evenement.getDeltaY();
@@ -78,9 +84,87 @@ public class EspaceInteractif extends Espace {
             if (evenement.isMiddleButtonDown()) {
                 final Vector2D positionCurseur = new Vector2D(evenement.getX(),
                         evenement.getY());
-                deplacer(positionCurseur);
+                defiler(positionCurseur);
             }
         });
+    }
+
+    private void actualiserSurbrillance() {
+        for (final Forme forme : formes) {
+            forme.setEnSurbrillance(false);
+        }
+        final Forme formeSelectionnee = formeSelectionnee();
+        if (formeSelectionnee != null) {
+            System.out.println(formeSelectionnee);
+            formeSelectionnee.setEnSurbrillance(true);
+        }
+    }
+
+    /**
+     * Récupère la forme qui est actuellement sélectionnée par l'utilisateur.
+     * Cette forme correspond à la forme dont la distance avec le curseur est
+     * minimale. L'ordre de rendu supplante cette distance minimale. Il ne peut
+     * donc y avoir qu'une seule forme sélectionnée à la fois. Un gestionnaire
+     * de sélections pourra gérer les sélections multiples. Il arrivera souvent
+     * qu'aucune forme ne soit sélectionnée.
+     *
+     * @return la forme sélectionnée.
+     */
+    @Nullable
+    public Forme formeSelectionnee() {
+        final Map<Forme, Double> distances = distancesFormes();
+        System.out.println("distances = " + distances);
+        final Map<Class, Map.Entry<Forme, Double>> entreesRetenues
+                = new LinkedHashMap<>();
+        for (final Class classe : ordreRendu) {
+            for (final Map.Entry<Forme, Double> entree : distances.entrySet()) {
+                if (classe.isInstance(entree.getKey())) {
+                    if (!entreesRetenues.containsKey(classe)) {
+                        entreesRetenues.put(classe, entree);
+                        continue;
+                    }
+                    final Map.Entry<Forme, Double> entreePrecedente
+                            = entreesRetenues.get(classe);
+                    if (entree.getValue() < entreePrecedente.getValue()) {
+                        entreesRetenues.put(classe, entree);
+                    }
+                }
+            }
+        }
+        Map.Entry<Forme, Double> distanceMinimale = null;
+        for (final Map.Entry<Class, Map.Entry<Forme, Double>> entree
+                : entreesRetenues.entrySet()) {
+            if (distanceMinimale == null) {
+                distanceMinimale = entree.getValue();
+                continue;
+            }
+            final Map.Entry<Forme, Double> distance = entree.getValue();
+            if (distance.getValue() <= distanceMinimale.getValue()) {
+                distanceMinimale = distance;
+            }
+        }
+        if (distanceMinimale != null) {
+            return distanceMinimale.getKey();
+        }
+        return null;
+    }
+
+    /**
+     * Récupère les distances entre la position actuelle du curseur et les
+     * formes sélectionnées.
+     *
+     * @return l'association des distances aux formes.
+     */
+    private Map<Forme, Double> distancesFormes() {
+        final Map<Forme, Double> distances = new HashMap<>();
+        for (final Forme forme : formes) {
+            if (forme.isSelectionne(repere.positionVirtuelle(
+                    getPositionReelleCurseur()), repere)) {
+                distances.put(forme, forme.distance(repere.positionVirtuelle(
+                        getPositionReelleCurseur()), repere));
+            }
+        }
+        return distances;
     }
 
     /**
@@ -89,10 +173,12 @@ public class EspaceInteractif extends Espace {
      * défilement vertical est négatif, et aucun zoom n'a lieu si le défilement
      * vertical est nul.
      *
-     * @param defilementVertical le défilement vertical du zoom.
+     * @param defilementVertical le défilement vertical du zoom. S'il est
+     * négatif, l'espace est dézoomé. S'il est positif, l'espace est zoomé. S'il
+     * est nul, l'espace reste tel qu'il est.
      * @param positionCurseur la position virtuelle du curseur sur la toile.
      */
-    private void zoomer(final double defilementVertical,
+    public void zoomer(final double defilementVertical,
             @NotNull final Vector2D positionCurseur) {
         if (defilementVertical != 0) {
             final Vector2D translationOrigine = positionCurseur
@@ -109,17 +195,17 @@ public class EspaceInteractif extends Espace {
                     .subtract(translationOrigine.scalarMultiply(facteurZoom));
             repere.setOrigineVirtuelle(
                     new Vector2D((int) nouvelleOrigine.getX(),
-                    (int) nouvelleOrigine.getY()));
+                            (int) nouvelleOrigine.getY()));
         }
     }
 
     /**
-     * Déplace l'espace de la toile selon la variation des positions du curseur.
+     * Défile l'espace de la toile selon la variation des positions du curseur.
      *
      * @param positionCurseur la position virtuelle actuelle du curseur.
      * @see EspaceInteractif#positionPrecendenteCurseur
      */
-    private void deplacer(@NotNull final Vector2D positionCurseur) {
+    private void defiler(@NotNull final Vector2D positionCurseur) {
         final Vector2D deplacement = positionCurseur.subtract(
                 positionPrecendenteCurseur);
         final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
@@ -161,9 +247,9 @@ public class EspaceInteractif extends Espace {
     }
 
     /**
-     * Actualise la position réelle du curseur sur la toile.
+     * Actualise la position actuelle et réelle du curseur sur la toile.
      */
-    private void actualiserPositionCurseur(
+    private void actualiserPositionActuelleCurseur(
             @NotNull final MouseEvent evenement) {
         enregistrerPositionCurseur(evenement);
         positionReelleCurseur.setValue(positionReelleCurseur(evenement));

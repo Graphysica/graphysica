@@ -20,8 +20,9 @@ import org.graphysica.espace2d.forme.OrdreRendu;
 import org.graphysica.espace2d.forme.Grille;
 import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
+import java.util.LinkedHashSet;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Axe;
@@ -41,15 +42,15 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
             Espace.class);
 
     /**
-     * La liste observable des formes dessinées dans l'espace.
+     * L'ensemble ordonné observable des formes dessinées dans l'espace.
      */
-    protected final ObservableList<Forme> formes
-            = FXCollections.observableArrayList();
+    protected final ObservableSet<Forme> formes
+            = FXCollections.observableSet(new LinkedHashSet<>());
 
     /**
      * L'ordre de rendu des formes dams l'espace.
      */
-    private final OrdreRendu ordreRendu = new OrdreRendu();
+    protected final OrdreRendu ordreRendu = new OrdreRendu();
 
     /**
      * Le repère de l'espace.
@@ -78,7 +79,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
         ajouter(Axe.nouvelAxe(Axe.Sens.HORIZONTAL, 100));
         ajouter(Axe.nouvelAxe(Axe.Sens.VERTICAL, 100));
     }
-
+    
     /**
      * Actualise l'affichage de cette toile en redessinant chacune de ses
      * formes. Si la classe d'une forme ne fait pas partie des définitions de
