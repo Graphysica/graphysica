@@ -105,6 +105,9 @@ public class SegmentDroite extends Ligne {
     public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (!isIndefinie()) {
+            if (isEnSurbrillance()) {
+                dessinerSurbrillance(toile, repere);
+            }
             calculerOrigineEtArrivee(toile, repere);
             dessinerLigne(toile, origineTrace, arriveeTrace, getCouleur(),
                     getEpaisseur());
@@ -123,7 +126,7 @@ public class SegmentDroite extends Ligne {
             @NotNull final Repere repere) {
         if (!isIndefinie()) {
             calculerOrigineEtArrivee(toile, repere);
-            dessinerLigne(toile, origineTrace, arriveeTrace, 
+            dessinerLigne(toile, origineTrace, arriveeTrace,
                     getCouleur().deriveColor(1, 1, 1, 0.3), getEpaisseur() + 2);
             dessinerLigne(toile, origineTrace, arriveeTrace, getCouleur(),
                     getEpaisseur());
