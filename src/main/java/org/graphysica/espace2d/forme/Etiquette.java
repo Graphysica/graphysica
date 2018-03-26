@@ -186,6 +186,21 @@ public class Etiquette extends Forme {
                 .add(getPositionRelative());
         contexteGraphique.drawImage(imageFormule, (int) (position.getX()),
                 (int) (position.getY()));
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        final Vector2D coinSuperieurGauche = repere.positionVirtuelle(
+                getPositionAncrage()).add(getPositionRelative());
+        final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
+        contexteGraphique.setStroke(getCouleur());
+        contexteGraphique.setLineWidth(1);
+        contexteGraphique.strokeRect(coinSuperieurGauche.getX(), 
+                coinSuperieurGauche.getY(), getLargeur(), getHauteur());
     }
 
     /**
