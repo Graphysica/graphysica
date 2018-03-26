@@ -70,37 +70,37 @@ public class BarreOutilsController implements Initializable {
 
     
 
-    private Outil.Buttons currButton = Outil.Buttons.POINTEUR;
+//    private Outil.Buttons currButton = Outil.Buttons.POINTEUR;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        icon = imgObjets.getImage();
-        archive.setOnAction((event) -> {
-            currButton = Outil.Buttons.ARCHIVE;
-        });
-        tag.setOnAction((event) -> {
-            currButton = Outil.Buttons.TAG;
-            imgObjets.setImage(imgTag.getImage());
-        });
-        curseur.setOnAction((event) -> {
-            currButton = Outil.Buttons.POINTEUR;
-        });
-        curseurPlus.setOnAction((event) -> {
-            currButton = Outil.Buttons.SELECTEUR;
-        });
-        champVectoriel.setOnAction((event) -> {
-            currButton = Outil.Buttons.CHAMP_VECTORIEL;
-        });
-        inspecteur.setOnAction((event) -> {
-            currButton = Outil.Buttons.INSPECTEUR;
-        });
-        puzzle.setOnAction((event) -> {
-            currButton = Outil.Buttons.PUZZLE;
-            imgObjets.setImage(imgPuzzle.getImage());
-        });
+//        icon = imgObjets.getImage();
+//        archive.setOnAction((event) -> {
+//            currButton = Outil.Buttons.ARCHIVE;
+//        });
+//        tag.setOnAction((event) -> {
+//            currButton = Outil.Buttons.TAG;
+//            imgObjets.setImage(imgTag.getImage());
+//        });
+//        curseur.setOnAction((event) -> {
+//            currButton = Outil.Buttons.POINTEUR;
+//        });
+//        curseurPlus.setOnAction((event) -> {
+//            currButton = Outil.Buttons.SELECTEUR;
+//        });
+//        champVectoriel.setOnAction((event) -> {
+//            currButton = Outil.Buttons.CHAMP_VECTORIEL;
+//        });
+//        inspecteur.setOnAction((event) -> {
+//            currButton = Outil.Buttons.INSPECTEUR;
+//        });
+//        puzzle.setOnAction((event) -> {
+//            currButton = Outil.Buttons.PUZZLE;
+//            imgObjets.setImage(imgPuzzle.getImage());
+//        });
     }
 
 }

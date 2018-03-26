@@ -20,6 +20,7 @@ import com.sun.istack.internal.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import javafx.scene.image.Image;
 import org.graphysica.espace2d.Point;
 import org.graphysica.espace2d.Taille;
 import org.slf4j.Logger;
@@ -31,8 +32,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Outil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Taille.class);
-
     public enum Buttons {
         POINT, SELECTION, SEGMENT, DROITE,
         PERPENDICULAIRE, PARALLELE, MEDIATRICE,
@@ -41,7 +40,9 @@ public class Outil {
         DEPLACEMENT, EFFACER, CHAMP_VECTORIEL,
         CORPS, INSPECTEUR, SOL;
     }
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(Taille.class);
+    private Image img;
+    
     /**
      * Si le bouton est actif.
      */
@@ -54,6 +55,7 @@ public class Outil {
 
     /**
      * Chargement de propriétés (images) des outils.
+     *
      * @param propriete la propriété à charger
      * @return la valeur de la propriété
      */
@@ -81,8 +83,8 @@ public class Outil {
         return "RIEN";
     }
 
-    
-    private static void chargerImages() {
-        
+    private static void chargerImages(String propriete) {
+        String img = chargerProprieteOutil(propriete) + ".png";
     }
+
 }
