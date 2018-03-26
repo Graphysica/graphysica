@@ -14,29 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.proprietes;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+package org.graphysica.construction.commande;
 
 /**
- * FXML Controller class
+ * Une commande est une action exécutable sur la construction.
  *
-<<<<<<< HEAD
- * @author Victor Babin
-=======
- * @author Victor Babin <vicbab@Graphysica>
->>>>>>> origin/master
+ * @author Marc-Antoine
  */
-public class ProprietesCouleurController implements Initializable {
-
+public abstract class Commande implements Executable {
+    
     /**
-     * Initializes the controller class.
+     * Détermine si une commande peut être annulée.
+     * @return {@code true} si la commande est annulable.
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+    public boolean estAnnulable() {
+        return false;
+    }
     
 }

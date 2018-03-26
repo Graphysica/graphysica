@@ -14,29 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.proprietes;
+package org.graphysica.espace2d.forme;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+import com.sun.istack.internal.NotNull;
+import javafx.scene.canvas.Canvas;
+import org.graphysica.espace2d.Repere;
 
 /**
- * FXML Controller class
+ * Les classes implémentant cette interface peuvent être dessinées dans un
+ * contexte graphique d'espace.
  *
-<<<<<<< HEAD
- * @author Victor Babin
-=======
- * @author Victor Babin <vicbab@Graphysica>
->>>>>>> origin/master
+ * @author Marc-Antoine Ouimet
  */
-public class ProprietesCouleurController implements Initializable {
+interface Dessinable {
 
     /**
-     * Initializes the controller class.
+     * Dessine l'objet dans un contexte graphique d'espace spécifié.
+     *
+     * @param toile la toile surlaquelle dessiner l'objet.
+     * @param repere le repère de l'espace.
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere);
+
 }

@@ -27,7 +27,11 @@ import javafx.scene.control.MenuItem;
 /**
  * Classe controlleur du FXML Menu
  *
+<<<<<<< HEAD
  * @author Victor Babin
+=======
+ * @author Victor Babin <vicbab@Graphysica>
+>>>>>>> origin/master
  */
 public class MenuController implements Initializable {
 

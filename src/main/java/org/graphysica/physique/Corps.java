@@ -14,29 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.proprietes;
+package org.graphysica.physique;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+import org.graphysica.construction.Element;
 
 /**
- * FXML Controller class
+ * Un corps est un élément physique dans l,espace.
  *
-<<<<<<< HEAD
- * @author Victor Babin
-=======
- * @author Victor Babin <vicbab@Graphysica>
->>>>>>> origin/master
+ * @author Marc-Antoine
  */
-public class ProprietesCouleurController implements Initializable {
+public abstract class Corps extends Element {
 
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
 }

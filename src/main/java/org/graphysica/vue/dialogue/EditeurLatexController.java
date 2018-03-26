@@ -23,7 +23,11 @@ import javafx.fxml.Initializable;
 /**
  * FXML Controller class
  *
+<<<<<<< HEAD
  * @author Victor Babin
+=======
+ * @author Victor Babin <vicbab@Graphysica>
+>>>>>>> origin/master
  */
 public class EditeurLatexController implements Initializable {
 

@@ -1,34 +1,34 @@
+[![GitHub issues](https://img.shields.io/github/issues/Graphysica/graphysica.svg)](https://github.com/Graphysica/graphysica/issues) [![GitHub license](https://img.shields.io/github/license/Graphysica/graphysica.svg)](https://github.com/Graphysica/graphysica/blob/master/LICENSE)
 # Graphysica
 
-Graphysica est un environnement de simulation de physique mécanique multiplateforme.
+Graphysica est un logiciel de simulation de physique mécanique multiplateforme développé en Java. Il permet de modéliser des situations de physique classique en deux dimensions à l'aide d'outils mathématiques compréhensifs.
 
 ## Pour débuter
 
-Abusus enim multitudine hominum, quam tranquillis in rebus diutius rexit,
-ex agrestibus habitaculis urbes construxit multis opibus firmas et viribus,
-quarum ad praesens pleraeque licet Graecis nominibus appellentur, quae isdem
-ad arbitrium inposita sunt conditoris, primigenia tamen nomina non amittunt,
-quae eis Assyria lingua institutores veteres indiderunt.
+Clonez le projet puis ouvrez-le dans votre environnement de développement Java:
+
+`git clone git://github.com/Graphysica/graphysica.git Graphysica`
 
 ### Prérequis
 
-* [JDK 1.8] (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-
-### Installation
-
-1. Constituendi autem sunt qui sint in amicitia fines
-2. Nec minus feminae quoque calamitatum participes
-3. Fuerit toto in consulatu sine provincia, cui
-4. Altera sententia est, quae definit amicitiam
-5. Isdem diebus Apollinaris Domitiani gener, paulo
+* [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [Maven](https://maven.apache.org/)
 
 ## Déploiement
 
-Boni honestissime nostra potius sic quem sit enim viri honeste fruantur in assentior quibus honeste.
+Exécutez la commande pour générer un `.jar` du logiciel dans le répertoire `./target/`:
 
-## Construit avec
+`mvn install`
 
+## Réalisé avec
+
+* [Commons Math](http://commons.apache.org/proper/commons-math/) - Librairie de mathématiques, principalement utilisée pour ses modules d'algèbre linéaire
+* [JBox2D](http://www.jbox2d.org/) - Librairie de simulation de physique
+* [Apache POI](https://poi.apache.org/) - Interface de programmation avec des fichiers de la gamme MicrosoftⓇ Office
+* [JLaTeXMath](https://github.com/opencollab/jlatexmath) - Librairie de rendu d'équations [LaTeX](https://www.latex-project.org/)
+* [Scene Builder](http://gluonhq.com/products/scene-builder/) - Éditeur graphique de FXML
 * [Maven](https://maven.apache.org/) - Gestionnaire de dépendances
+* [JUnit](https://junit.org) - Librairie de test
 
 ## Auteurs
 
@@ -37,15 +37,14 @@ Boni honestissime nostra potius sic quem sit enim viri honeste fruantur in assen
 
 ## License
 
-Graphysica est un logiciel libre; vous pouvez le redistribuer ou le modifier suivant les termes de la 
+Graphysica est un logiciel libre; vous pouvez le redistribuer ou le modifier en accordance avec les termes de la 
 GNU General Public License telle que publiée par la Free Software Foundation.
 
-Graphysica est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE;
-sans même la garantie tacite de QUALITÉ MARCHANDE ou d'ADÉQUATION à UN BUT PARTICULIER.
-Consultez la [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html). pour plus de détails.
+Graphysica est distribué librement, mais AUCUNE GARANTIE N'EST ÉMISE QUANT À SON FONCTIONNEMENT.
+Consultez la [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) ou le fichier [LICENSE.md](https://github.com/Graphysica/graphysica/blob/master/LICENSE) pour plus de détails.
 
 ![license](https://www.gnu.org/graphics/gplv3-127x51.png)
 
 ## Remerciements
 
-* GeoGebra
+* [GeoGebra](https://www.geogebra.org)

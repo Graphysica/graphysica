@@ -27,7 +27,11 @@ import javafx.scene.image.ImageView;
 /**
  * FXML Controller class
  *
+<<<<<<< HEAD
  * @author Victor Babin
+=======
+ * @author Victor Babin <vicbab@Graphysica>
+>>>>>>> origin/master
  */
 public class ChronometreController implements Initializable {
 

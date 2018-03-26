@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+<<<<<<< HEAD
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
@@ -103,4 +104,40 @@ public class BarreOutilsController implements Initializable {
 //        });
     }
 
+=======
+
+/**
+ * FXML Controller class
+ *
+ * @author Victor Babin <vicbab@Graphysica>
+ */
+public class BarreOutilsController implements Initializable {
+
+    @FXML
+    private Button click;
+
+    @FXML
+    private Button selection;
+
+    @FXML
+    private Button forme;
+
+    @FXML
+    private Button boite;
+
+    @FXML
+    private Button champ;
+
+    @FXML
+    private Button info;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+    }    
+    
+>>>>>>> origin/master
 }
