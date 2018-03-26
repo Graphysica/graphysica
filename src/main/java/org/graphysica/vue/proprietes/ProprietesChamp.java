@@ -21,7 +21,7 @@ import javafx.scene.control.TextField;
 
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public abstract class ProprietesChamp {
     

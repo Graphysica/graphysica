@@ -16,33 +16,12 @@
  */
 package org.graphysica.espace2d;
 
-import com.sun.istack.internal.NotNull;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.scene.canvas.Canvas;
-
 /**
- * Une toile redimensionnable est actualisée lorsqu'elle est redimensionnée. Il
- * faut lier les dimensions de la toile aux dimensions du panneau parent.
- * <pre>
- *      ToileRedimensionnable toile = ...;
- *      AnchorPane panneau = new AnchorPane(toile);
- *      toile.widthProperty().bind(panneau.widthProperty());
- *      toile.heightProperty().bind(panneau.heightProperty());
- * </pre>
+ * Une toile redimensionnable est actualisée lorsqu'elle est redimensionnée.
  *
  * @author Marc-Antoine Ouimet
  */
-abstract class ToileRedimensionnable extends Canvas
-        implements Actualisable {
-
-    /**
-     * L'événement d'actualisation de la toile redimmensionable.
-     */
-    protected final InvalidationListener evenementActualisation
-            = (@NotNull final Observable observable) -> {
-                actualiser();
-            };
+public abstract class ToileRedimensionnable extends Toile {
 
     /**
      * Construit une toile redimensionnable aux dimensions définies.
@@ -53,7 +32,7 @@ abstract class ToileRedimensionnable extends Canvas
     public ToileRedimensionnable(final double largeur, final double hauteur) {
         super(hauteur, hauteur);
     }
-
+    
     {
         //Traiter la redimension de la toile
         widthProperty().addListener(evenementActualisation);

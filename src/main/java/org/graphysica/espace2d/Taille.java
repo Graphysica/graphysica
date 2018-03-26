@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d.forme;
+package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Marc-Antoine Ouimet
  */
-public final class Taille extends SimpleIntegerProperty {
+public final class Taille {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Taille.class);
 
@@ -71,11 +71,10 @@ public final class Taille extends SimpleIntegerProperty {
             TAILLE_PAR_DEFAUT);
 
     public Taille() {
-        set(TAILLE_PAR_DEFAUT);
     }
 
     public Taille(final int taille) {
-        set(taille);
+        setTaille(taille);
     }
 
     /**
@@ -121,11 +120,10 @@ public final class Taille extends SimpleIntegerProperty {
         return new Taille(chargerProprieteTaille(type));
     }
 
-    @Override
-    public void setValue(@NotNull final Number valeur) {
-        set(valeur.intValue());
+    public int getTaille() {
+        return taille.getValue();
     }
-    
+
     /**
      * Modifie la taille. Si la taille spécifiée est inférieure à
      * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}, défini
@@ -133,13 +131,16 @@ public final class Taille extends SimpleIntegerProperty {
      *
      * @param taille la nouvelle taille.
      */
-    @Override
-    public final void set(final int taille) {
+    public final void setTaille(final int taille) {
         if (taille < TAILLE_MINIMALE ^ taille > TAILLE_MAXIMALE) {
-            super.set(TAILLE_PAR_DEFAUT);
+            this.taille.setValue(TAILLE_PAR_DEFAUT);
         } else {
-            super.set(taille);
+            this.taille.setValue(taille);
         }
+    }
+
+    public IntegerProperty tailleProperty() {
+        return taille;
     }
 
 }

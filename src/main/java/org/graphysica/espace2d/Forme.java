@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d.forme;
+package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
@@ -24,11 +24,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.construction.Element;
-import org.graphysica.espace2d.Repere;
 
 /**
  * Une forme peut être dessinée à l'écran dans un espace avec une couleur
@@ -36,8 +32,7 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Forme extends Element implements Dessinable, Surbrillable,
-        Selectionnable {
+public abstract class Forme implements Dessinable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation
@@ -58,52 +53,23 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
             = new SimpleObjectProperty<>(COULEUR_PAR_DEFAUT);
 
     /**
-     * Le seuil de distance de sélection entre la position virtuelle du curseur
-     * et la forme exprimée en pixels.
-     */
-    private static final double DISTANCE_SELECTION = 5;
-
-    /**
      * Si la forme est affichée.
      */
     private final BooleanProperty affichee = new SimpleBooleanProperty(true);
-    
-    /**
-     * Si la forme est en surbrillance.
-     */
-    private final BooleanProperty enSurbrillance 
-            = new SimpleBooleanProperty(false);
-    
+
     public Forme() {
     }
-
+    
     public Forme(@NotNull final Color couleur) {
         setCouleur(couleur);
     }
 
     {
         proprietesActualisation.add(couleur);
-        proprietesActualisation.add(affichee);
-        proprietesActualisation.add(enSurbrillance);
     }
-
-    @Override
-    public abstract void dessiner(@NotNull final Canvas toile,
-            @NotNull final Repere repere);
-
-    @Override
-    public abstract void dessinerSurbrillance(@NotNull final Canvas toile,
-            @NotNull final Repere repere);
     
     @Override
-    public boolean isSelectionne(@NotNull final Vector2D curseur,
-            @NotNull final Repere repere) {
-        return distance(curseur, repere) <= DISTANCE_SELECTION;
-    }
-
-    public Set<Observable> getProprietesActualisation() {
-        return proprietesActualisation;
-    }
+    public abstract void dessiner(@NotNull final Toile toile);
 
     public final Color getCouleur() {
         return couleur.getValue();
@@ -129,14 +95,4 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
         return affichee;
     }
 
-    @Override
-    public boolean isEnSurbrillance() {
-        return enSurbrillance.getValue();
-    }
-
-    @Override
-    public void setEnSurbrillance(final boolean enSurbrillance) {
-        this.enSurbrillance.setValue(enSurbrillance);
-    }
-    
 }
