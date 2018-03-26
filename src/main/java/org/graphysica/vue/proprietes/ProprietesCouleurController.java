@@ -23,7 +23,7 @@ import javafx.fxml.Initializable;
 /**
  * FXML Controller class
  *
- * @author Victor Babin
+ * @author Victor Babin <vicbab@Graphysica>
  */
 public class ProprietesCouleurController implements Initializable {
 

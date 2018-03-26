@@ -14,25 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.proprietes;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+package org.graphysica.construction.commande;
 
 /**
- * FXML Controller class
+ * Les classes implémentant cette inferface peuvent être exécutées.
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Marc-Antoine
  */
-public class ProprietesController implements Initializable {
-
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+public interface Executable {
     
+    /**
+     * Exécute l'action.
+     */
+    public void executer();
+
 }

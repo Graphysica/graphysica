@@ -14,25 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.proprietes;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
-
 /**
- * FXML Controller class
- *
- * @author Victor Babin <vicbab@Graphysica>
+ * Classes décrivant un espace en deux dimensions en tant que composante graphique d'édition.
  */
-public class ProprietesController implements Initializable {
-
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
-}
+package org.graphysica.espace2d;

@@ -21,86 +21,38 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 /**
  * FXML Controller class
  *
- * @author Victor Babin
+ * @author Victor Babin <vicbab@Graphysica>
  */
 public class BarreOutilsController implements Initializable {
 
     @FXML
-    private Button curseur;
+    private Button click;
 
     @FXML
-    private MenuButton mbObjets;
+    private Button selection;
 
     @FXML
-    private MenuItem tag;
+    private Button forme;
 
     @FXML
-    private MenuItem puzzle;
+    private Button boite;
 
     @FXML
-    private Button curseurPlus;
+    private Button champ;
 
     @FXML
-    private Button archive;
-
-    @FXML
-    private Button champVectoriel;
-
-    @FXML
-    private Button inspecteur;
-    
-    @FXML
-    private ImageView imgTag;
-
-    @FXML
-    private ImageView imgPuzzle;
-
-    @FXML
-    private ImageView imgObjets;
-    
-    private Image icon = null;
-
-    
-
-//    private Outil.Buttons currButton = Outil.Buttons.POINTEUR;
+    private Button info;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        icon = imgObjets.getImage();
-//        archive.setOnAction((event) -> {
-//            currButton = Outil.Buttons.ARCHIVE;
-//        });
-//        tag.setOnAction((event) -> {
-//            currButton = Outil.Buttons.TAG;
-//            imgObjets.setImage(imgTag.getImage());
-//        });
-//        curseur.setOnAction((event) -> {
-//            currButton = Outil.Buttons.POINTEUR;
-//        });
-//        curseurPlus.setOnAction((event) -> {
-//            currButton = Outil.Buttons.SELECTEUR;
-//        });
-//        champVectoriel.setOnAction((event) -> {
-//            currButton = Outil.Buttons.CHAMP_VECTORIEL;
-//        });
-//        inspecteur.setOnAction((event) -> {
-//            currButton = Outil.Buttons.INSPECTEUR;
-//        });
-//        puzzle.setOnAction((event) -> {
-//            currButton = Outil.Buttons.PUZZLE;
-//            imgObjets.setImage(imgPuzzle.getImage());
-//        });
-    }
-
+        // TODO
+    }    
+    
 }

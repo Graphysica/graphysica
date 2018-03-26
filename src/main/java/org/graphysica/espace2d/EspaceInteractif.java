@@ -17,6 +17,9 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -27,7 +30,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  *
  * @author Marc-Antoine Ouimet
  */
-public class ToileInteractive extends ToileRedimensionnable {
+public class EspaceInteractif extends Espace {
 
     /**
      * Le facteur de zoom utilisé pour zoomer la toile.
@@ -40,11 +43,23 @@ public class ToileInteractive extends ToileRedimensionnable {
      */
     private Vector2D positionPrecendenteCurseur;
 
-    public ToileInteractive(final double largeur, final double hauteur) {
+    /**
+     * La position réelle du curseur sur cette toile interactive.
+     */
+    private final ObjectProperty<Vector2D> positionReelleCurseur
+            = new SimpleObjectProperty<>();
+
+    public EspaceInteractif(final double largeur, final double hauteur) {
         super(largeur, hauteur);
     }
 
     {
+        setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
+            setCursor(Cursor.CROSSHAIR);
+        });
+        setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
+            actualiserPositionCurseur(evenement);
+        });
         setOnScroll((@NotNull final ScrollEvent evenement) -> {
             final double defilementVertical = evenement.getDeltaY();
             final Vector2D positionCurseur = new Vector2D(evenement.getX(),
@@ -53,8 +68,11 @@ public class ToileInteractive extends ToileRedimensionnable {
         });
         setOnMousePressed((@NotNull final MouseEvent evenement) -> {
             if (evenement.isMiddleButtonDown()) {
-                enregistrerPositionCurseur(evenement);
+                setCursor(Cursor.CLOSED_HAND);
             }
+        });
+        setOnMouseReleased((@NotNull final MouseEvent evenement) -> {
+            setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseDragged((@NotNull final MouseEvent evenement) -> {
             if (evenement.isMiddleButtonDown()) {
@@ -78,17 +96,20 @@ public class ToileInteractive extends ToileRedimensionnable {
             @NotNull final Vector2D positionCurseur) {
         if (defilementVertical != 0) {
             final Vector2D translationOrigine = positionCurseur
-                    .subtract(origine.getValue());
-            origine.setValue(origine.getValue().add(translationOrigine));
+                    .subtract(repere.getOrigineVirtuelle());
+            repere.setOrigineVirtuelle(
+                    repere.getOrigineVirtuelle().add(translationOrigine));
             double facteurZoom = FACTEUR_ZOOM;
             if (defilementVertical < 0) {
                 facteurZoom = 1 / FACTEUR_ZOOM;
             }
-            setEchelle(new Vector2D(
-                    echelle.getValue().getX() * facteurZoom,
-                    echelle.getValue().getY() * facteurZoom));
-            origine.setValue(origine.getValue().subtract(
-                    translationOrigine.scalarMultiply(facteurZoom)));
+            repere.setEchelle(repere.getEchelle().scalarMultiply(
+                    facteurZoom));
+            final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
+                    .subtract(translationOrigine.scalarMultiply(facteurZoom));
+            repere.setOrigineVirtuelle(
+                    new Vector2D((int) nouvelleOrigine.getX(),
+                    (int) nouvelleOrigine.getY()));
         }
     }
 
@@ -96,12 +117,15 @@ public class ToileInteractive extends ToileRedimensionnable {
      * Déplace l'espace de la toile selon la variation des positions du curseur.
      *
      * @param positionCurseur la position virtuelle actuelle du curseur.
-     * @see ToileInteractive#positionPrecendenteCurseur
+     * @see EspaceInteractif#positionPrecendenteCurseur
      */
     private void deplacer(@NotNull final Vector2D positionCurseur) {
         final Vector2D deplacement = positionCurseur.subtract(
                 positionPrecendenteCurseur);
-        origine.setValue(origine.getValue().add(deplacement));
+        final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
+                .add(deplacement);
+        repere.setOrigineVirtuelle(new Vector2D((int) nouvelleOrigine.getX(),
+                (int) nouvelleOrigine.getY()));
         positionPrecendenteCurseur = positionCurseur;
     }
 
@@ -111,8 +135,46 @@ public class ToileInteractive extends ToileRedimensionnable {
      */
     private void enregistrerPositionCurseur(
             @NotNull final MouseEvent evenement) {
-        positionPrecendenteCurseur = new Vector2D(evenement.getX(),
-                evenement.getY());
+        positionPrecendenteCurseur = positionVirtuelleCurseur(evenement);
+    }
+
+    /**
+     * Récupère la position virtuelle du curseur sur la toile.
+     *
+     * @param evenement l'événement du curseur.
+     * @return la position virtuelle du curseur.
+     */
+    public Vector2D positionVirtuelleCurseur(
+            @NotNull final MouseEvent evenement) {
+        return new Vector2D(evenement.getX(), evenement.getY());
+    }
+
+    /**
+     * Récupère la position réelle du curseur sur la toile.
+     *
+     * @param evenement l'événement du curseur.
+     * @return la position réelle du curseur.
+     */
+    public Vector2D positionReelleCurseur(
+            @NotNull final MouseEvent evenement) {
+        return repere.positionReelle(positionVirtuelleCurseur(evenement));
+    }
+
+    /**
+     * Actualise la position réelle du curseur sur la toile.
+     */
+    private void actualiserPositionCurseur(
+            @NotNull final MouseEvent evenement) {
+        enregistrerPositionCurseur(evenement);
+        positionReelleCurseur.setValue(positionReelleCurseur(evenement));
+    }
+
+    public final Vector2D getPositionReelleCurseur() {
+        return positionReelleCurseur.getValue();
+    }
+
+    public final ObjectProperty<Vector2D> positionReelleCurseurProperty() {
+        return positionReelleCurseur;
     }
 
 }

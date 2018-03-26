@@ -18,13 +18,14 @@ package org.graphysica.espace2d;
 
 /**
  * Les classes implémentant cette interface peuvent être actualisées.
+ *
  * @author Marc-Antoine Ouimet
  */
-public interface Actualisable {
-    
+interface Actualisable {
+
     /**
      * Actualise l'objet.
      */
     public void actualiser();
-    
+
 }
