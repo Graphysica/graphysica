@@ -17,10 +17,13 @@
 package org.graphysica.espace2d;
 
 import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -60,7 +63,7 @@ public class EspaceInteractif extends Espace {
      */
     private final ObjectProperty<Vector2D> positionReelleCurseur
             = new SimpleObjectProperty<>();
-    
+
     /**
      * Construit un espace 2D interactif aux dimensions virtuelles définies.
      *
@@ -109,51 +112,39 @@ public class EspaceInteractif extends Espace {
     }
 
     /**
-     * Récupère la forme qui est actuellement sélectionnée par l'utilisateur.
-     * Cette forme correspond à la forme dont la distance avec le curseur est
-     * minimale. L'ordre de rendu supplante cette distance minimale. Il ne peut
-     * donc y avoir qu'une seule forme sélectionnée à la fois. Un gestionnaire
-     * de sélections pourra gérer les sélections multiples. Il arrivera souvent
-     * qu'aucune forme ne soit sélectionnée.
+     * Récupère les formes sélectionnées par l'utilisateur en ordre croissant de
+     * distance au curseur en considérant l'ordre de rendu des formes. Ce
+     * faisant, la forme qui correspond le plus à une sélection ponctuelle de la
+     * part de l'utilisateur est le premier élément de l'ensemble récupéré. Il
+     * sera possible de déterminer l'intersection entre les premières formes de
+     * cet ensemble pour l'outil d'intersection en traversant l'ensemble pour y
+     * trouver les deux premières droites ou deux premières figures
+     * d'intersection. Il est fort probable que cet ensemble soit vide.
      *
-     * @return la forme sélectionnée.
+     * @return les formes sélectionnées en ordre croissant de distance.
      */
-    @Nullable
-    public Forme formeSelectionnee() {
+    public Set<Forme> formesSelectionnees() {
+        // Ajouter les formes dans l'ordre inverse
+        final List<Forme> formesSelectionnees = new ArrayList<>();
         final Map<Forme, Double> distances = distancesFormes();
-        final Map<Class, Map.Entry<Forme, Double>> entreesRetenues
-                = new LinkedHashMap<>();
         for (final Class classe : ordreRendu) {
+            // Retenir les formes de la classe
+            final List<Map.Entry<Forme, Double>> formesRetenues
+                    = new ArrayList<>();
             for (final Map.Entry<Forme, Double> entree : distances.entrySet()) {
                 if (classe.isInstance(entree.getKey())) {
-                    if (!entreesRetenues.containsKey(classe)) {
-                        entreesRetenues.put(classe, entree);
-                        continue;
-                    }
-                    final Map.Entry<Forme, Double> entreePrecedente
-                            = entreesRetenues.get(classe);
-                    if (entree.getValue() < entreePrecedente.getValue()) {
-                        entreesRetenues.put(classe, entree);
-                    }
+                    formesRetenues.add(entree);
                 }
             }
-        }
-        Map.Entry<Forme, Double> distanceMinimale = null;
-        for (final Map.Entry<Class, Map.Entry<Forme, Double>> entree
-                : entreesRetenues.entrySet()) {
-            if (distanceMinimale == null) {
-                distanceMinimale = entree.getValue();
-                continue;
-            }
-            final Map.Entry<Forme, Double> distance = entree.getValue();
-            if (distance.getValue() <= distanceMinimale.getValue()) {
-                distanceMinimale = distance;
+            // Trier en ordre décroissant
+            formesRetenues.sort((forme1, forme2)
+                    -> forme2.getValue().compareTo(forme1.getValue()));
+            for (final Map.Entry<Forme, Double> entree : formesRetenues) {
+                formesSelectionnees.add(entree.getKey());
             }
         }
-        if (distanceMinimale != null) {
-            return distanceMinimale.getKey();
-        }
-        return null;
+        Collections.reverse(formesSelectionnees);
+        return new LinkedHashSet<>(formesSelectionnees);
     }
 
     /**
@@ -262,6 +253,17 @@ public class EspaceInteractif extends Espace {
     private void setPositionReelleCurseur(
             @NotNull final Vector2D positionReelleCurseur) {
         this.positionReelleCurseur.setValue(positionReelleCurseur);
+    }
+
+    /**
+     * Récupère la propriété de position réelle du curseur dans l'espace. Permet
+     * de lier des positions de forme à la position du curseur pour la
+     * prévisualisation ou le déplacement de formes.
+     *
+     * @return la propriété de position réelle du curseur.
+     */
+    public final ObjectProperty<Vector2D> positionReelleCurseurProperty() {
+        return positionReelleCurseur;
     }
 
 }
