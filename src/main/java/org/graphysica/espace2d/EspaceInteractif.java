@@ -21,7 +21,6 @@ import com.sun.istack.internal.Nullable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -61,7 +60,7 @@ public class EspaceInteractif extends Espace {
      */
     private final ObjectProperty<Vector2D> positionReelleCurseur
             = new SimpleObjectProperty<>();
-
+    
     /**
      * Construit un espace 2D interactif aux dimensions virtuelles définies.
      *
@@ -96,10 +95,16 @@ public class EspaceInteractif extends Espace {
             setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseDragged((@NotNull final MouseEvent evenement) -> {
+            actualiserPositionsCurseur(evenement);
             if (evenement.isMiddleButtonDown()) {
                 defiler();
-                actualiserPositionsCurseur(evenement);
             }
+        });
+        setOnMouseDragReleased((@NotNull final MouseEvent evenement) -> {
+            final Vector2D origineVirtuelle = repere.getOrigineVirtuelle();
+            repere.setOrigineVirtuelle(new Vector2D(
+                    (int) origineVirtuelle.getX(),
+                    (int) origineVirtuelle.getY()));
         });
     }
 
@@ -202,10 +207,8 @@ public class EspaceInteractif extends Espace {
     private void defiler() {
         final Vector2D deplacement = getPositionActuelleCurseur()
                 .subtract(getPositionPrecedenteCurseur());
-        final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
-                .add(deplacement);
-        repere.setOrigineVirtuelle(new Vector2D((int) nouvelleOrigine.getX(),
-                (int) nouvelleOrigine.getY()));
+        repere.setOrigineVirtuelle(repere.getOrigineVirtuelle()
+                .add(deplacement));
     }
 
     /**
