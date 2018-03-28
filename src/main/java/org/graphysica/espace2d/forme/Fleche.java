@@ -18,8 +18,8 @@ package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 
@@ -30,6 +30,7 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
+@SuppressWarnings("unchecked")
 public class Fleche extends SegmentDroite {
 
     /**
@@ -58,9 +59,9 @@ public class Fleche extends SegmentDroite {
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur, 
+    public double distance(@NotNull final Vector2D curseur,
             @NotNull final Repere repere) {
-        return Math.min(super.distance(curseur, repere), 
+        return Math.min(super.distance(curseur, repere),
                 tete.distance(curseur, repere));
     }
 
@@ -68,6 +69,7 @@ public class Fleche extends SegmentDroite {
     public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         super.dessiner(toile, repere);
+        tete.calculerPositionsPoints(repere, getArrivee());
         tete.dessiner(toile, repere);
     }
 
@@ -102,72 +104,38 @@ public class Fleche extends SegmentDroite {
          */
         private final Taille largeur = Taille.de("teteflechelargeur");
 
-        /**
-         * Détermine l'ensemble des points virtuels qui tracent une tête
-         * triangulaire de flèche.
-         *
-         * @param arriveeVirtuelle l'arrivée virtuelle de la tête.
-         * @return l'ensemble ordonné des points aux coordonnées virtuelles
-         * traçant la tête de flèche.
-         */
-        public Vector2D[] polygoneTete(
-                @NotNull final Vector2D arriveeVirtuelle) {
+        private final ObjectProperty<Vector2D> sommet
+                = new SimpleObjectProperty<>();
+
+        private final ObjectProperty<Vector2D> pied1
+                = new SimpleObjectProperty<>();
+        
+        private final ObjectProperty<Vector2D> pied2
+                = new SimpleObjectProperty<>();
+
+        public Triangle() {
+            super();
+            setPoints(pied1, sommet, pied2);
+        }
+
+        private void calculerPositionsPoints(@NotNull final Repere repere, 
+                @NotNull final Vector2D arriveeReelle) {
+            final Vector2D arriveeVirtuelle = repere.positionVirtuelle(
+                    arriveeReelle);
             final Vector2D directionReelle = getOrigine()
                     .subtract(getArrivee());
-            final Vector2D vecteurDirecteurReel = directionReelle
+            final Vector2D vecteurDirecteur = directionReelle
                     .scalarMultiply(1 / directionReelle.getNorm());
-            final Vector2D perpendiculaireVirtuel = new Vector2D(
-                    vecteurDirecteurReel.getY(), vecteurDirecteurReel.getX());
+            final Vector2D perpendiculaire = new Vector2D(
+                    vecteurDirecteur.getY(), vecteurDirecteur.getX());
             final Vector2D pied = arriveeVirtuelle.add(
-                    new Vector2D(2 * getHauteur() * vecteurDirecteurReel.getX(),
-                            - 2 * getHauteur() * vecteurDirecteurReel.getY()));
-            return new Vector2D[]{
-                pied.add(getLargeur(), perpendiculaireVirtuel),
-                arriveeVirtuelle,
-                pied.subtract(getLargeur(), perpendiculaireVirtuel)
-            };
-        }
-
-        private double abscisse(@NotNull final Vector2D point) {
-            return point.getX();
-        }
-
-        private double[] abscisses(@NotNull final Vector2D... points) {
-            final double[] abscisses = new double[points.length];
-            for (int i = 0; i < abscisses.length; i++) {
-                abscisses[i] = abscisse(points[i]);
-            }
-            return abscisses;
-        }
-
-        private double ordonnee(@NotNull final Vector2D point) {
-            return point.getY();
-        }
-
-        private double[] ordonnees(@NotNull final Vector2D... points) {
-            final double[] ordonnees = new double[points.length];
-            for (int i = 0; i < ordonnees.length; i++) {
-                ordonnees[i] = ordonnee(points[i]);
-            }
-            return ordonnees;
-        }
-
-        @Override
-        public void dessiner(@NotNull final Canvas toile,
-                @NotNull final Repere repere) {
-            final GraphicsContext contexteGraphique = toile
-                    .getGraphicsContext2D();
-            contexteGraphique.setFill(Fleche.this.getCouleur());
-            final Vector2D[] pointsTrace = polygoneTete(
-                    repere.positionVirtuelle(getArrivee()));
-            contexteGraphique.fillPolygon(abscisses(pointsTrace),
-                    ordonnees(pointsTrace), pointsTrace.length);
-        }
-
-        @Override
-        public double distance(@NotNull final Vector2D curseur, 
-                @NotNull final Repere repere) {
-            throw new UnsupportedOperationException("Not supported yet.");
+                    new Vector2D(2 * getHauteur() * vecteurDirecteur.getX(),
+                            - 2 * getHauteur() * vecteurDirecteur.getY()));
+            pied1.setValue(repere.positionReelle(
+                    pied.add(getLargeur(), perpendiculaire)));
+            sommet.setValue(arriveeReelle);
+            pied2.setValue(repere.positionReelle(
+                    pied.subtract(getLargeur(), perpendiculaire)));
         }
 
         public int getHauteur() {

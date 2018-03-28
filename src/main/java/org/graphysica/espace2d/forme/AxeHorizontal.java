@@ -31,7 +31,7 @@ import org.graphysica.espace2d.Repere;
  * @author Marc-Antoine Ouimet
  */
 public class AxeHorizontal extends Axe {
-    
+
     /**
      * Construit un axe horizontal dont l'espacement minimal virtuel est défini.
      *
@@ -45,6 +45,9 @@ public class AxeHorizontal extends Axe {
     @Override
     public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
         final double[] graduationsVerticales = repere
                 .graduationsVerticales(toile.getWidth(), getEspacement());
         final double[] abscissesReelles = repere.abscissesReelles(
@@ -159,7 +162,7 @@ public class AxeHorizontal extends Axe {
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur, 
+    public double distance(@NotNull final Vector2D curseur,
             @NotNull final Repere repere) {
         return Math.abs(curseur.getY() - positionVirtuelle);
     }

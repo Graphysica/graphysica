@@ -133,6 +133,7 @@ public class Angle extends Forme {
     public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (isDefini()) {
+            // TODO: Dessiner la surbrillance si l'angle est en surbrillance
             // Adapter l'angle à la convention du tracé
             double angle = -getAngle();
             double angleInitial = -getAngleInitial();
@@ -166,6 +167,12 @@ public class Angle extends Forme {
         }
     }
 
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     public final Vector2D getPoint1() {
         return point1.getValue();
     }

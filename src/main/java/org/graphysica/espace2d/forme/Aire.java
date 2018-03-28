@@ -36,6 +36,7 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
+@SuppressWarnings("unchecked")
 public class Aire extends Forme {
 
     /**
@@ -45,21 +46,25 @@ public class Aire extends Forme {
             0.04, 0.4);
 
     /**
-     * L'ensemble ordonné des points délimitant cette aire.
+     * L'ensemble ordonné des points de coordonnées réelles délimitant cette 
+     * aire.
      */
     private final ObservableSet<ObjectProperty<Vector2D>> points
             = FXCollections.observableSet(new LinkedHashSet<>());
 
-    // TODO: Constructeur d'aire de prévisualisation
+    /**
+     * Construit une aire vide.
+     */
+    public Aire() {
+    }
+
     /**
      * Construit une aire sur un ensemble défini de points.
      *
      * @param points l'ensemble de points traçant le polygone de l'aire.
      */
-    public Aire(@NotNull final Point... points) {
-        for (final Point point : points) {
-            this.points.add(point.positionProperty());
-        }
+    public Aire(@NotNull final ObjectProperty<Vector2D>[] points) {
+        setPoints(points);
         setCouleur(COULEUR_PAR_DEFAUT);
     }
 
@@ -71,8 +76,8 @@ public class Aire extends Forme {
      * @param curseur la position réelle du curseur correspondant au prochain
      * point de {@code points}.
      */
-    public Aire(@NotNull final ObjectProperty<Vector2D> curseur,
-            @NotNull final Point... points) {
+    public Aire(@NotNull final ObjectProperty<Vector2D>[] points,
+            @NotNull final ObjectProperty<Vector2D> curseur) {
         this(points);
         this.points.add(curseur);
     }
@@ -217,6 +222,20 @@ public class Aire extends Forme {
             i++;
         }
         return pointsReels;
+    }
+    
+    public final void setPoints(
+            @NotNull final LinkedHashSet<ObjectProperty<Vector2D>> points) {
+        this.points.clear();
+        this.points.addAll(points);
+    }
+    
+    public final void setPoints(
+            @NotNull final ObjectProperty<Vector2D>... points) {
+        this.points.clear();
+        for (final ObjectProperty<Vector2D> point : points) {
+            this.points.add(point);
+        }
     }
 
 }

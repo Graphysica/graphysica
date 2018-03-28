@@ -60,7 +60,18 @@ public abstract class Ligne extends Forme {
     {
         proprietesActualisation.add(epaisseur);
     }
-    
+
+    @Override
+    public void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+        calculerOrigineEtArrivee(toile, repere);
+        dessinerLigne(toile, origineTrace, arriveeTrace, getCouleur(),
+                getEpaisseur());
+    }
+
     /**
      * Dessine une ligne définie par son origine et son arrivée virtuelles, sa
      * couleur et son épaisseur sur une toile. Dans le cas d'une droite,
@@ -81,7 +92,16 @@ public abstract class Ligne extends Forme {
         contexteGraphique.strokeLine(origine.getX(), origine.getY(),
                 arrivee.getX(), arrivee.getY());
     }
-    
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        calculerOrigineEtArrivee(toile, repere);
+        dessinerLigne(toile, origineTrace, arriveeTrace,
+                getCouleur().deriveColor(1, 1, 1, 0.3),
+                3 * getEpaisseur());
+    }
+
     /**
      * Calcule la position virtuelle de l'origine et de l'arrivée de la trace de
      * cette ligne.
