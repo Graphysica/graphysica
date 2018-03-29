@@ -70,7 +70,8 @@ public abstract class Position {
     public abstract Vector2D virtuelle(@NotNull final Repere repere);
 
     /**
-     * Déplace cette position selon un déplacement de type défini.
+     * Récupère la nouvelle position lorsque cette position subit un déplacement
+     * de type défini.
      *
      * @param deplacement la valeur du déplacement.
      * @param type le type de déplacement.
