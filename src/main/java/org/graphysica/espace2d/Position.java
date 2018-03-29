@@ -16,14 +16,20 @@
  */
 package org.graphysica.espace2d;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.sun.istack.internal.NotNull;
+import java.util.Objects;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.gson.PositionJsonAdaptateur;
 
 /**
- * Une position est un emplacement dans un espace.
+ * Une position est un emplacement immuable dans un espace. Une position permet
+ * de convertir un couple de valeurs correspondant à un emplacement dans un
+ * repère d'espace
  *
  * @author Marc-Antoine Ouimet
  */
+@JsonAdapter(PositionJsonAdaptateur.class)
 public abstract class Position {
 
     /**
@@ -37,7 +43,6 @@ public abstract class Position {
      * La valeur de cette position.
      */
     protected final Vector2D position;
-
 
     /**
      * Construit une position dont la valeur et le repère sont définis.
@@ -65,6 +70,28 @@ public abstract class Position {
     public abstract Vector2D virtuelle(@NotNull final Repere repere);
 
     /**
+     * Déplace cette position selon un déplacement de type défini.
+     *
+     * @param deplacement la valeur du déplacement.
+     * @param type le type de déplacement.
+     * @param repere le repère de l'espace dans lequel a lieu le déplacement.
+     * @return la position déplacée.
+     */
+    public Position deplacer(@NotNull final Vector2D deplacement,
+            @NotNull final Type type, @NotNull final Repere repere) {
+        switch (type) {
+            case REELLE:
+                return Position.a(reelle(repere).add(deplacement), Type.REELLE);
+            case VIRTUELLE:
+                return Position.a(virtuelle(repere).add(deplacement),
+                        Type.VIRTUELLE);
+            default:
+                throw new IllegalArgumentException(
+                        "Type de position non supporté.");
+        }
+    }
+
+    /**
      * Construit une nouvelle position de valeur et de type spécifié dans un
      * repère d'espace.
      *
@@ -76,9 +103,9 @@ public abstract class Position {
             @NotNull final Type type) {
         switch (type) {
             case REELLE:
-                return new PositionReelle(position);
+                return new Reelle(position);
             case VIRTUELLE:
-                return new PositionVirtuelle(position);
+                return new Virtuelle(position);
             default:
                 throw new IllegalArgumentException(
                         "Type de position non supporté.");
@@ -86,18 +113,58 @@ public abstract class Position {
     }
 
     /**
+     * Récupère la valeur brute de cette position. L'interprétation de cette
+     * valeur dépend du type de la position.
+     *
+     * @return la valeur brute de cette position.
+     */
+    public Vector2D getValeur() {
+        return position;
+    }
+
+    /**
+     * Récupère le type de cette position. Dicte la façon dont il faut
+     * interpréter la valeur de cette position.
+     *
+     * @return le type de cette position.
+     */
+    public abstract Type getType();
+
+    @Override
+    public boolean equals(final Object objet) {
+        if (this == objet) {
+            return true;
+        } else if (objet == null) {
+            return false;
+        } else if (getClass() != objet.getClass()) {
+            return false;
+        } else {
+            final Position compare = (Position) objet;
+            return getType().equals(compare.getType())
+                    && getValeur().equals(compare.getValeur());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(position);
+        return hash;
+    }
+
+    /**
      * Une position réelle est exprimée en unitées réelles.
      */
-    private static class PositionReelle extends Position {
+    @JsonAdapter(PositionJsonAdaptateur.class)
+    private static class Reelle extends Position {
 
         /**
          * Construit une position réelle dont la valeur et le repère sont
          * définis.
          *
          * @param position la valeur de la position.
-         * @param repere le repère de l'espace dans lequel se situe la position.
          */
-        public PositionReelle(@NotNull final Vector2D position) {
+        public Reelle(@NotNull final Vector2D position) {
             super(position);
         }
 
@@ -111,12 +178,18 @@ public abstract class Position {
             return repere.positionVirtuelle(position);
         }
 
+        @Override
+        public Position.Type getType() {
+            return Position.Type.REELLE;
+        }
+
     }
 
     /**
      * Une position virtuelle est exprimée en unités d'affichage à l'écran.
      */
-    private static class PositionVirtuelle extends Position {
+    @JsonAdapter(PositionJsonAdaptateur.class)
+    private static class Virtuelle extends Position {
 
         /**
          * Construit une position virtuelle dont la valeur et le repère sont
@@ -124,7 +197,7 @@ public abstract class Position {
          *
          * @param position la valeur de la position.
          */
-        public PositionVirtuelle(@NotNull final Vector2D position) {
+        public Virtuelle(@NotNull final Vector2D position) {
             super(position);
         }
 
@@ -138,6 +211,10 @@ public abstract class Position {
             return position;
         }
 
+        @Override
+        public Position.Type getType() {
+            return Position.Type.VIRTUELLE;
+        }
 
     }
 
