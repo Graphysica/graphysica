@@ -18,7 +18,6 @@ package org.graphysica.espace2d;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.sun.istack.internal.NotNull;
-import java.util.Objects;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.gson.PositionJsonAdaptateur;
 
@@ -71,7 +70,9 @@ public abstract class Position {
 
     /**
      * Récupère la nouvelle position lorsque cette position subit un déplacement
-     * de type défini.
+     * de type défini. Si le déplacement est réel, alors la position déplacée
+     * sera réelle. Si le déplacement est virtuel, alors la position déplacée
+     * sera virtuelle.
      *
      * @param deplacement la valeur du déplacement.
      * @param type le type de déplacement.
@@ -130,28 +131,6 @@ public abstract class Position {
      * @return le type de cette position.
      */
     public abstract Type getType();
-
-    @Override
-    public boolean equals(final Object objet) {
-        if (this == objet) {
-            return true;
-        } else if (objet == null) {
-            return false;
-        } else if (getClass() != objet.getClass()) {
-            return false;
-        } else {
-            final Position compare = (Position) objet;
-            return getType().equals(compare.getType())
-                    && getValeur().equals(compare.getValeur());
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 23 * hash + Objects.hashCode(position);
-        return hash;
-    }
 
     /**
      * Une position réelle est exprimée en unitées réelles.

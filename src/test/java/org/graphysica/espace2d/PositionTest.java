@@ -19,13 +19,18 @@ package org.graphysica.espace2d;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import com.sun.istack.internal.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import static org.junit.Assert.assertArrayEquals;
+import org.graphysica.espace2d.Position.Type;
+import static org.graphysica.espace2d.Position.Type.REELLE;
+import static org.graphysica.espace2d.Position.Type.VIRTUELLE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -46,18 +51,80 @@ public class PositionTest {
      * {@code CHEMIN_FICHIER_POSITIONS}.
      */
     private static final Position[] POSITIONS = {
-        Position.a(Vector2D.ZERO, Position.Type.REELLE),
-        Position.a(Vector2D.ZERO, Position.Type.VIRTUELLE),
-        Position.a(new Vector2D(1, 1), Position.Type.REELLE),
-        Position.a(new Vector2D(1, 1), Position.Type.VIRTUELLE),
-        Position.a(new Vector2D(-1, 1), Position.Type.REELLE),
-        Position.a(new Vector2D(-1, 1), Position.Type.VIRTUELLE),
-        Position.a(new Vector2D(1, -1), Position.Type.REELLE),
-        Position.a(new Vector2D(1, -1), Position.Type.VIRTUELLE),
-        Position.a(new Vector2D(-2, -3), Position.Type.REELLE),
-        Position.a(new Vector2D(-2, -3), Position.Type.VIRTUELLE),
-        Position.a(new Vector2D(2, 3), Position.Type.REELLE),
-        Position.a(new Vector2D(2, 3), Position.Type.VIRTUELLE)
+        Position.a(Vector2D.ZERO, REELLE),
+        Position.a(Vector2D.ZERO, VIRTUELLE),
+        Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(new Vector2D(1, 1), VIRTUELLE),
+        Position.a(new Vector2D(-1, 1), REELLE),
+        Position.a(new Vector2D(-1, 1), VIRTUELLE),
+        Position.a(new Vector2D(1, -1), REELLE),
+        Position.a(new Vector2D(1, -1), VIRTUELLE),
+        Position.a(new Vector2D(-2, -3), REELLE),
+        Position.a(new Vector2D(-2, -3), VIRTUELLE),
+        Position.a(new Vector2D(2, 3), REELLE),
+        Position.a(new Vector2D(2, 3), VIRTUELLE)
+    };
+
+    /**
+     * Le repère d'espace de déplacement des {@code POSITIONS_DEPLACEES}.
+     */
+    private static final Repere REPERE = new Repere(new Vector2D(250, 250),
+            new Vector2D(50, 50));
+
+    /**
+     * Un ensemble de positions déplacées.
+     */
+    private static final PositionDeplacee[] POSITIONS_DEPLACEES = {
+        // Déplacements réels
+        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
+        Position.a(new Vector2D(1, 1), REELLE), new Vector2D(1, 1),
+        REELLE),
+        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
+        Position.a(new Vector2D(-1, -1), REELLE), new Vector2D(-1, -1),
+        REELLE),
+        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
+        Position.a(new Vector2D(-1, 1), REELLE), new Vector2D(-1, 1),
+        REELLE),
+        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
+        Position.a(new Vector2D(1, -1), REELLE), new Vector2D(1, -1),
+        REELLE),
+        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(new Vector2D(2, 2), REELLE), new Vector2D(1, 1),
+        REELLE),
+        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(Vector2D.ZERO, REELLE), new Vector2D(-1, -1),
+        REELLE),
+        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(new Vector2D(0, 2), REELLE), new Vector2D(-1, 1),
+        REELLE),
+        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(new Vector2D(2, 0), REELLE), new Vector2D(1, -1),
+        REELLE),
+        // Déplacements virtuels
+        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
+        Position.a(new Vector2D(1, -1), REELLE), new Vector2D(50, 50),
+        VIRTUELLE),
+        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
+        Position.a(new Vector2D(-1, 1), REELLE),
+        new Vector2D(-50, -50), VIRTUELLE),
+        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
+        Position.a(new Vector2D(-1, -1), REELLE), new Vector2D(-50, 50),
+        VIRTUELLE),
+        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
+        Position.a(new Vector2D(1, 1), REELLE), new Vector2D(50, -50),
+        VIRTUELLE),
+        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(new Vector2D(2, 0), REELLE), new Vector2D(50, 50),
+        VIRTUELLE),
+        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(new Vector2D(0, 2), REELLE), new Vector2D(-50, -50),
+        VIRTUELLE),
+        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(Vector2D.ZERO, REELLE), new Vector2D(-50, 50),
+        VIRTUELLE),
+        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
+        Position.a(new Vector2D(2, 2), REELLE), new Vector2D(50, -50),
+        VIRTUELLE)
     };
 
     /**
@@ -68,6 +135,7 @@ public class PositionTest {
     private static void genererFichierTests() throws IOException {
         final URL chemin = PositionTest.class.getResource(
                 CHEMIN_FICHIER_POSITIONS);
+        System.out.println("chemin = " + chemin);
         final Gson gson = new GsonBuilder().create();
         try (final FileWriter ecriture = new FileWriter(
                 new File(chemin.getPath()))) {
@@ -75,6 +143,11 @@ public class PositionTest {
         }
     }
 
+    /**
+     * Teste la sérialisation des {@code POSITIONS} et leur désérialisation.
+     *
+     * @throws IOException s'il y a une erreur de I/O indépendante du test.
+     */
     @Test
     public void testSerialisation() throws IOException {
         genererFichierTests();
@@ -84,8 +157,68 @@ public class PositionTest {
                         CHEMIN_FICHIER_POSITIONS)))) {
             final Position[] positions = gson.fromJson(lecture,
                     Position[].class);
-            assertArrayEquals(POSITIONS, positions);
+            for (int i = 0; i < positions.length; i++) {
+                assertTrue(positions[i].getValeur().equals(
+                        POSITIONS[i].getValeur()));
+                assertTrue(positions[i].getType().equals(
+                        POSITIONS[i].getType()));
+            }
         }
+    }
+
+    /**
+     * Teste les valeurs d'emplacement de positions déplacées par un vecteur
+     * réel ou virtuel.
+     */
+    @Test
+    public void testDeplacements() {
+        for (final PositionDeplacee position : POSITIONS_DEPLACEES) {
+            assertEquals(position.finale.reelle(REPERE), position.initiale
+                    .deplacer(position.deplacement, position.type, REPERE)
+                    .reelle(REPERE));
+        }
+        for (final PositionDeplacee position : POSITIONS_DEPLACEES) {
+            assertEquals(position.finale.virtuelle(REPERE), position.initiale
+                    .deplacer(position.deplacement, position.type, REPERE)
+                    .virtuelle(REPERE));
+        }
+    }
+
+    /**
+     * Un cas de positions unies par un déplacement de type spécifié.
+     */
+    private static class PositionDeplacee {
+
+        /**
+         * La position initiale du cas.
+         */
+        final Position initiale;
+
+        /**
+         * La position final du cas.
+         */
+        final Position finale;
+
+        /**
+         * La valeur du déplacement entre les positions initiale et finale du
+         * cas.
+         */
+        final Vector2D deplacement;
+
+        /**
+         * Le type de déplacement du cas.
+         */
+        final Type type;
+
+        public PositionDeplacee(@NotNull final Position initiale,
+                @NotNull final Position finale,
+                @NotNull final Vector2D deplacement, @NotNull final Type type) {
+            this.initiale = initiale;
+            this.finale = finale;
+            this.deplacement = deplacement;
+            this.type = type;
+        }
+
     }
 
 }
