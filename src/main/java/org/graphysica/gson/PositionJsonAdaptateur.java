@@ -26,24 +26,48 @@ import java.io.IOException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Position;
 import org.graphysica.espace2d.Position.Type;
+import static org.graphysica.espace2d.Position.Type.REELLE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Un adaptateur de sérialisation d'objets de type {@code Position.class} en
- * JSON.
+ * JSON. Le type inféré par défaut d'une position sérialisée est réel.
  *
  * @author Marc-Antoine Ouimet
  */
 public final class PositionJsonAdaptateur extends TypeAdapter<Position> {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            PositionJsonAdaptateur.class);
+    
+    /**
+     * Le nom de la propriété JSON de l'abscisse d'une position.
+     */
+    private static final String X = "x";
+    
+    /**
+     * Le nom de la propriété JSON de l'ordonnée d'une position.
+     */
+    private static final String Y = "y";
+    
+    /**
+     * Le nom de la propriété JSON du type d'une position.
+     */
+    private static final String TYPE = "type";
 
     @Override
     public void write(@NotNull final JsonWriter sortie,
             @NotNull final Position position) throws IOException {
         sortie.beginObject();
-        sortie.name("type");
-        sortie.value(position.getType().toString());
-        sortie.name("x");
+        if (position.getType() != REELLE) {
+            sortie.name(TYPE);
+            sortie.value(position.getType().toString());
+            LOGGER.warn("Sérialisation d'une position virtuelle.");
+        }
+        sortie.name(X);
         sortie.value(position.getValeur().getX());
-        sortie.name("y");
+        sortie.name(Y);
         sortie.value(position.getValeur().getY());
         sortie.endObject();
     }
@@ -56,13 +80,13 @@ public final class PositionJsonAdaptateur extends TypeAdapter<Position> {
             while (!entree.peek().equals(JsonToken.END_OBJECT)) {
                 if (entree.peek().equals(JsonToken.NAME)) {
                     switch (entree.nextName()) {
-                        case "x":
+                        case X:
                             adaptation.setX(entree.nextDouble());
                             break;
-                        case "y":
+                        case Y:
                             adaptation.setY(entree.nextDouble());
                             break;
-                        case "type":
+                        case TYPE:
                             adaptation.setType(recupererType(
                                     entree.nextString()));
                             break;
@@ -94,14 +118,14 @@ public final class PositionJsonAdaptateur extends TypeAdapter<Position> {
     }
 
     /**
-     * Une position mutable.
+     * Une position mutable, définie par défaut comme étant réelle.
      */
     private static final class PositionAdaptee {
 
         /**
          * Le type de la position.
          */
-        private Type type;
+        private Type type = REELLE;
 
         /**
          * L'abscisse de la position.
@@ -117,8 +141,10 @@ public final class PositionJsonAdaptateur extends TypeAdapter<Position> {
             return type;
         }
 
-        public void setType(@NotNull final Type type) {
-            this.type = type;
+        public void setType(final Type type) {
+            if (type != null) {
+                this.type = type;
+            }
         }
 
         public double getX() {

@@ -18,7 +18,10 @@ package org.graphysica.espace2d;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.sun.istack.internal.NotNull;
+import java.io.Serializable;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import static org.graphysica.espace2d.Position.Type.REELLE;
+import static org.graphysica.espace2d.Position.Type.VIRTUELLE;
 import org.graphysica.gson.PositionJsonAdaptateur;
 
 /**
@@ -29,7 +32,7 @@ import org.graphysica.gson.PositionJsonAdaptateur;
  * @author Marc-Antoine Ouimet
  */
 @JsonAdapter(PositionJsonAdaptateur.class)
-public abstract class Position {
+public abstract class Position implements Serializable {
 
     /**
      * L'énumération des types de position.
@@ -83,10 +86,10 @@ public abstract class Position {
             @NotNull final Type type, @NotNull final Repere repere) {
         switch (type) {
             case REELLE:
-                return Position.a(reelle(repere).add(deplacement), Type.REELLE);
+                return Position.a(reelle(repere).add(deplacement), REELLE);
             case VIRTUELLE:
-                return Position.a(virtuelle(repere).add(deplacement),
-                        Type.VIRTUELLE);
+                return Position.a(virtuelle(repere).add(deplacement), 
+                        VIRTUELLE);
             default:
                 throw new IllegalArgumentException(
                         "Type de position non supporté.");
@@ -160,7 +163,7 @@ public abstract class Position {
 
         @Override
         public Position.Type getType() {
-            return Position.Type.REELLE;
+            return REELLE;
         }
 
     }
@@ -193,7 +196,7 @@ public abstract class Position {
 
         @Override
         public Position.Type getType() {
-            return Position.Type.VIRTUELLE;
+            return VIRTUELLE;
         }
 
     }

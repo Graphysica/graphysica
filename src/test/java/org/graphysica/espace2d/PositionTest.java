@@ -52,17 +52,13 @@ public class PositionTest {
      */
     private static final Position[] POSITIONS = {
         Position.a(Vector2D.ZERO, REELLE),
-        Position.a(Vector2D.ZERO, VIRTUELLE),
         Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(new Vector2D(1, 1), VIRTUELLE),
         Position.a(new Vector2D(-1, 1), REELLE),
-        Position.a(new Vector2D(-1, 1), VIRTUELLE),
         Position.a(new Vector2D(1, -1), REELLE),
-        Position.a(new Vector2D(1, -1), VIRTUELLE),
         Position.a(new Vector2D(-2, -3), REELLE),
-        Position.a(new Vector2D(-2, -3), VIRTUELLE),
         Position.a(new Vector2D(2, 3), REELLE),
-        Position.a(new Vector2D(2, 3), VIRTUELLE)
+        Position.a(new Vector2D(-10, 20), REELLE),
+        Position.a(new Vector2D(10, -20), REELLE)
     };
 
     /**
@@ -135,14 +131,13 @@ public class PositionTest {
     private static void genererFichierTests() throws IOException {
         final URL chemin = PositionTest.class.getResource(
                 CHEMIN_FICHIER_POSITIONS);
-        System.out.println("chemin = " + chemin);
         final Gson gson = new GsonBuilder().create();
         try (final FileWriter ecriture = new FileWriter(
                 new File(chemin.getPath()))) {
             ecriture.write(gson.toJson(POSITIONS));
         }
     }
-
+    
     /**
      * Teste la sérialisation des {@code POSITIONS} et leur désérialisation.
      *
