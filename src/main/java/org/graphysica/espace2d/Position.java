@@ -27,7 +27,14 @@ import org.graphysica.gson.PositionJsonAdaptateur;
 /**
  * Une position est un emplacement immuable dans un espace. Une position permet
  * de convertir un couple de valeurs correspondant à un emplacement dans un
- * repère d'espace
+ * repère d'espace.
+ * <p>
+ * L'utilisation de cette classe permet de lever des ambivalences à l'égard des
+ * calculs effectués sur des points, notamment pour leur déplacement et
+ * déterminer la position entre deux points. De plus, cette classe minimse les
+ * erreurs d'arithmétique à point flottant dues aux multiples conversions entre
+ * les positions virtuelles et réelles, en plus d'optimiser l'allocation en
+ * mémoire dans la plupart des cas.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -88,8 +95,52 @@ public abstract class Position implements Serializable {
             case REELLE:
                 return Position.a(reelle(repere).add(deplacement), REELLE);
             case VIRTUELLE:
-                return Position.a(virtuelle(repere).add(deplacement), 
+                return Position.a(virtuelle(repere).add(deplacement),
                         VIRTUELLE);
+            default:
+                throw new IllegalArgumentException(
+                        "Type de position non supporté.");
+        }
+    }
+
+    /**
+     * Calcule le module de la distance entre cette position et une position
+     * spécifiée.
+     *
+     * @param position la position distancée de ce point.
+     * @param repere le repère d'espace d'emplacement des positions.
+     * @param type le type de distance à calculer.
+     * @return la distance entre les deux positions.
+     */
+    public double distance(@NotNull final Position position,
+            @NotNull final Repere repere, @NotNull final Type type) {
+        switch (type) {
+            case REELLE:
+                return reelle(repere).distance(position.reelle(repere));
+            case VIRTUELLE:
+                return virtuelle(repere).distance(position.virtuelle(repere));
+            default:
+                throw new IllegalArgumentException(
+                        "Type de position non supporté.");
+        }
+    }
+
+    /**
+     * Calcule la distance vectorielle orientée de cette position vers une
+     * position spécifiée.
+     *
+     * @param position la position distancée de ce point.
+     * @param repere le repère d'espace d'emplacement des positions.
+     * @param type le type de distance à calculer.
+     * @return la distance entre les deux positions.
+     */
+    public Vector2D distanceVectorielle(@NotNull final Position position,
+            @NotNull final Repere repere, @NotNull final Type type) {
+        switch (type) {
+            case REELLE:
+                return position.reelle(repere).subtract(reelle(repere));
+            case VIRTUELLE:
+                return position.virtuelle(repere).subtract(virtuelle(repere));
             default:
                 throw new IllegalArgumentException(
                         "Type de position non supporté.");
