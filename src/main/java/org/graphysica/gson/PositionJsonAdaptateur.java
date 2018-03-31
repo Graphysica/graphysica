@@ -24,9 +24,9 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import java.io.IOException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Position;
-import org.graphysica.espace2d.Position.Type;
-import static org.graphysica.espace2d.Position.Type.REELLE;
+import org.graphysica.espace2d.position.Position;
+import org.graphysica.espace2d.position.Type;
+import static org.graphysica.espace2d.position.Type.REELLE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

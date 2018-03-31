@@ -16,6 +16,7 @@
  */
 package org.graphysica.espace2d;
 
+import org.graphysica.espace2d.position.Position;
 import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Cursor;
@@ -32,6 +32,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Forme;
+import org.graphysica.espace2d.position.PositionReelle;
+import org.graphysica.espace2d.position.PositionVirtuelle;
 
 /**
  * Une toile interactive permet à l'utilisateur d'interagir sur l'ensemble des
@@ -47,22 +49,15 @@ public class EspaceInteractif extends Espace {
     private static final double FACTEUR_ZOOM = 1.1;
 
     /**
-     * La position virtuelle précédente du curseur.
+     * La position précédente du curseur.
      */
-    private final ObjectProperty<Vector2D> positionPrecendenteCurseur
-            = new SimpleObjectProperty<>();
+    private Position positionPrecendenteCurseur;
 
     /**
-     * La position virtuelle actuelle du curseur.
+     * La position actuelle du curseur.
      */
-    private final ObjectProperty<Vector2D> positionActuelleCurseur
-            = new SimpleObjectProperty<>();
-
-    /**
-     * La position réelle actuelle du curseur.
-     */
-    private final ObjectProperty<Vector2D> positionReelleCurseur
-            = new SimpleObjectProperty<>();
+    private final ObjectProperty<Position> positionCurseur
+            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
     /**
      * Construit un espace 2D interactif aux dimensions virtuelles définies.
@@ -75,11 +70,6 @@ public class EspaceInteractif extends Espace {
     }
 
     {
-        positionActuelleCurseur.addListener(
-                (@NotNull final Observable observable) -> {
-                    setPositionReelleCurseur(repere.positionReelle(
-                            getPositionActuelleCurseur()));
-                });
         setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
             setCursor(Cursor.CROSSHAIR);
         });
@@ -156,9 +146,9 @@ public class EspaceInteractif extends Espace {
     private Map<Forme, Double> distancesFormes() {
         final Map<Forme, Double> distances = new HashMap<>();
         for (final Forme forme : formes) {
-            if (forme.isSelectionne(getPositionActuelleCurseur(), repere)) {
+            if (forme.isSelectionne(getPositionCurseur(), repere)) {
                 distances.put(forme, forme.distance(
-                        getPositionActuelleCurseur(), repere));
+                        getPositionCurseur(), repere));
             }
         }
         return distances;
@@ -174,8 +164,8 @@ public class EspaceInteractif extends Espace {
      */
     public void zoomer(final double defilementVertical) {
         if (defilementVertical != 0) {
-            final Vector2D translationOrigine = getPositionActuelleCurseur()
-                    .subtract(repere.getOrigineVirtuelle());
+            final Vector2D translationOrigine = getPositionCurseur()
+                    .virtuelle(repere).subtract(repere.getOrigineVirtuelle());
             repere.setOrigineVirtuelle(
                     repere.getOrigineVirtuelle().add(translationOrigine));
             double facteurZoom = FACTEUR_ZOOM;
@@ -196,8 +186,8 @@ public class EspaceInteractif extends Espace {
      * Défile l'espace de la toile selon la variation des positions du curseur.
      */
     private void defiler() {
-        final Vector2D deplacement = getPositionActuelleCurseur()
-                .subtract(getPositionPrecedenteCurseur());
+        final Vector2D deplacement = getPositionCurseur().virtuelle(repere)
+                .subtract(getPositionPrecedenteCurseur().virtuelle(repere));
         repere.setOrigineVirtuelle(repere.getOrigineVirtuelle()
                 .add(deplacement));
     }
@@ -207,13 +197,13 @@ public class EspaceInteractif extends Espace {
      */
     private void actualiserPositionsCurseur(
             @NotNull final MouseEvent evenement) {
-        final Vector2D positionCaptee
+        final Position positionCaptee
                 = capterPositionActuelleCurseur(evenement);
-        if (getPositionActuelleCurseur() == null) {
-            setPositionActuelleCurseur(positionCaptee);
+        if (getPositionCurseur() == null) {
+            setPositionCurseur(positionCaptee);
         }
-        setPositionPrecedenteCurseur(getPositionActuelleCurseur());
-        setPositionActuelleCurseur(positionCaptee);
+        setPositionPrecedenteCurseur(getPositionCurseur());
+        setPositionCurseur(positionCaptee);
     }
 
     /**
@@ -223,47 +213,62 @@ public class EspaceInteractif extends Espace {
      * @param evenement l'événement de la souris.
      * @return la position virtuelle du curseur.
      */
-    private Vector2D capterPositionActuelleCurseur(
+    private Position capterPositionActuelleCurseur(
             @NotNull final MouseEvent evenement) {
-        return new Vector2D(evenement.getX(), evenement.getY());
+        return new PositionVirtuelle(
+                new Vector2D(evenement.getX(), evenement.getY()));
     }
 
-    private Vector2D getPositionPrecedenteCurseur() {
-        return positionPrecendenteCurseur.getValue();
+    private Position getPositionPrecedenteCurseur() {
+        return positionPrecendenteCurseur;
     }
 
     private void setPositionPrecedenteCurseur(
-            @NotNull final Vector2D positionPrecedenteCurseur) {
-        this.positionPrecendenteCurseur.setValue(positionPrecedenteCurseur);
+            @NotNull final Position positionPrecedenteCurseur) {
+        this.positionPrecendenteCurseur = positionPrecedenteCurseur;
     }
 
-    private Vector2D getPositionActuelleCurseur() {
-        return positionActuelleCurseur.getValue();
+    private Position getPositionCurseur() {
+        return positionCurseur.getValue();
     }
 
-    private void setPositionActuelleCurseur(
-            @NotNull final Vector2D positionActuelleCurseur) {
-        this.positionActuelleCurseur.setValue(positionActuelleCurseur);
-    }
-
-    public final Vector2D getPositionReelleCurseur() {
-        return positionReelleCurseur.getValue();
-    }
-
-    private void setPositionReelleCurseur(
-            @NotNull final Vector2D positionReelleCurseur) {
-        this.positionReelleCurseur.setValue(positionReelleCurseur);
+    private void setPositionCurseur(@NotNull final Position positionCurseur) {
+        this.positionCurseur.setValue(positionCurseur);
     }
 
     /**
-     * Récupère la propriété de position réelle du curseur dans l'espace. Permet
-     * de lier des positions de forme à la position du curseur pour la
+     * Récupère la propriété de position du curseur dans l'espace. Permet de
+     * lier des positions de forme à la position du curseur pour la
      * prévisualisation ou le déplacement de formes.
+     * <p>
+     * La position du curseur est virtuelle. Par conséquent, il faudra récupérer
+     * la position réelle du curseur pour l'instantiation d'objets à sérialiser
+     * dans la construction.
      *
-     * @return la propriété de position réelle du curseur.
+     * @return la propriété de position virtuelle du curseur.
+     * @see EspaceInteractif#positionReelleCurseur() la position réelle du
+     * curseur à utiliser pour la création d'éléments de construction.
      */
-    public final ObjectProperty<Vector2D> positionReelleCurseurProperty() {
-        return positionReelleCurseur;
+    public final ObjectProperty<Position> positionCurseurProperty() {
+        return positionCurseur;
+    }
+
+    /**
+     * Récupère la position actuelle réelle du curseur.
+     *
+     * @return la position réelle du curseur.
+     */
+    public final Vector2D positionReelleCurseur() {
+        return getPositionCurseur().reelle(repere);
+    }
+
+    /**
+     * Récupère la position actuelle virtuelle du curseur.
+     *
+     * @return la position virtuelle du curseur.
+     */
+    public final Vector2D positionVirtuelleCurseur() {
+        return getPositionCurseur().virtuelle(repere);
     }
 
 }
