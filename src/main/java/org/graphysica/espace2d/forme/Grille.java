@@ -23,6 +23,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
 /**
@@ -136,17 +137,19 @@ public final class Grille extends Forme {
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur,
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
         double distanceVerticale = Double.MAX_VALUE;
         for (final double graduationHorizontale : graduationsHorizontales) {
             distanceVerticale = Math.min(distanceVerticale,
-                    Math.abs(curseur.getY() - graduationHorizontale));
+                    Math.abs(curseur.virtuelle(repere).getY() 
+                            - graduationHorizontale));
         }
         double distanceHorizontale = Double.MAX_VALUE;
         for (final double graduationVerticale : graduationsVerticales) {
             distanceHorizontale = Math.min(distanceHorizontale,
-                    Math.abs(curseur.getX() - graduationVerticale));
+                    Math.abs(curseur.virtuelle(repere).getX() 
+                            - graduationVerticale));
         }
         return Math.min(Math.min(distanceVerticale, distanceHorizontale),
                 new Vector2D(distanceHorizontale, distanceVerticale).getNorm());

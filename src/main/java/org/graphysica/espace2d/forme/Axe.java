@@ -27,6 +27,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Un axe permet de graduer l'espace avec des étiquettes et un sens de
@@ -35,7 +36,7 @@ import org.graphysica.espace2d.Repere;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Axe extends Forme {
-
+    
     /**
      * La taille des lignes de tracé de graduations transversales à la flèche
      * représentant l'axe.
@@ -56,7 +57,9 @@ public abstract class Axe extends Forme {
     /**
      * La flèche représentant cet axe.
      */
-    protected final Fleche fleche = new Fleche(Vector2D.ZERO, Vector2D.ZERO);
+    protected final Fleche fleche = new Fleche(
+            new PositionReelle(Vector2D.ZERO), 
+            new PositionReelle(Vector2D.ZERO));
 
     /**
      * La taille des caractères des étiquettes de graduation de cet axe.

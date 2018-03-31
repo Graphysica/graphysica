@@ -16,24 +16,10 @@
  */
 package org.graphysica.espace2d.forme;
 
-import javafx.scene.paint.Color;
-
 /**
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Aire extends Forme implements Deplaceable {
-
-    /**
-     * La couleur par défaut d'une aire.
-     */
-    protected static final Color COULEUR_PAR_DEFAUT = new Color(0.72, 0.52,
-            0.04, 0.4);
+public class Ellipse {
     
-    /**
-     * Construit une aire vide.
-     */
-    public Aire(){
-    }
-
 }

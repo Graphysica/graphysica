@@ -21,6 +21,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
 /**
@@ -51,12 +52,13 @@ public final class Droite extends SegmentDroite {
     private double variationOrdonnees;
 
     /**
-     * Construit une droite passant par deux points.
+     * Construit une droite passant par deux positions.
      *
-     * @param point1 le premier point en coordonnées réelles.
-     * @param point2 le deuxième point en coordonnées réelles.
+     * @param point1 la première position élément de la droite.
+     * @param point2 la deuxième position élément de la droite.
      */
-    public Droite(@NotNull final Point point1, @NotNull final Point point2) {
+    public Droite(@NotNull final Position point1,
+            @NotNull final Position point2) {
         super(point1, point2);
     }
 
@@ -67,8 +69,8 @@ public final class Droite extends SegmentDroite {
      * @param point le point initial de la droite.
      * @param curseur l'emplacement réel du curseur sur la toile.
      */
-    public Droite(@NotNull final Point point,
-            @NotNull final ObjectProperty<Vector2D> curseur) {
+    public Droite(@NotNull final Position point,
+            @NotNull final ObjectProperty<Position> curseur) {
         super(point, curseur);
     }
 
@@ -82,8 +84,8 @@ public final class Droite extends SegmentDroite {
     @Override
     protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final Vector2D point1Virtuel = repere.positionVirtuelle(getPoint1());
-        final Vector2D point2Virtuel = repere.positionVirtuelle(getPoint2());
+        final Vector2D point1Virtuel = getPoint1().virtuelle(repere);
+        final Vector2D point2Virtuel = getPoint2().virtuelle(repere);
         variationAbscisses = point2Virtuel.getX() - point1Virtuel.getX();
         variationOrdonnees = point2Virtuel.getY() - point1Virtuel.getY();
         if (Math.abs(variationAbscisses) > Math.abs(variationOrdonnees)) {
@@ -112,9 +114,10 @@ public final class Droite extends SegmentDroite {
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur,
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
-        return new Segment(origineTrace, arriveeTrace, null).distance(curseur);
+        return new Segment(origineTrace, arriveeTrace, null).distance(
+                curseur.virtuelle(repere));
     }
 
 }

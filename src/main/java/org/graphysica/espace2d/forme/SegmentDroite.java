@@ -22,6 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
 /**
@@ -34,13 +35,13 @@ public class SegmentDroite extends Ligne {
     /**
      * La position réelle du premier point dans la droite.
      */
-    protected final ObjectProperty<Vector2D> point1
+    protected final ObjectProperty<Position> point1
             = new SimpleObjectProperty<>();
 
     /**
      * La position réelle du deuxième point dans la droite.
      */
-    protected final ObjectProperty<Vector2D> point2
+    protected final ObjectProperty<Position> point2
             = new SimpleObjectProperty<>();
 
     /**
@@ -49,22 +50,10 @@ public class SegmentDroite extends Ligne {
      * @param point1 le premier vecteur position du segment de droite.
      * @param point2 le deuxième vecteur position du segment de droite.
      */
-    public SegmentDroite(@NotNull final Vector2D point1,
-            @NotNull final Vector2D point2) {
+    public SegmentDroite(@NotNull final Position point1,
+            @NotNull final Position point2) {
         this.point1.setValue(point1);
         this.point2.setValue(point2);
-    }
-
-    /**
-     * Construit un segment de droite lié à la position de deux points définis.
-     *
-     * @param point1 le premier point en coordonnées réelles.
-     * @param point2 le deuxième point en coordonnées réelles.
-     */
-    public SegmentDroite(@NotNull final Point point1,
-            @NotNull final Point point2) {
-        this.point1.bind(point1.positionProperty());
-        this.point2.bind(point2.positionProperty());
     }
 
     /**
@@ -75,24 +64,10 @@ public class SegmentDroite extends Ligne {
      * @param curseur l'arrivée du segment de droite, qui correspond à la
      * position réelle du curseur sur la toile.
      */
-    public SegmentDroite(@NotNull final Vector2D point,
-            @NotNull final ObjectProperty<Vector2D> curseur) {
+    public SegmentDroite(@NotNull final Position point,
+            @NotNull final ObjectProperty<Position> curseur) {
         this.point1.setValue(point);
         this.point2.bind(curseur);
-    }
-
-    /**
-     * Construit une prévisualisation de segment de droite à partir d'un point
-     * défini et de la position du curseur sur la toile.
-     *
-     * @param point le point d'origine du segment de droite.
-     * @param curseur l'arrivée du segment de droite, qui correspond à la
-     * position réelle du curseur sur la toile.
-     */
-    public SegmentDroite(@NotNull final Point point,
-            @NotNull final ObjectProperty<Vector2D> curseur) {
-        point1.bind(point.positionProperty());
-        point2.bind(curseur);
     }
 
     {
@@ -104,8 +79,8 @@ public class SegmentDroite extends Ligne {
     @Override
     protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        origineTrace = repere.positionVirtuelle(getPoint1());
-        arriveeTrace = repere.positionVirtuelle(getPoint2());
+        origineTrace = getPoint1().virtuelle(repere);
+        arriveeTrace = getPoint2().virtuelle(repere);
     }
 
     /**
@@ -119,23 +94,18 @@ public class SegmentDroite extends Ligne {
     }
 
     @Override
-    public Vector2D getVecteurDirecteur() {
-        return getPoint1().subtract(getPoint2());
-    }
-
-    @Override
-    public double distance(@NotNull final Vector2D curseur,
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
-        final Vector2D p1 = repere.positionVirtuelle(getPoint1());
-        final Vector2D p2 = repere.positionVirtuelle(getPoint2());
-        return new Segment(p1, p2, null).distance(curseur);
+        final Vector2D p1 = getPoint1().virtuelle(repere);
+        final Vector2D p2 = getPoint2().virtuelle(repere);
+        return new Segment(p1, p2, null).distance(curseur.virtuelle(repere));
     }
 
-    public Vector2D getPoint1() {
+    public Position getPoint1() {
         return point1.getValue();
     }
 
-    public Vector2D getPoint2() {
+    public Position getPoint2() {
         return point2.getValue();
     }
 

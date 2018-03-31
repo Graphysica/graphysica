@@ -23,7 +23,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Un axe vertical permet de représenter les valeurs d'ordonnée de l'espace.
@@ -54,11 +56,10 @@ public class AxeVertical extends Axe {
                 graduationsHorizontales);
         actualiserEtiquettes(ordonneesReelles, formatValeurs(repere));
         final double positionReelleAxe = positionReelleAxe(toile, repere);
-        fleche.setOrigine(new Vector2D(
-                positionReelleAxe,
-                repere.ordonneeReelle(toile.getHeight())));
-        fleche.setArrivee(new Vector2D(
-                positionReelleAxe, repere.ordonneeReelle(0)));
+        fleche.setOrigine(new PositionReelle(new Vector2D(positionReelleAxe, 
+                repere.ordonneeReelle(toile.getHeight()))));
+        fleche.setArrivee(new PositionReelle(new Vector2D(positionReelleAxe, 
+                repere.ordonneeReelle(0))));
         dessinerGraduations(toile, graduationsHorizontales,
                 positionVirtuelleAxe(toile, repere));
         fleche.dessiner(toile, repere);
@@ -115,8 +116,8 @@ public class AxeVertical extends Axe {
             final Map.Entry<Double, Etiquette> entree = iteration.next();
             final double valeur = entree.getKey();
             final Etiquette etiquette = entree.getValue();
-            etiquette.setPositionAncrage(
-                    new Vector2D(abscisseReelleAxe, valeur));
+            etiquette.setPositionAncrage(new PositionReelle(
+                    new Vector2D(abscisseReelleAxe, valeur)));
             if (positionVirtuelle >= toile.getWidth()
                     - etiquette.getLargeur()) {
                 etiquette.setPositionRelative(new Vector2D(
@@ -162,9 +163,9 @@ public class AxeVertical extends Axe {
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur, 
+    public double distance(@NotNull final Position curseur, 
             @NotNull final Repere repere) {
-        return Math.abs(curseur.getX() - positionVirtuelle);
+        return Math.abs(curseur.virtuelle(repere).getX() - positionVirtuelle);
     }
     
 }

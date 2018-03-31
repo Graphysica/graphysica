@@ -21,7 +21,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
+import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 
 /**
  * Une flèche relie un point d'origine vers un point d'arrivée. La direction de
@@ -38,28 +40,18 @@ public class Fleche extends SegmentDroite {
      */
     private final Triangle tete = new Triangle();
 
-    public Fleche(@NotNull final Vector2D point1,
-            @NotNull final Vector2D point2) {
+    public Fleche(@NotNull final Position point1,
+            @NotNull final Position point2) {
         super(point1, point2);
     }
 
-    public Fleche(@NotNull final Point point1,
-            @NotNull final Point point2) {
-        super(point1, point2);
-    }
-
-    public Fleche(@NotNull final Vector2D point,
-            @NotNull final ObjectProperty<Vector2D> curseur) {
-        super(point, curseur);
-    }
-
-    public Fleche(@NotNull final Point point,
-            @NotNull final ObjectProperty<Vector2D> curseur) {
+    public Fleche(@NotNull final Position point,
+            @NotNull final ObjectProperty<Position> curseur) {
         super(point, curseur);
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur,
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
         return Math.min(super.distance(curseur, repere),
                 tete.distance(curseur, repere));
@@ -73,26 +65,26 @@ public class Fleche extends SegmentDroite {
         tete.dessiner(toile, repere);
     }
 
-    public void setOrigine(@NotNull final Vector2D origine) {
+    public void setOrigine(@NotNull final Position origine) {
         this.point1.setValue(origine);
     }
 
-    public void setArrivee(@NotNull final Vector2D arrivee) {
+    public void setArrivee(@NotNull final Position arrivee) {
         this.point2.setValue(arrivee);
     }
 
-    private Vector2D getOrigine() {
+    private Position getOrigine() {
         return getPoint1();
     }
 
-    private Vector2D getArrivee() {
+    private Position getArrivee() {
         return getPoint2();
     }
 
     /**
      * Une tête de flèche, représentée par un triangle.
      */
-    private class Triangle extends Aire {
+    private class Triangle extends Polygone {
 
         /**
          * La hauteur virtuelle du triangle.
@@ -104,13 +96,13 @@ public class Fleche extends SegmentDroite {
          */
         private final Taille largeur = Taille.de("teteflechelargeur");
 
-        private final ObjectProperty<Vector2D> sommet
+        private final ObjectProperty<Position> sommet
                 = new SimpleObjectProperty<>();
 
-        private final ObjectProperty<Vector2D> pied1
+        private final ObjectProperty<Position> pied1
                 = new SimpleObjectProperty<>();
-        
-        private final ObjectProperty<Vector2D> pied2
+
+        private final ObjectProperty<Position> pied2
                 = new SimpleObjectProperty<>();
 
         public Triangle() {
@@ -118,24 +110,23 @@ public class Fleche extends SegmentDroite {
             setPoints(pied1, sommet, pied2);
         }
 
-        private void calculerPositionsPoints(@NotNull final Repere repere, 
-                @NotNull final Vector2D arriveeReelle) {
-            final Vector2D arriveeVirtuelle = repere.positionVirtuelle(
-                    arriveeReelle);
-            final Vector2D directionReelle = getOrigine()
-                    .subtract(getArrivee());
-            final Vector2D vecteurDirecteur = directionReelle
-                    .scalarMultiply(1 / directionReelle.getNorm());
+        private void calculerPositionsPoints(@NotNull final Repere repere,
+                @NotNull final Position arrivee) {
+            final Vector2D directionVirtuelle = getArrivee().virtuelle(repere)
+                    .subtract(getOrigine().virtuelle(repere));
+            final Vector2D vecteurDirecteur = directionVirtuelle
+                    .scalarMultiply(1 / directionVirtuelle.getNorm());
             final Vector2D perpendiculaire = new Vector2D(
-                    vecteurDirecteur.getY(), vecteurDirecteur.getX());
-            final Vector2D pied = arriveeVirtuelle.add(
+                    -vecteurDirecteur.getY(), vecteurDirecteur.getX());
+            final Vector2D arriveeVirtuelle = arrivee.virtuelle(repere);
+            final Vector2D pied = arriveeVirtuelle.subtract(
                     new Vector2D(2 * getHauteur() * vecteurDirecteur.getX(),
-                            - 2 * getHauteur() * vecteurDirecteur.getY()));
-            pied1.setValue(repere.positionReelle(
-                    pied.add(getLargeur(), perpendiculaire)));
-            sommet.setValue(arriveeReelle);
-            pied2.setValue(repere.positionReelle(
-                    pied.subtract(getLargeur(), perpendiculaire)));
+                            2 * getHauteur() * vecteurDirecteur.getY()));
+            pied1.setValue(Position.a(
+                    pied.add(getLargeur(), perpendiculaire), VIRTUELLE));
+            sommet.setValue(arrivee);
+            pied2.setValue(Position.a(
+                    pied.subtract(getLargeur(), perpendiculaire), VIRTUELLE));
         }
 
         public int getHauteur() {

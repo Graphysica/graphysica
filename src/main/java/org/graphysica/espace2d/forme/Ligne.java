@@ -109,15 +109,8 @@ public abstract class Ligne extends Forme {
      * @param toile la toile sur laquelle dessiner la ligne.
      * @param repere le repère de l'espace.
      */
-    protected abstract void calculerOrigineEtArrivee(@NotNull final Canvas toile,
-            @NotNull final Repere repere);
-
-    /**
-     * Récupère un vecteur dont l'orientation est la même que celle de la ligne.
-     *
-     * @return le vecteur directeur de la ligne.
-     */
-    public abstract Vector2D getVecteurDirecteur();
+    protected abstract void calculerOrigineEtArrivee(
+            @NotNull final Canvas toile, @NotNull final Repere repere);
 
     public final int getEpaisseur() {
         return epaisseur.getValue();

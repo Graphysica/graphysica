@@ -17,35 +17,27 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import java.util.LinkedHashSet;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.Type;
 
 /**
- * Un ordre de rendu est un ensemble ordonné des classes de forme à dessiner sur
- * une toile. L'ordre de rendu ne devrait comprendre que des classes qui sont
- * des enfants directs de la classe Forme.
+ * Les objets implémentant cette interface peuvent être déplacés dans un repère
+ * d'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-@SuppressWarnings("unchecked")
-public class OrdreRendu extends LinkedHashSet<Class> {
+interface Deplaceable {
 
-    {
-        add(Grille.class);
-        add(Axe.class);
-        add(Polygone.class);
-        add(Angle.class);
-        add(Ligne.class);
-        add(Point.class);
-        add(Etiquette.class);
-    }
-
-    @Override
-    public boolean add(@NotNull final Class classe) {
-        if (classe.isAssignableFrom(Forme.class)) {
-            throw new IllegalArgumentException(
-                    "Le type de classe spécifié n'est pas une forme.");
-        }
-        return super.add(classe);
-    }
+    /**
+     * Déplace l'objet selon un déplacement de type spécifié dans un repère
+     * d'espace défini.
+     *
+     * @param deplacement le vecteur de déplacement.
+     * @param type le type du déplacement.
+     * @param repere le repère d'espace.
+     */
+    public void deplacer(@NotNull final Vector2D deplacement,
+            @NotNull final Type type, @NotNull final Repere repere);
 
 }

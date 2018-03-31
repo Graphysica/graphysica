@@ -63,13 +63,6 @@ public final class Taille extends SimpleIntegerProperty {
      */
     static final int TAILLE_PAR_DEFAUT = 4;
 
-    /**
-     * La taille sur l'écran, exprimée en pixels et variant entre entre
-     * {@code TAILLE_MINIMALE} et {@code TAILLE_MAXIMALE} inclusivement.
-     */
-    private final IntegerProperty taille = new SimpleIntegerProperty(
-            TAILLE_PAR_DEFAUT);
-
     public Taille() {
         set(TAILLE_PAR_DEFAUT);
     }
@@ -88,7 +81,7 @@ public final class Taille extends SimpleIntegerProperty {
     private static int chargerProprieteTaille(@NotNull final String propriete) {
         try {
             final Properties proprietes = new Properties();
-            final InputStream entree = Point.class
+            final InputStream entree = Taille.class
                     .getResourceAsStream(CHEMIN_PROPRIETES);
             if (entree != null) {
                 proprietes.load(entree);

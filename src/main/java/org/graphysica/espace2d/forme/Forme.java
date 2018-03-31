@@ -26,8 +26,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.construction.Element;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
 /**
@@ -59,7 +59,7 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
 
     /**
      * Le seuil de distance de sélection entre la position virtuelle du curseur
-     * et la forme exprimée en pixels.
+     * et la forme, exprimé en pixels.
      */
     private static final double DISTANCE_SELECTION = 5;
 
@@ -102,7 +102,7 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
             @NotNull final Repere repere);
     
     @Override
-    public boolean isSelectionne(@NotNull final Vector2D curseur,
+    public boolean isSelectionne(@NotNull final Position curseur,
             @NotNull final Repere repere) {
         return distance(curseur, repere) <= DISTANCE_SELECTION;
     }
