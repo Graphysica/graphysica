@@ -25,7 +25,7 @@ import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
-import org.graphysica.espace2d.position.Type;
+import org.graphysica.espace2d.position.PositionReelle;
 import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 
 /**
@@ -33,7 +33,7 @@ import static org.graphysica.espace2d.position.Type.VIRTUELLE;
  *
  * @author Marc-Antoine Ouimet
  */
-public final class Point extends Forme implements Deplaceable {
+public final class Point extends Forme {
 
     /**
      * La couleur par défaut d'un point.
@@ -49,7 +49,7 @@ public final class Point extends Forme implements Deplaceable {
      * La position réelle du point exprimée en mètres selon la base canonique.
      */
     private final ObjectProperty<Position> position
-            = new SimpleObjectProperty<>();
+            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
     /**
      * La taille de la bordure du dessin du point exprimée en pixels.
@@ -59,63 +59,26 @@ public final class Point extends Forme implements Deplaceable {
     /**
      * La taille du point.
      */
-    private final Taille taille = Taille.de("point");
-
+    private final Taille taille = new Taille(Taille.de("points"));
+    
     /**
-     * Construit un point de couleur, de taille et de position définies par
-     * défaut.
+     * Construit un point par défaut.
      */
     public Point() {
-        super(COULEUR_PAR_DEFAUT);
     }
-
+    
     /**
-     * Construit un point de couleur et de taille définies par défaut à la
-     * position spécifiée.
-     *
-     * @param position la position du point.
+     * Construit un point aux propriétés liées.
+     * @param position la propriété de position du point.
+     * @param couleur la propriété de couleur du point.
+     * @param taille la propriété de taille du point.
      */
-    public Point(@NotNull final Position position) {
-        this();
-        setPosition(position);
-    }
-
-    /**
-     * Construit un point de taille définie par défaut à la position et de
-     * couleur spécifiées.
-     *
-     * @param position la position du point.
-     * @param couleur la couleur du point.
-     */
-    public Point(@NotNull final Position position,
-            @NotNull final Color couleur) {
-        this(position);
-        setCouleur(couleur);
-    }
-
-    /**
-     * Construit un point dont la taille, la couleur et la position sont
-     * définies.
-     *
-     * @param position la position du point.
-     * @param couleur la couleur du point.
-     * @param taille la taille du point.
-     */
-    public Point(@NotNull final Position position,
-            @NotNull final Color couleur, final int taille) {
-        this(position, couleur);
-        this.taille.setValue(taille);
-    }
-
-    /**
-     * Construit une prévisualisation de point positionné à la position du
-     * curseur.
-     *
-     * @param curseur la position réelle du curseur.
-     */
-    public Point(@NotNull final ObjectProperty<Position> curseur) {
-        setCouleur(COULEUR_PAR_DEFAUT);
-        position.bind(curseur);
+    public Point(@NotNull final ObjectProperty<? extends Position> position, 
+            @NotNull final ObjectProperty<Color> couleur, 
+            @NotNull final Taille taille) {
+        super(couleur);
+        positionProperty().bind(position);
+        tailleProperty().bind(taille);
     }
 
     {
@@ -168,34 +131,20 @@ public final class Point extends Forme implements Deplaceable {
                 getPosition().distance(curseur, VIRTUELLE, repere) - 5);
     }
 
-    @Override
-    public void deplacer(@NotNull final Vector2D deplacement,
-            @NotNull final Type type, @NotNull final Repere repere) {
-        getPosition().deplacer(deplacement, type, repere);
-    }
-
-    public ObjectProperty<Position> positionProperty() {
+    protected ObjectProperty<Position> positionProperty() {
         return position;
     }
 
-    public Position getPosition() {
+    protected Position getPosition() {
         return position.getValue();
     }
 
-    public final void setPosition(@NotNull final Position position) {
-        this.position.setValue(position);
-    }
-
-    private int getTaille() {
-        return taille.getValue();
-    }
-
-    public void setTaille(final int taille) {
-        this.taille.setValue(taille);
-    }
-
-    public Taille tailleProperty() {
+    protected Taille tailleProperty() {
         return taille;
+    }
+
+    protected int getTaille() {
+        return taille.getValue();
     }
 
 }
