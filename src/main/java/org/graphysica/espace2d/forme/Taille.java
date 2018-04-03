@@ -20,15 +20,14 @@ import com.sun.istack.internal.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Une taille est un nombre compris entre une valeur minimale et une valeur
- * maximale, qui est toujours défini, et qui peut être chargé à partir d'un
- * fichier de configuration.
+ * Une taille est un nombre muable compris entre une valeur minimale et une
+ * valeur maximale, qui est toujours défini, et qui peut être chargé à partir
+ * d'un fichier de configuration.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -39,7 +38,7 @@ public final class Taille extends SimpleIntegerProperty {
     /**
      * Le chemin du fichier des propriétés de taille.
      */
-    private static String CHEMIN_PROPRIETES = "/config/taille.properties";
+    private static final String CHEMIN_PROPRIETES = "/config/taille.properties";
 
     /**
      * La taille minimale d'un point. Doit être positive.
@@ -63,12 +62,51 @@ public final class Taille extends SimpleIntegerProperty {
      */
     static final int TAILLE_PAR_DEFAUT = 4;
 
+    /**
+     * Les propriétés de taille.
+     */
+    private static final Properties PROPRIETES = new Properties();
+
+    /**
+     * Construit une taille par défaut.
+     */
     public Taille() {
-        set(TAILLE_PAR_DEFAUT);
+        this(TAILLE_PAR_DEFAUT);
     }
 
+    /**
+     * Construit une taille de valeur définie.
+     *
+     * @param taille la valeur de la taille.
+     */
     public Taille(final int taille) {
         set(taille);
+    }
+
+    /**
+     * Construit une copie d'une taille.
+     *
+     * @param taille la taille à copier.
+     */
+    public Taille(@NotNull final Taille taille) {
+        this(taille.get());
+    }
+
+    static {
+        try {
+            final InputStream entree = Taille.class
+                    .getResourceAsStream(CHEMIN_PROPRIETES);
+            if (entree != null) {
+                PROPRIETES.load(entree);
+            } else {
+                LOGGER.error(
+                        "Fichier de propriétés de taille introuvable au chemin "
+                        + CHEMIN_PROPRIETES);
+            }
+        } catch (final IOException ioex) {
+            LOGGER.error("Erreur lors de la lecture du fichier de propriétés "
+                    + "au chemin " + CHEMIN_PROPRIETES);
+        }
     }
 
     /**
@@ -80,21 +118,7 @@ public final class Taille extends SimpleIntegerProperty {
      */
     private static int chargerProprieteTaille(@NotNull final String propriete) {
         try {
-            final Properties proprietes = new Properties();
-            final InputStream entree = Taille.class
-                    .getResourceAsStream(CHEMIN_PROPRIETES);
-            if (entree != null) {
-                proprietes.load(entree);
-                final String valeur = proprietes.getProperty(propriete);
-                return Integer.parseInt(valeur);
-            } else {
-                LOGGER.error(
-                        "Fichier de propriétés de taille introuvable au chemin "
-                        + CHEMIN_PROPRIETES);
-            }
-        } catch (final IOException ioex) {
-            LOGGER.error("Erreur lors de la lecture du fichier de propriétés "
-                    + "au chemin " + CHEMIN_PROPRIETES);
+            return Integer.parseInt(PROPRIETES.getProperty(propriete));
         } catch (final NumberFormatException nfex) {
             LOGGER.error("Format inattendu de la propriété '" + propriete
                     + "' au chemin " + CHEMIN_PROPRIETES);
@@ -118,7 +142,7 @@ public final class Taille extends SimpleIntegerProperty {
     public void setValue(@NotNull final Number valeur) {
         set(valeur.intValue());
     }
-    
+
     /**
      * Modifie la taille. Si la taille spécifiée est inférieure à
      * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}, défini
