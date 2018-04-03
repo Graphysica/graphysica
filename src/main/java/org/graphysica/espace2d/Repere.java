@@ -25,7 +25,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  * Un repère est un repère orthonormé d'un espace virtuel en deux dimensions aux
  * coordonnées réelles. Un repère permet de déterminer la position d'objets aux
  * coordonnées réelles sur l'écran et de déterminer la position d'objet aux
- * coordoonnées virtuels dans l'espace.
+ * coordoonnées virtuels dans l'espace au moyen de transformations affines.
  *
  * @author Marc-Antoine Ouimet
  */

@@ -16,28 +16,25 @@
  */
 package org.graphysica.espace2d.forme;
 
-import com.sun.istack.internal.NotNull;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Repere;
-import org.graphysica.espace2d.position.Type;
-
 /**
- * Les objets implémentant cette interface peuvent être déplacés dans un repère
- * d'espace.
+ * Les objets affichables ont un état d'affichage dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-interface Deplaceable {
+public interface Affichable {
 
     /**
-     * Déplace l'objet selon un déplacement de type spécifié dans un repère
-     * d'espace défini.
+     * Récupère l'état d'affichage de l'objet.
      *
-     * @param deplacement le vecteur de déplacement.
-     * @param type le type du déplacement.
-     * @param repere le repère d'espace.
+     * @return {@code true} si l'objet est affiché.
      */
-    public void deplacer(@NotNull final Vector2D deplacement,
-            @NotNull final Type type, @NotNull final Repere repere);
+    public boolean isAffiche();
+
+    /**
+     * Modifie l'état d'affichage de l'objet.
+     *
+     * @param isAffiche la nouvelle valeur d'état d'affichage de l'objet.
+     */
+    public void setAffiche(final boolean isAffiche);
 
 }

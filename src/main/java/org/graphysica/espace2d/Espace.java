@@ -96,7 +96,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
             for (final Forme forme : formes) {
                 if (classe.isInstance(forme)) {
                     formesAffichables++;
-                    if (forme.isAffichee()) {
+                    if (forme.isAffiche()) {
                         forme.dessiner(this, repere);
                     }
                 }

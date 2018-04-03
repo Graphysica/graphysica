@@ -125,8 +125,8 @@ public abstract class Position implements Serializable {
     }
 
     /**
-     * Calcule la distance vectorielle orientée de cette position vers une
-     * position spécifiée.
+     * Calcule la distance vectorielle orientée de type spécifié de cette
+     * position vers une position spécifiée.
      *
      * @param position la position distancée de ce point.
      * @param repere le repère d'espace d'emplacement des positions.

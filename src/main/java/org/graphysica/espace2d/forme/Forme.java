@@ -37,7 +37,7 @@ import org.graphysica.espace2d.Repere;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Forme extends Element implements Dessinable, Surbrillable,
-        Selectionnable, Previsualisable {
+        Selectionnable, Previsualisable, Affichable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation
@@ -47,15 +47,10 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     protected final Set<Observable> proprietesActualisation = new HashSet<>();
 
     /**
-     * La couleur par défaut d'une forme.
-     */
-    private static final Color COULEUR_PAR_DEFAUT = Color.BLACK;
-
-    /**
      * La couleur d'affichage de la forme.
      */
     private final ObjectProperty<Color> couleur
-            = new SimpleObjectProperty<>(COULEUR_PAR_DEFAUT);
+            = new SimpleObjectProperty<>(Color.BLACK);
 
     /**
      * Le seuil de distance de sélection entre la position virtuelle du curseur
@@ -66,7 +61,7 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     /**
      * Si la forme est affichée.
      */
-    private final BooleanProperty affichee = new SimpleBooleanProperty(true);
+    private final BooleanProperty affiche = new SimpleBooleanProperty(true);
     
     /**
      * Si la forme est en surbrillance.
@@ -75,21 +70,20 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
             = new SimpleBooleanProperty(false);
     
     /**
-     * Si la forme est en prévisualisation.
+     * Si la forme est en prévisualisation. 
      */
-    private final BooleanProperty enPrevisualisation 
-            = new SimpleBooleanProperty(false);
-
+    private boolean enPrevisualisation = false;
+    
     public Forme() {
     }
-
-    public Forme(@NotNull final Color couleur) {
-        setCouleur(couleur);
+    
+    public Forme(@NotNull final ObjectProperty<Color> couleur) {
+        couleurProperty().bind(couleur);
     }
-
+    
     {
         proprietesActualisation.add(couleur);
-        proprietesActualisation.add(affichee);
+        proprietesActualisation.add(affiche);
         proprietesActualisation.add(enSurbrillance);
     }
 
@@ -114,45 +108,43 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     public final Color getCouleur() {
         return couleur.getValue();
     }
-
-    public final void setCouleur(final Color couleur) {
+    
+    final void setCouleur(final Color couleur) {
         this.couleur.setValue(couleur);
     }
-
-    public final ObjectProperty<Color> couleurProperty() {
+    
+    protected final ObjectProperty<Color> couleurProperty() {
         return couleur;
     }
 
-    public final boolean isAffichee() {
-        return affichee.getValue();
-    }
-
-    public final void setAffichee(final boolean affichee) {
-        this.affichee.setValue(affichee);
-    }
-
-    public final BooleanProperty afficheeProperty() {
-        return affichee;
+    @Override
+    public final boolean isAffiche() {
+        return affiche.getValue();
     }
 
     @Override
-    public boolean isEnSurbrillance() {
+    public final void setAffiche(final boolean affichee) {
+        this.affiche.setValue(affichee);
+    }
+
+    @Override
+    public final boolean isEnSurbrillance() {
         return enSurbrillance.getValue();
     }
 
     @Override
-    public void setEnSurbrillance(final boolean enSurbrillance) {
+    public final void setEnSurbrillance(final boolean enSurbrillance) {
         this.enSurbrillance.setValue(enSurbrillance);
     }
 
     @Override
-    public boolean isEnPrevisualisation() {
-        return enPrevisualisation.getValue();
+    public final boolean isEnPrevisualisation() {
+        return enPrevisualisation;
     }
 
     @Override
-    public void setEnPrevisualisation(final boolean enPrevisualisation) {
-        this.enPrevisualisation.setValue(enPrevisualisation);
+    public final void setEnPrevisualisation(final boolean enPrevisualisation) {
+        this.enPrevisualisation = enPrevisualisation;
     }
     
 }
