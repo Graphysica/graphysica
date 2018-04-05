@@ -59,7 +59,7 @@ public final class Point extends Forme {
     /**
      * La taille du point.
      */
-    private final Taille taille = new Taille(Taille.de("points"));
+    private final Taille taille = Taille.de("point");
     
     /**
      * Construit un point par défaut.

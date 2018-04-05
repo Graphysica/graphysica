@@ -96,16 +96,18 @@ public final class Taille extends SimpleIntegerProperty {
         try {
             final InputStream entree = Taille.class
                     .getResourceAsStream(CHEMIN_PROPRIETES);
-            if (entree != null) {
-                PROPRIETES.load(entree);
+            if (entree == null) {
+                throw new NullPointerException();
             } else {
-                LOGGER.error(
-                        "Fichier de propriétés de taille introuvable au chemin "
-                        + CHEMIN_PROPRIETES);
+                PROPRIETES.load(entree);
             }
+        } catch (final NullPointerException npex) {
+            LOGGER.error(
+                    "Fichier de propriétés de taille introuvable au chemin "
+                    + CHEMIN_PROPRIETES, npex);
         } catch (final IOException ioex) {
             LOGGER.error("Erreur lors de la lecture du fichier de propriétés "
-                    + "au chemin " + CHEMIN_PROPRIETES);
+                    + "au chemin " + CHEMIN_PROPRIETES, ioex);
         }
     }
 
@@ -117,11 +119,19 @@ public final class Taille extends SimpleIntegerProperty {
      * d'erreur.
      */
     private static int chargerProprieteTaille(@NotNull final String propriete) {
+        final String proprieteRecuperee = PROPRIETES.getProperty(propriete);
         try {
-            return Integer.parseInt(PROPRIETES.getProperty(propriete));
+            if (proprieteRecuperee == null) {
+                throw new NullPointerException();
+            } else {
+                return Integer.parseInt(proprieteRecuperee);
+            }
+        } catch (final NullPointerException npex) {
+            LOGGER.error("Aucune propriété '" + propriete + "' au chemin "
+                    + CHEMIN_PROPRIETES, npex);
         } catch (final NumberFormatException nfex) {
             LOGGER.error("Format inattendu de la propriété '" + propriete
-                    + "' au chemin " + CHEMIN_PROPRIETES);
+                    + "' au chemin " + CHEMIN_PROPRIETES, nfex);
         }
         return TAILLE_PAR_DEFAUT;
     }

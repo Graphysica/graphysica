@@ -40,7 +40,7 @@ public class Point extends ObjetMathematique {
     /**
      * La taille du point dans sa représentation dans un espace.
      */
-    private final Taille taille = new Taille(Taille.de("point"));
+    private final Taille taille = Taille.de("point");
 
     @Override
     protected Forme creerForme() {
