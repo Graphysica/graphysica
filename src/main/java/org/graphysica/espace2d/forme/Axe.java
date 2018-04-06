@@ -135,11 +135,18 @@ public abstract class Axe extends Forme {
         final double espacementMinimalReel = espacementMinimalReel(repere);
         final int exposant = (int) (Math.log(espacementMinimalReel)
                 / Math.log(Repere.PUISSANCE));
-        if (exposant >= 0) {
+        if (exposant >= 6) {
+            return "%2.1e";
+        } else if (exposant >= 0) {
             return "%.0f";
         } else {
-            return new StringBuilder("%.").append((int) (Math.abs(exposant)))
-                    .append("f").toString();
+            final int decimales = (int) Math.abs(exposant);
+            if (decimales >= 6) {
+                return "%2.1e";
+            } else {
+                return new StringBuilder("%.").append(decimales).append("f")
+                        .toString();
+            }
         }
     }
 
