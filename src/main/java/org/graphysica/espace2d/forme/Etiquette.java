@@ -35,7 +35,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
-import org.graphysica.espace2d.position.Type;
 import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
@@ -46,13 +45,13 @@ import org.scilab.forge.jlatexmath.TeXFormula;
  *
  * @author Marc-Antoine Ouimet
  */
-public class Etiquette extends Forme implements Deplaceable {
+public class Etiquette extends Forme {
 
     /**
      * La taille par défaut des caractères de cette étiquette exprimée en
      * points.
      */
-    private static final int TAILLE_CARACTERE_PAR_DEFAUT = 16;
+    private static final int TAILLE_CARACTERE_PAR_DEFAUT = 12;
 
     /**
      * La couleur par défaut des étiquettes.
@@ -106,6 +105,10 @@ public class Etiquette extends Forme implements Deplaceable {
         this(texte);
         setTailleCaractere(taille);
     }
+    
+    static {
+        TeXFormula.setDefaultDPI();
+    }
 
     {
         proprietesActualisation.add(texte);
@@ -118,17 +121,16 @@ public class Etiquette extends Forme implements Deplaceable {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (imageFormule == null) {
             construireImage();
         }
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
-        final Position position = getPositionAncrage().deplacer(
-                getPositionRelative(), VIRTUELLE, repere);
-        contexteGraphique.drawImage(imageFormule,
-                (int) (position.virtuelle(repere).getX()),
-                (int) (position.virtuelle(repere).getY()));
+        final Vector2D position = getPositionAncrage().deplacer(
+                getPositionRelative(), VIRTUELLE, repere).virtuelle(repere);
+        contexteGraphique.drawImage(imageFormule, (int) (position.getX()),
+                (int) (position.getY()));
         if (isEnSurbrillance()) {
             dessinerSurbrillance(toile, repere);
         }
@@ -150,7 +152,6 @@ public class Etiquette extends Forme implements Deplaceable {
      * Construit l'image de la formule TeX à partir du texte.
      */
     private void construireImage() {
-        //TODO: ajuster TeXFormula#setDPITarget(float) à l'écran 
         imageFormule = SwingFXUtils.toFXImage(
                 (BufferedImage) new TeXFormula(getTexte()).createBufferedImage(
                         TeXConstants.STYLE_TEXT, getTailleCaractere(),
@@ -216,13 +217,6 @@ public class Etiquette extends Forme implements Deplaceable {
         curseurSurEtiquette &= curseur.virtuelle(repere).getY()
                 <= coinInferieurDroit.virtuelle(repere).getY();
         return curseurSurEtiquette;
-    }
-
-    @Override
-    public void deplacer(@NotNull final Vector2D deplacement,
-            @NotNull final Type type, @NotNull final Repere repere) {
-        setPositionAncrage(getPositionAncrage()
-                .deplacer(deplacement, type, repere));
     }
 
     /**

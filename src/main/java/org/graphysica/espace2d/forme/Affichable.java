@@ -21,20 +21,20 @@ package org.graphysica.espace2d.forme;
  *
  * @author Marc-Antoine Ouimet
  */
-public interface Affichable {
+interface Affichable {
 
     /**
      * Récupère l'état d'affichage de l'objet.
      *
      * @return {@code true} si l'objet est affiché.
      */
-    public boolean isAffiche();
+    boolean isAffiche();
 
     /**
      * Modifie l'état d'affichage de l'objet.
      *
      * @param isAffiche la nouvelle valeur d'état d'affichage de l'objet.
      */
-    public void setAffiche(final boolean isAffiche);
+    void setAffiche(final boolean isAffiche);
 
 }

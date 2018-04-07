@@ -54,7 +54,7 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
 
     /**
      * Le seuil de distance de sélection entre la position virtuelle du curseur
-     * et la forme, exprimé en pixels.
+     * et cette forme, exprimé en pixels.
      */
     private static final double DISTANCE_SELECTION = 5;
 
@@ -88,7 +88,16 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     }
 
     @Override
-    public abstract void dessiner(@NotNull final Canvas toile,
+    public final void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+        dessinerNormal(toile, repere);
+    }
+    
+    @Override
+    public abstract void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere);
 
     @Override

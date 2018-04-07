@@ -76,17 +76,6 @@ public final class Grille extends Forme {
         proprietesActualisation.add(epaisseur);
     }
 
-    @Override
-    public void dessiner(@NotNull final Canvas toile,
-            @NotNull final Repere repere) {
-        calculerGraduations(toile, repere);
-        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
-                getCouleur(), 1);
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
-        }
-    }
-
     /**
      * Calcule les graduations virtuelles de la grille.
      *
@@ -99,6 +88,25 @@ public final class Grille extends Forme {
                 toile.getHeight(), getEspacement().getY());
         graduationsVerticales = repere.graduationsVerticales(toile.getWidth(),
                 getEspacement().getY());
+    }
+
+    @Override
+    public void dessinerNormal(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        calculerGraduations(toile, repere);
+        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
+                getCouleur(), 1);
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        calculerGraduations(toile, repere);
+        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales, 
+                getCouleur().deriveColor(1, 1, 1, 0.3), 3);
     }
 
     /**
@@ -126,14 +134,6 @@ public final class Grille extends Forme {
         for (final double x : graduationsVerticales) {
             contexteGraphique.strokeLine(x, 0, x, toile.getHeight());
         }
-    }
-
-    @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
-            @NotNull final Repere repere) {
-        calculerGraduations(toile, repere);
-        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales, 
-                getCouleur().deriveColor(1, 1, 1, 0.3), 3);
     }
 
     @Override

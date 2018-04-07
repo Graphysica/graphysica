@@ -33,7 +33,7 @@ import static org.graphysica.espace2d.position.Type.VIRTUELLE;
  *
  * @author Marc-Antoine Ouimet
  */
-public final class Point extends Forme {
+public class Point extends Forme {
 
     /**
      * La couleur par défaut d'un point.
@@ -87,15 +87,12 @@ public final class Point extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
-        }
-        dessinerRond(toile, getPosition().virtuelle(repere),
-                COULEUR_BORDURE, getTaille() + TAILLE_BORDURE);
-        dessinerRond(toile, getPosition().virtuelle(repere),
-                getCouleur(), getTaille());
+        final Vector2D centre = getPosition().virtuelle(repere);
+        dessinerRond(toile, centre, COULEUR_BORDURE, 
+                getTaille() + TAILLE_BORDURE);
+        dessinerRond(toile, centre, getCouleur(), getTaille());
     }
 
     @Override
@@ -127,23 +124,23 @@ public final class Point extends Forme {
     @Override
     public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
-        return Math.max(0, 
-                getPosition().distance(curseur, VIRTUELLE, repere) - 5);
+        return Math.max(0, getPosition().distance(curseur, VIRTUELLE, repere) 
+                - getTaille());
     }
 
-    protected ObjectProperty<Position> positionProperty() {
+    protected final ObjectProperty<Position> positionProperty() {
         return position;
     }
 
-    protected Position getPosition() {
+    protected final Position getPosition() {
         return position.getValue();
     }
 
-    protected Taille tailleProperty() {
+    protected final Taille tailleProperty() {
         return taille;
     }
 
-    protected int getTaille() {
+    protected final int getTaille() {
         return taille.getValue();
     }
 

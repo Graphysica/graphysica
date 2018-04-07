@@ -65,7 +65,7 @@ public abstract class Axe extends Forme {
      * La taille des caractères des étiquettes de graduation de cet axe.
      */
     private final IntegerProperty tailleCaracteres
-            = new SimpleIntegerProperty(14);
+            = new SimpleIntegerProperty(10);
 
     /**
      * La position virtuelle de l'axe recalculée à chaque dessin de l'axe.

@@ -58,19 +58,26 @@ public class Fleche extends SegmentDroite {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        super.dessiner(toile, repere);
+        super.dessinerNormal(toile, repere);
         tete.calculerPositionsPoints(repere, getArrivee());
-        tete.dessiner(toile, repere);
+        tete.dessinerNormal(toile, repere);
     }
 
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        super.dessinerSurbrillance(toile, repere);
+        tete.dessinerSurbrillance(toile, repere);
+    }
+    
     public void setOrigine(@NotNull final Position origine) {
-        this.point1.setValue(origine);
+        this.position1.setValue(origine);
     }
 
     public void setArrivee(@NotNull final Position arrivee) {
-        this.point2.setValue(arrivee);
+        this.position2.setValue(arrivee);
     }
 
     private Position getOrigine() {

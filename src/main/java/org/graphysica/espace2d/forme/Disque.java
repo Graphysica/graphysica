@@ -33,7 +33,7 @@ public class Disque extends Aire {
     private final DoubleProperty rayon = new SimpleDoubleProperty();
     
     @Override
-    public void dessiner(Canvas toile, Repere repere) {
+    public void dessinerNormal(Canvas toile, Repere repere) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -47,11 +47,5 @@ public class Disque extends Aire {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void deplacer(Vector2D deplacement, Type type, Repere repere) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
     
 }

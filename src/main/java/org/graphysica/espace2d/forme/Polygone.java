@@ -29,7 +29,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
-import org.graphysica.espace2d.position.Type;
 
 /**
  * Un polygone est une aire formée par une séquence de points dans l'espace.
@@ -66,13 +65,17 @@ public class Polygone extends Aire {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
-        }
         dessinerPolygone(toile, repere.positionsVirtuelles(getPoints(repere)),
                 getCouleur());
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        dessinerPolygone(toile, repere.positionsVirtuelles(getPoints(repere)),
+                getCouleur().darker());
     }
 
     /**
@@ -90,13 +93,6 @@ public class Polygone extends Aire {
         contexteGraphique.setFill(couleur);
         contexteGraphique.fillPolygon(abscisses(pointsVirtuels),
                 ordonnees(pointsVirtuels), pointsVirtuels.length);
-    }
-
-    @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
-            @NotNull final Repere repere) {
-        dessinerPolygone(toile, repere.positionsVirtuelles(getPoints(repere)),
-                getCouleur().darker());
     }
 
     /**
@@ -219,12 +215,6 @@ public class Polygone extends Aire {
         for (final ObjectProperty<Position> point : points) {
             this.points.add(point);
         }
-    }
-
-    @Override
-    public void deplacer(@NotNull final Vector2D deplacement, 
-            @NotNull final Type type, @NotNull final Repere repere) {
-        
     }
 
 }

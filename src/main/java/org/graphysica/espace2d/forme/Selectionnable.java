@@ -38,7 +38,7 @@ interface Selectionnable {
      * @param repere le repère de l'espace.
      * @return {@code true} si la forme est sélectionnée.
      */
-    public boolean isSelectionne(@NotNull final Position curseur,
+    boolean isSelectionne(@NotNull final Position curseur,
             @NotNull final Repere repere);
 
     /**
@@ -49,7 +49,7 @@ interface Selectionnable {
      * @param repere le repère de l'espace.
      * @return la distance entre le curseur et cette forme.
      */
-    public double distance(@NotNull final Position curseur,
+    double distance(@NotNull final Position curseur,
             @NotNull final Repere repere);
 
 }

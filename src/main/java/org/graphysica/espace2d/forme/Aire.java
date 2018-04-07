@@ -22,7 +22,7 @@ import javafx.scene.paint.Color;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Aire extends Forme implements Deplaceable {
+public abstract class Aire extends Forme {
 
     /**
      * La couleur par défaut d'une aire.

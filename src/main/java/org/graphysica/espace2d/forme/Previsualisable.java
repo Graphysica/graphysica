@@ -30,13 +30,13 @@ interface Previsualisable {
      *
      * @return {@code true} si l'objet est en prévisualisation.
      */
-    public boolean isEnPrevisualisation();
+    boolean isEnPrevisualisation();
 
     /**
      * Modifie l'état de prévisualisation de cet objet.
      *
      * @param enPrevisualisation le nouvel état de prévisualisation de l'objet.
      */
-    public void setEnPrevisualisation(final boolean enPrevisualisation);
+    void setEnPrevisualisation(final boolean enPrevisualisation);
 
 }

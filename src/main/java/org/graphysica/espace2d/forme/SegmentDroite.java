@@ -18,7 +18,6 @@ package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -33,18 +32,6 @@ import org.graphysica.espace2d.Repere;
 public class SegmentDroite extends Ligne {
 
     /**
-     * La position réelle du premier point dans la droite.
-     */
-    protected final ObjectProperty<Position> point1
-            = new SimpleObjectProperty<>();
-
-    /**
-     * La position réelle du deuxième point dans la droite.
-     */
-    protected final ObjectProperty<Position> point2
-            = new SimpleObjectProperty<>();
-
-    /**
      * Construit un segment de droite à partir de deux vecteurs position fixes.
      *
      * @param point1 le premier vecteur position du segment de droite.
@@ -52,8 +39,8 @@ public class SegmentDroite extends Ligne {
      */
     public SegmentDroite(@NotNull final Position point1,
             @NotNull final Position point2) {
-        this.point1.setValue(point1);
-        this.point2.setValue(point2);
+        this.position1.setValue(point1);
+        this.position2.setValue(point2);
     }
 
     /**
@@ -66,21 +53,21 @@ public class SegmentDroite extends Ligne {
      */
     public SegmentDroite(@NotNull final Position point,
             @NotNull final ObjectProperty<Position> curseur) {
-        this.point1.setValue(point);
-        this.point2.bind(curseur);
+        this.position1.setValue(point);
+        this.position2.bind(curseur);
     }
 
     {
-        proprietesActualisation.add(point1);
-        proprietesActualisation.add(point2);
+        proprietesActualisation.add(position1);
+        proprietesActualisation.add(position2);
         proprietesActualisation.add(epaisseur);
     }
 
     @Override
     protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        origineTrace = getPoint1().virtuelle(repere);
-        arriveeTrace = getPoint2().virtuelle(repere);
+        origineTrace = getPoint1();
+        arriveeTrace = getPoint2();
     }
 
     /**
@@ -99,14 +86,6 @@ public class SegmentDroite extends Ligne {
         final Vector2D p1 = getPoint1().virtuelle(repere);
         final Vector2D p2 = getPoint2().virtuelle(repere);
         return new Segment(p1, p2, null).distance(curseur.virtuelle(repere));
-    }
-
-    public Position getPoint1() {
-        return point1.getValue();
-    }
-
-    public Position getPoint2() {
-        return point2.getValue();
     }
 
 }

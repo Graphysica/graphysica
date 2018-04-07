@@ -45,7 +45,7 @@ public class AxeHorizontal extends Axe {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (isEnSurbrillance()) {
             dessinerSurbrillance(toile, repere);

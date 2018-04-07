@@ -113,7 +113,7 @@ public class Angle extends Forme {
      * @param repere le repère de l'espace.
      */
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (isDefini()) {
             // TODO: Dessiner la surbrillance si l'angle est en surbrillance
