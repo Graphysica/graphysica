@@ -311,6 +311,12 @@ public final class Repere {
             graduationsHorizontales[i] = y;
             y += espacementVirtuel;
         }
+        for (int i = 0; i < graduationsHorizontales.length / 2; i++) {
+            final int indiceInverse = graduationsHorizontales.length - 1 - i;
+            final double temporaire = graduationsHorizontales[i];
+            graduationsHorizontales[i] = graduationsHorizontales[indiceInverse];
+            graduationsHorizontales[indiceInverse] = temporaire;
+        }
         return graduationsHorizontales;
     }
 
