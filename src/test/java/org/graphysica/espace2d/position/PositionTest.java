@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.position;
 
-import org.graphysica.espace2d.position.Position;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -27,8 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.position.PositionReelle;
-import org.graphysica.espace2d.position.Type;
+import org.graphysica.espace2d.Repere;
 import static org.graphysica.espace2d.position.Type.REELLE;
 import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 import static org.junit.Assert.assertEquals;

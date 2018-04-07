@@ -52,6 +52,18 @@ public class PositionVirtuelle extends Position {
         return position;
     }
 
+    /**
+     * Récupère la distance vectorielle virtuelle entre deux positions
+     * virtuelles, orientée de cette position vers la position spécifiée.
+     *
+     * @param position la position d'arrivée de la distance vectorielle.
+     * @return la distance vectorielle virtuelle de cette position à la position
+     * spécifiée.
+     */
+    public Vector2D distance(@NotNull final PositionVirtuelle position) {
+        return position.getValeur().subtract(getValeur());
+    }
+
     @Override
     public Type getType() {
         return VIRTUELLE;

@@ -26,7 +26,7 @@ import org.graphysica.gson.PositionJsonAdaptateur;
 /**
  * Une position réelle est exprimée en unitées réelles. Sa valeur réelle est
  * invariante, et sa valeur virtuelle varie selon le repère d'espace.
- * 
+ *
  * @author Marc-Antoine Ouimet
  */
 @JsonAdapter(PositionJsonAdaptateur.class)
@@ -49,6 +49,18 @@ public class PositionReelle extends Position {
     @Override
     public Vector2D virtuelle(@NotNull final Repere repere) {
         return repere.positionVirtuelle(position);
+    }
+
+    /**
+     * Récupère la distance vectorielle réelle entre deux positions réelles,
+     * orientée de cette position vers la position spécifiée.
+     *
+     * @param position la position d'arrivée de la distance vectorielle.
+     * @return la distance vectorielle réelle de cette position à la position
+     * spécifiée.
+     */
+    public Vector2D distance(@NotNull final PositionReelle position) {
+        return position.getValeur().subtract(getValeur());
     }
 
     @Override
