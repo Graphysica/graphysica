@@ -22,11 +22,14 @@ import java.util.Iterator;
 import java.util.Map;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.position.PositionReelle;
 
 /**
@@ -36,7 +39,7 @@ import org.graphysica.espace2d.position.PositionReelle;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Axe extends Forme {
-    
+
     /**
      * La taille des lignes de tracé de graduations transversales à la flèche
      * représentant l'axe.
@@ -55,11 +58,21 @@ public abstract class Axe extends Forme {
     protected final Map<Double, Etiquette> etiquettes = new HashMap<>();
 
     /**
+     * L'origine de l'axe.
+     */
+    protected final ObjectProperty<Position> origine
+            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
+
+    /**
+     * L'arrivée de l'axe.
+     */
+    protected final ObjectProperty<Position> arrivee
+            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
+
+    /**
      * La flèche représentant cet axe.
      */
-    protected final Fleche fleche = new Fleche(
-            new PositionReelle(Vector2D.ZERO), 
-            new PositionReelle(Vector2D.ZERO));
+    protected final Fleche fleche = new Fleche(origine, arrivee);
 
     /**
      * La taille des caractères des étiquettes de graduation de cet axe.
@@ -78,6 +91,16 @@ public abstract class Axe extends Forme {
     public static enum Sens {
         VERTICAL,
         HORIZONTAL
+    }
+
+    /**
+     * Construit un axe dont l'espacement minimal virtuel est défini.
+     *
+     * @param espacement la valeur virtuelle d'espacement minimal entre les
+     * graduations de l'axe.
+     */
+    protected Axe(final double espacement) {
+        setEspacement(espacement);
     }
 
     /**
@@ -112,6 +135,17 @@ public abstract class Axe extends Forme {
             @NotNull final Repere repere) {
         fleche.dessinerSurbrillance(toile, repere);
     }
+
+    /**
+     * Dessine des marques de graduation sur l'axe.
+     *
+     * @param toile la toile affichant cet axe.
+     * @param valeursVirtuelles les valeurs virtuelles de graduation.
+     * @param positionAxe la position virtuelle de l'axe.
+     */
+    protected abstract void dessinerGraduations(@NotNull final Canvas toile,
+            @NotNull final double[] valeursVirtuelles,
+            final double positionAxe);
 
     /**
      * Calcule l'espacement minimal réel entre les graduations de l'axe.
@@ -232,6 +266,14 @@ public abstract class Axe extends Forme {
 
     public final IntegerProperty tailleCaracteresProperty() {
         return tailleCaracteres;
+    }
+
+    protected final void setOrigine(@NotNull final Position origine) {
+        this.origine.setValue(origine);
+    }
+
+    protected final void setArrivee(@NotNull final Position arrivee) {
+        this.arrivee.setValue(arrivee);
     }
 
 }

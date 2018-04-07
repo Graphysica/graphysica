@@ -41,7 +41,7 @@ public class AxeHorizontal extends Axe {
      * graduations de l'axe.
      */
     protected AxeHorizontal(final double espacement) {
-        setEspacement(espacement);
+        super(espacement);
     }
 
     @Override
@@ -56,9 +56,9 @@ public class AxeHorizontal extends Axe {
                 graduationsVerticales);
         actualiserEtiquettes(abscissesReelles, formatValeurs(repere));
         final double positionReelleAxe = positionReelleAxe(toile, repere);
-        fleche.setOrigine(new PositionReelle(
+        setOrigine(new PositionReelle(
                 new Vector2D(repere.abscisseReelle(0), positionReelleAxe)));
-        fleche.setArrivee(new PositionReelle(
+        setArrivee(new PositionReelle(
                 new Vector2D(repere.abscisseReelle(toile.getWidth()), 
                         positionReelleAxe)));
         dessinerGraduations(toile, graduationsVerticales,
@@ -70,14 +70,8 @@ public class AxeHorizontal extends Axe {
         });
     }
 
-    /**
-     * Dessine des marques de graduations sur l'axe.
-     *
-     * @param toile la toile affichant cet axe.
-     * @param valeursVirtuelles les valeurs virtuelles de graduation.
-     * @param positionAxe la position virtuelle de l'axe.
-     */
-    private void dessinerGraduations(@NotNull final Canvas toile,
+    @Override
+    protected void dessinerGraduations(@NotNull final Canvas toile,
             @NotNull final double[] valeursVirtuelles,
             final double positionAxe) {
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
@@ -109,7 +103,6 @@ public class AxeHorizontal extends Axe {
      */
     private void actualiserPositionEtiquettes(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final double ordonneeReelleAxe = positionReelleAxe(toile, repere);
         positionVirtuelle = positionVirtuelleAxe(toile, repere);
         final Iterator<Map.Entry<Double, Etiquette>> iteration = etiquettes
                 .entrySet().iterator();
@@ -118,7 +111,7 @@ public class AxeHorizontal extends Axe {
             final double valeur = entree.getKey();
             final Etiquette etiquette = entree.getValue();
             etiquette.setPositionAncrage(new PositionReelle(
-                    new Vector2D(valeur, ordonneeReelleAxe)));
+                    new Vector2D(valeur, positionReelleAxe(toile, repere))));
             if (positionVirtuelle >= toile.getHeight()
                     - etiquette.getHauteur()) {
                 etiquette.setPositionRelative(new Vector2D(
@@ -131,7 +124,7 @@ public class AxeHorizontal extends Axe {
             }
         }
     }
-
+    
     /**
      * Calcule l'ordonnée virtuelle de cet axe horizontal.
      *
@@ -141,7 +134,14 @@ public class AxeHorizontal extends Axe {
      */
     private double positionVirtuelleAxe(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        return repere.ordonneeVirtuelle(positionReelleAxe(toile, repere));
+        final double ordonneeVirtuelleZero = repere.ordonneeVirtuelle(0);
+        if (ordonneeVirtuelleZero < 0) {
+            return 0;
+        } else if (ordonneeVirtuelleZero > toile.getHeight()) {
+            return toile.getHeight();
+        } else {
+            return ordonneeVirtuelleZero;
+        }
     }
 
     /**
@@ -153,14 +153,7 @@ public class AxeHorizontal extends Axe {
      */
     private double positionReelleAxe(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final double ordonneeVirtuelleZero = repere.ordonneeVirtuelle(0);
-        if (ordonneeVirtuelleZero < 0) {
-            return repere.ordonneeReelle(0);
-        } else if (ordonneeVirtuelleZero > toile.getHeight()) {
-            return repere.ordonneeReelle(toile.getHeight());
-        } else {
-            return 0;
-        }
+        return repere.ordonneeReelle(positionVirtuelleAxe(toile, repere));
     }
 
     @Override

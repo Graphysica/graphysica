@@ -41,7 +41,7 @@ public class AxeVertical extends Axe {
      * graduations de l'axe.
      */
     protected AxeVertical(final double espacement) {
-        setEspacement(espacement);
+        super(espacement);
     }
 
     @Override
@@ -56,9 +56,9 @@ public class AxeVertical extends Axe {
                 graduationsHorizontales);
         actualiserEtiquettes(ordonneesReelles, formatValeurs(repere));
         final double positionReelleAxe = positionReelleAxe(toile, repere);
-        fleche.setOrigine(new PositionReelle(new Vector2D(positionReelleAxe, 
+        setOrigine(new PositionReelle(new Vector2D(positionReelleAxe, 
                 repere.ordonneeReelle(toile.getHeight()))));
-        fleche.setArrivee(new PositionReelle(new Vector2D(positionReelleAxe, 
+        setArrivee(new PositionReelle(new Vector2D(positionReelleAxe, 
                 repere.ordonneeReelle(0))));
         dessinerGraduations(toile, graduationsHorizontales,
                 positionVirtuelleAxe(toile, repere));
@@ -69,14 +69,8 @@ public class AxeVertical extends Axe {
         });
     }
 
-    /**
-     * Dessine des marques de graduations sur l'axe.
-     *
-     * @param toile la toile affichant cet axe.
-     * @param valeursVirtuelles les valeurs virtuelles de graduation.
-     * @param positionAxe la position virtuelle de l'axe.
-     */
-    private void dessinerGraduations(@NotNull final Canvas toile,
+    @Override
+    protected void dessinerGraduations(@NotNull final Canvas toile,
             @NotNull final double[] valeursVirtuelles,
             final double positionAxe) {
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
@@ -140,7 +134,14 @@ public class AxeVertical extends Axe {
      */
     private double positionVirtuelleAxe(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        return repere.abscisseVirtuelle(positionReelleAxe(toile, repere));
+        final double abscisseVirtuelleZero = repere.abscisseVirtuelle(0);
+        if (abscisseVirtuelleZero < 0) {
+            return 0;
+        } else if (abscisseVirtuelleZero > toile.getWidth()) {
+            return toile.getWidth();
+        } else {
+            return abscisseVirtuelleZero;
+        }
     }
 
     /**
@@ -152,14 +153,7 @@ public class AxeVertical extends Axe {
      */
     private double positionReelleAxe(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final double abscisseVirtuelleZero = repere.abscisseVirtuelle(0);
-        if (abscisseVirtuelleZero < 0) {
-            return repere.abscisseReelle(0);
-        } else if (abscisseVirtuelleZero > toile.getWidth()) {
-            return repere.abscisseReelle(toile.getWidth());
-        } else {
-            return 0;
-        }
+        return repere.abscisseReelle(positionVirtuelleAxe(toile, repere));
     }
 
     @Override
