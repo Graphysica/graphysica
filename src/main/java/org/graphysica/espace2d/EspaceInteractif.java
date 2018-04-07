@@ -71,6 +71,7 @@ public class EspaceInteractif extends Espace {
 
     {
         setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
+            requestFocus();
             setCursor(Cursor.CROSSHAIR);
         });
         setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
