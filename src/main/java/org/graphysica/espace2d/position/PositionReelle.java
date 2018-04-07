@@ -63,6 +63,18 @@ public class PositionReelle extends Position {
         return position.getValeur().subtract(getValeur());
     }
 
+    /**
+     * Récupère une nouvelle position réelle résultant d'un déplacement
+     * vectoriel réel spécifiée partant de cette position.
+     *
+     * @param deplacementReel le déplacement réel de cette position.
+     * @return une nouvelle position réelle correspondant au déplacement de
+     * cette position.
+     */
+    public PositionReelle deplacer(@NotNull final Vector2D deplacementReel) {
+        return new PositionReelle(getValeur().add(deplacementReel));
+    }
+
     @Override
     public Type getType() {
         return REELLE;
