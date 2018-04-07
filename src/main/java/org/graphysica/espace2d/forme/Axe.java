@@ -190,13 +190,45 @@ public abstract class Axe extends Forme {
      * @param valeurs l'ensemble des valeurs représentées par les étiquettes.
      * @param format le format d'affichage des valeurs d'étiquettes.
      */
-    protected void actualiserEtiquettes(@NotNull final double[] valeurs,
+    protected void actualiserEtiquettes(@NotNull double[] valeurs,
             final String format) {
+        valeurs = valeursSansZero(valeurs);
         retirerEtiquettesObsoletes(valeurs);
         ajouterEtiquettes(valeurs, format);
-        // TODO: Régler #16
-        etiquettes.remove(-0.0);
-        etiquettes.remove(0.0);
+    }
+
+    /**
+     * Récupère un ensemble des valeurs de graduation sans le zéro. Le zéro
+     * correspond au minimum absolu des valeurs de graduation.
+     *
+     * @param valeurs l'ensemble des valeurs représentées par les étiquettes.
+     * @return les valeurs de graduation sans le zéro.
+     */
+    private double[] valeursSansZero(@NotNull final double[] valeurs) {
+        if (valeurs[0] < 0 && valeurs[valeurs.length - 1] > 0) {
+            /**
+             * Les valeurs contiennent un et un seul zéro qui correspond au
+             * minimum des valeurs absolues.
+             */
+            final double[] valeursFiltrees = new double[valeurs.length - 1];
+            double minimumAbsolu = Double.MAX_VALUE;
+            for (final double valeur : valeurs) {
+                final double valeurAbsolue = Math.abs(valeur);
+                if (valeurAbsolue < minimumAbsolu) {
+                    minimumAbsolu = valeurAbsolue;
+                }
+            }
+            int i = 0;
+            for (final double valeur : valeurs) {
+                if (Math.abs(valeur) != minimumAbsolu) {
+                    valeursFiltrees[i] = valeur;
+                    i++;
+                }
+            }
+            return valeursFiltrees;
+        } else {
+            return valeurs;
+        }
     }
 
     /**
