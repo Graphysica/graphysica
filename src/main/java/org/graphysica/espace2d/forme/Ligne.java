@@ -68,12 +68,16 @@ public abstract class Ligne extends Forme {
     protected final ObjectProperty<Position> position2
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
-    public Ligne() {
-        setCouleur(COULEUR_PAR_DEFAUT);
+    public Ligne(@NotNull final ObjectProperty<? extends Position> position1,
+            @NotNull final ObjectProperty<? extends Position> position2) {
+        this.position1.bind(position1);
+        this.position2.bind(position2);
     }
 
     {
         proprietesActualisation.add(epaisseur);
+        proprietesActualisation.add(position1);        
+        proprietesActualisation.add(position2);
     }
 
     @Override
@@ -93,7 +97,7 @@ public abstract class Ligne extends Forme {
                 getCouleur().deriveColor(1, 1, 1, 0.3),
                 3 * getEpaisseur());
     }
-    
+
     /**
      * Dessine une ligne définie par son origine et son arrivée virtuelles, sa
      * couleur et son épaisseur sur une toile. Dans le cas d'une droite,
@@ -126,7 +130,7 @@ public abstract class Ligne extends Forme {
     protected abstract void calculerOrigineEtArrivee(
             @NotNull final Canvas toile, @NotNull final Repere repere);
 
-    public final int getEpaisseur() {
+    protected final int getEpaisseur() {
         return epaisseur.getValue();
     }
 
@@ -134,11 +138,11 @@ public abstract class Ligne extends Forme {
         return epaisseur;
     }
 
-    protected final Position getPoint1() {
+    protected final Position getPosition1() {
         return position1.getValue();
     }
 
-    protected final Position getPoint2() {
+    protected final Position getPosition2() {
         return position2.getValue();
     }
 

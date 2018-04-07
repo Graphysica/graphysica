@@ -17,6 +17,7 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -32,6 +33,17 @@ import org.graphysica.espace2d.position.PositionVirtuelle;
 public final class Droite extends Ligne {
 
     /**
+     * Construit une droite passant par deux position définies.
+     *
+     * @param position1 la première position.
+     * @param position2 la deuxième position.
+     */
+    public Droite(@NotNull final ObjectProperty<? extends Position> position1,
+            @NotNull final ObjectProperty<? extends Position> position2) {
+        super(position1, position2);
+    }
+
+    /**
      * Calcule la position des points d'origine et d'arrivée de la trace de
      * cette droite aux bornes de la toile.
      *
@@ -41,11 +53,11 @@ public final class Droite extends Ligne {
     @Override
     protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final Vector2D point1Virtuel = getPoint1().virtuelle(repere);
-        final Vector2D point2Virtuel = getPoint2().virtuelle(repere);
-        final double variationAbscisses = point2Virtuel.getX() 
+        final Vector2D point1Virtuel = getPosition1().virtuelle(repere);
+        final Vector2D point2Virtuel = getPosition2().virtuelle(repere);
+        final double variationAbscisses = point2Virtuel.getX()
                 - point1Virtuel.getX();
-        final double variationOrdonnees = point2Virtuel.getY() 
+        final double variationOrdonnees = point2Virtuel.getY()
                 - point1Virtuel.getY();
         if (Math.abs(variationAbscisses) > Math.abs(variationOrdonnees)) {
             // La droite est définie même si {@code variationOrdonnees == 0}

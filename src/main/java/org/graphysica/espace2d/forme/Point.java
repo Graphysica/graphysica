@@ -36,11 +36,6 @@ import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 public class Point extends Forme {
 
     /**
-     * La couleur par défaut d'un point.
-     */
-    static final Color COULEUR_PAR_DEFAUT = Color.BLUE;
-
-    /**
      * La couleur de la bordure du point.
      */
     private static final Color COULEUR_BORDURE = Color.BLACK;

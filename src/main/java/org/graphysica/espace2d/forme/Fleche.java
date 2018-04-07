@@ -40,14 +40,16 @@ public class Fleche extends SegmentDroite {
      */
     private final Triangle tete = new Triangle();
 
-    public Fleche(@NotNull final Position point1,
-            @NotNull final Position point2) {
-        super(point1, point2);
-    }
-
-    public Fleche(@NotNull final Position point,
-            @NotNull final ObjectProperty<Position> curseur) {
-        super(point, curseur);
+    /**
+     * Construit une flèche d'une position d'origine vers une position
+     * d'arrivée.
+     *
+     * @param origine l'origine de la flèche.
+     * @param arrivee l'arrivée de la flèche.
+     */
+    public Fleche(@NotNull final ObjectProperty<? extends Position> origine,
+            @NotNull final ObjectProperty<? extends Position> arrivee) {
+        super(origine, arrivee);
     }
 
     @Override
@@ -71,21 +73,13 @@ public class Fleche extends SegmentDroite {
         super.dessinerSurbrillance(toile, repere);
         tete.dessinerSurbrillance(toile, repere);
     }
-    
-    public void setOrigine(@NotNull final Position origine) {
-        this.position1.setValue(origine);
-    }
-
-    public void setArrivee(@NotNull final Position arrivee) {
-        this.position2.setValue(arrivee);
-    }
 
     private Position getOrigine() {
-        return getPoint1();
+        return getPosition1();
     }
 
     private Position getArrivee() {
-        return getPoint2();
+        return getPosition2();
     }
 
     /**
@@ -115,6 +109,11 @@ public class Fleche extends SegmentDroite {
         public Triangle() {
             super();
             setPoints(pied1, sommet, pied2);
+        }
+        
+        {
+            proprietesActualisation.add(largeur);
+            proprietesActualisation.add(hauteur);
         }
 
         private void calculerPositionsPoints(@NotNull final Repere repere,

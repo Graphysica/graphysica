@@ -16,15 +16,17 @@
  */
 package org.graphysica.construction.mathematiques;
 
+import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Taille;
 import org.graphysica.espace2d.position.PositionReelle;
 
 /**
- * Un point est un élément primitif de repérage dans l'espace.
+ * Un point est un élément primitif de repérage réel dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -40,6 +42,16 @@ public class Point extends ObjetMathematique {
      * La taille du point dans sa représentation dans un espace.
      */
     private final Taille taille = Taille.de("point");
+
+    /**
+     * Construit un point mathématique à une position réelle spécifiée.
+     *
+     * @param position la position réelle du point.
+     */
+    public Point(@NotNull final PositionReelle position) {
+        this.position.setValue(position);
+        couleurProperty().setValue(Color.BLUE);
+    }
 
     @Override
     protected Forme creerForme() {
