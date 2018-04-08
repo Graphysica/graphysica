@@ -18,7 +18,6 @@ package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
 import org.graphysica.espace2d.forme.Forme;
-import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Un segment de droite est un espace linéaire défini entre deux points.
@@ -28,17 +27,18 @@ import org.graphysica.espace2d.position.PositionReelle;
 public class SegmentDroite extends Ligne {
 
     /**
-     * Construit un segment de droite aux extrémités définies.
+     * Construit un segment de droite lié à des extrémités définies par des
+     * points.
      *
-     * @param positionInterne1 la première position parmi le segment de droite
-     * qui se trouve à sa première extrémité.
-     * @param positionInterne2 la deuxième position parmi le segment de droite
-     * qui se trouve à sa deuxième extrémité.
+     * @param point1 le premier point à la première extrémité du segmente de
+     * droite.
+     * @param point2 le deuxième point à la deuxième extrémité du segmente de
+     * droite.
      */
-    public SegmentDroite(@NotNull final PositionReelle positionInterne1,
-            @NotNull final PositionReelle positionInterne2) {
-        this.positionInterne1.setValue(positionInterne1);
-        this.positionInterne2.setValue(positionInterne2);
+    public SegmentDroite(@NotNull final Point point1,
+            @NotNull final Point point2) {
+        this.positionInterne1.bind(point1.positionProperty());
+        this.positionInterne2.bind(point2.positionProperty());
     }
 
     @Override
