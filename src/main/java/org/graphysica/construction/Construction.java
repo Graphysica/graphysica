@@ -66,7 +66,7 @@ public class Construction {
      */
     public boolean ajouterElement(@NotNull final Element element) {
         if (element instanceof Forme) {
-            espace.ajouter((Forme) element);
+            espace.getFormes().ajouter((Forme) element);
         }
         return elements.add(element);
     }
@@ -80,7 +80,7 @@ public class Construction {
      */
     public boolean retirerElement(@NotNull final Element element) {
         if (element instanceof Forme) {
-            espace.retirer((Forme) element);
+            espace.getFormes().retirer((Forme) element);
         }
         return elements.remove(element);
     }

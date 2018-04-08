@@ -40,7 +40,7 @@ public class AxeHorizontal extends Axe {
      * @param espacement la valeur virtuelle d'espacement minimal entre les
      * graduations de l'axe.
      */
-    protected AxeHorizontal(final double espacement) {
+    public AxeHorizontal(final double espacement) {
         super(espacement);
     }
 

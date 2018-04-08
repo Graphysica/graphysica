@@ -21,27 +21,27 @@ import org.graphysica.espace2d.forme.Grille;
 import org.graphysica.espace2d.forme.Forme;
 import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.forme.Axe;
 import org.graphysica.espace2d.forme.AxeHorizontal;
 import org.graphysica.espace2d.forme.AxeVertical;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.espace2d.position.PositionVirtuelle;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -54,13 +54,12 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     /**
      * L'utilitaire d'enregistrement de traces d'exécution.
      */
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(
-            Espace.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Espace.class);
 
     /**
      * L'ensemble ordonné observable des formes dessinées dans l'espace.
      */
-    protected final ObservableSet<Forme> formes;
+    protected final Formes formes;
 
     /**
      * L'ordre de rendu des formes dams l'espace.
@@ -72,15 +71,32 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      */
     protected final Repere repere;
 
+    /**
+     * La grille principale de l'espace.
+     */
     private final Grille grillePrincipale = new Grille(new Vector2D(100, 100),
             Color.gray(0.5));
 
+    /**
+     * La grille secondaire de l'espace.
+     */
     private final Grille grilleSecondaire = new Grille(new Vector2D(25, 25),
             Color.gray(0.9));
 
-    private final Axe axeVertical = new AxeVertical(100);
+    /**
+     * L'axe vertical de l'espace.
+     */
+    private final AxeVertical axeVertical = new AxeVertical(100);
 
-    private final Axe axeHorizontal = new AxeHorizontal(100);
+    /**
+     * L'axe horizontal de l'espace.
+     */
+    private final AxeHorizontal axeHorizontal = new AxeHorizontal(100);
+
+    /**
+     * L'ensemble des formes de repérage de cet espace.
+     */
+    private final Set<Forme> reperage = new HashSet<>();
 
     /**
      * Le facteur de zoom utilisé pour zoomer la toile.
@@ -107,13 +123,13 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      * @param formes l'ensemble des formes de l'espace.
      */
     private Espace(final double largeur, final double hauteur,
-            @NotNull ObservableSet<Forme> formes) {
+            @NotNull Formes formes) {
         super(largeur, hauteur);
         repere = new Repere(largeur, hauteur);
         repere.echelleProperty().addListener(evenementActualisation);
         repere.origineVirtuelleProperty().addListener(evenementActualisation);
         this.formes = formes;
-        this.formes.addListener(evenementActualisation);
+        this.formes.ajouterEspace(this);
         definirInteractionCurseur();
     }
 
@@ -124,9 +140,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      * @param hauteur la hauteur de l'espace exprimée en pixels.
      */
     public Espace(final double largeur, final double hauteur) {
-        this(largeur, hauteur,
-                FXCollections.observableSet(new LinkedHashSet<>()));
-        ajouter(grilleSecondaire, grillePrincipale, axeVertical, axeHorizontal);
+        this(largeur, hauteur, new Formes());
     }
 
     /**
@@ -138,7 +152,14 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     public Espace(@NotNull final Espace espace) {
         this(espace.getWidth(), espace.getHeight(), espace.formes);
     }
-    
+
+    {
+        reperage.add(grilleSecondaire);
+        reperage.add(grillePrincipale);
+        reperage.add(axeVertical);
+        reperage.add(axeHorizontal);
+    }
+
     /**
      * Définit les interactions entre l'espace et le curseur.
      */
@@ -186,6 +207,16 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     @Override
     public void actualiser() {
         effacerAffichage();
+        dessinerFormes(reperage);
+        dessinerFormes(formes());
+    }
+
+    /**
+     * Dessine une collection de formes sur l'espace.
+     *
+     * @param formes la collection des formes à dessiner.
+     */
+    private void dessinerFormes(@NotNull final Collection<Forme> formes) {
         int formesAffichables = 0;
         for (final Class classe : ordreRendu) {
             for (final Forme forme : formes) {
@@ -211,58 +242,6 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     private void effacerAffichage() {
         getGraphicsContext2D().setFill(Color.WHITE);
         getGraphicsContext2D().fillRect(0, 0, getWidth(), getHeight());
-    }
-
-    /**
-     * Ajoute une forme à la toile et lie ses propriétés à l'actualisation de la
-     * toile.
-     *
-     * @param forme la forme à ajouter à la toile.
-     */
-    public final void ajouter(@NotNull final Forme forme) {
-        this.formes.add(forme);
-        forme.getProprietesActualisation().forEach((propriete) -> {
-            propriete.addListener(evenementActualisation);
-        });
-    }
-
-    /**
-     * Ajoute des formes à la toile et lie leurs propriétés à l'actualisation de
-     * la toile.
-     *
-     * @param formes les formes à ajouter à la toile.
-     */
-    public final void ajouter(@NotNull final Forme... formes) {
-        for (final Forme forme : formes) {
-            ajouter(forme);
-        }
-    }
-
-    /**
-     * Retire une forme de la toile et délie ses propriétés de l'actualisation
-     * de la toile.
-     *
-     * @param forme la forme à retirer de la toile.
-     */
-    public final void retirer(@NotNull final Forme forme) {
-        final boolean retiree = formes.remove(forme);
-        if (retiree) {
-            forme.getProprietesActualisation().forEach((propriete) -> {
-                propriete.removeListener(evenementActualisation);
-            });
-        }
-    }
-
-    /**
-     * Retire les formes de la toile et délie leurs propriétés de
-     * l'actualisation de la toile.
-     *
-     * @param formes les formes à retirer de la toile.
-     */
-    public final void retirer(@NotNull final Forme... formes) {
-        for (final Forme forme : formes) {
-            retirer(forme);
-        }
     }
 
     /**
@@ -308,8 +287,11 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      * @return l'association des distances aux formes.
      */
     private Map<Forme, Double> distancesFormes() {
+        final LinkedHashSet<Forme> formesDistantes
+                = new LinkedHashSet<>(reperage);
+        formesDistantes.addAll(formes());
         final Map<Forme, Double> distances = new HashMap<>();
-        for (final Forme forme : formes) {
+        for (final Forme forme : formesDistantes) {
             if (forme.isSelectionne(getPositionCurseur(), repere)) {
                 distances.put(forme, forme.distance(
                         getPositionCurseur(), repere));
@@ -383,6 +365,24 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
             @NotNull final MouseEvent evenement) {
         return new PositionVirtuelle(
                 new Vector2D(evenement.getX(), evenement.getY()));
+    }
+
+    /**
+     * Récupère le module de gestion des formes de l'espace.
+     *
+     * @return le module de gestion des formes de l'espace.
+     */
+    public final Formes getFormes() {
+        return formes;
+    }
+
+    /**
+     * Récupère l'ensemble des formes affichées dans cet espace.
+     *
+     * @return l'ensemble des formes affichées dans cet espace.
+     */
+    private Set<Forme> formes() {
+        return formes.get();
     }
 
     private Position getPositionPrecedenteCurseur() {

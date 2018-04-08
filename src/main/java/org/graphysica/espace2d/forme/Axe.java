@@ -38,7 +38,7 @@ import org.graphysica.espace2d.position.PositionReelle;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Axe extends Forme {
+abstract class Axe extends Forme {
 
     /**
      * La taille des lignes de tracé de graduations transversales à la flèche
@@ -86,14 +86,6 @@ public abstract class Axe extends Forme {
     protected double positionVirtuelle;
 
     /**
-     * L'énumération des sens possibles d'un axe.
-     */
-    public static enum Sens {
-        VERTICAL,
-        HORIZONTAL
-    }
-
-    /**
      * Construit un axe dont l'espacement minimal virtuel est défini.
      *
      * @param espacement la valeur virtuelle d'espacement minimal entre les
@@ -101,28 +93,6 @@ public abstract class Axe extends Forme {
      */
     protected Axe(final double espacement) {
         setEspacement(espacement);
-    }
-
-    /**
-     * Construit un nouvel axe dans le sens et d'espacement de graudations
-     * spécifés.
-     *
-     * @param sens le sens de l'axe.
-     * @param espacement l'espacement minimal entre chacune des graduations de
-     * l'axe.
-     * @return un nouvel axe dans le sens prescrit.
-     */
-    public static Axe nouvelAxe(@NotNull final Sens sens,
-            final double espacement) {
-        switch (sens) {
-            case HORIZONTAL:
-                return new AxeHorizontal(espacement);
-            case VERTICAL:
-                return new AxeVertical(espacement);
-            default:
-                throw new UnsupportedOperationException(
-                        "Sens d'axe non supporté: " + sens + ".");
-        }
     }
 
     {

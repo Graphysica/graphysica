@@ -40,7 +40,7 @@ public class AxeVertical extends Axe {
      * @param espacement la valeur virtuelle d'espacement minimal entre les
      * graduations de l'axe.
      */
-    protected AxeVertical(final double espacement) {
+    public AxeVertical(final double espacement) {
         super(espacement);
     }
 

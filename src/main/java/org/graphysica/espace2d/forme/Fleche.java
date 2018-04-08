@@ -23,7 +23,7 @@ import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
-import static org.graphysica.espace2d.position.Type.VIRTUELLE;
+import org.graphysica.espace2d.position.PositionVirtuelle;
 
 /**
  * Une flèche relie un point d'origine vers un point d'arrivée. La direction de
@@ -128,11 +128,11 @@ public class Fleche extends SegmentDroite {
             final Vector2D pied = arriveeVirtuelle.subtract(
                     new Vector2D(2 * getHauteur() * vecteurDirecteur.getX(),
                             2 * getHauteur() * vecteurDirecteur.getY()));
-            pied1.setValue(Position.a(
-                    pied.add(getLargeur(), perpendiculaire), VIRTUELLE));
+            pied1.setValue(new PositionVirtuelle(
+                    pied.add(getLargeur(), perpendiculaire)));
             sommet.setValue(arrivee);
-            pied2.setValue(Position.a(
-                    pied.subtract(getLargeur(), perpendiculaire), VIRTUELLE));
+            pied2.setValue(new PositionVirtuelle(
+                    pied.subtract(getLargeur(), perpendiculaire)));
         }
 
         public int getHauteur() {
