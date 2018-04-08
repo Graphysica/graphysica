@@ -63,7 +63,7 @@ public class PositionVirtuelle extends Position {
     public Vector2D distance(@NotNull final PositionVirtuelle position) {
         return position.getValeur().subtract(getValeur());
     }
-    
+
     /**
      * Récupère une nouvelle position virtuelle résultant d'un déplacement
      * vectoriel virtuel spécifiée partant de cette position.

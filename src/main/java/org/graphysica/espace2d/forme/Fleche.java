@@ -110,7 +110,7 @@ public class Fleche extends SegmentDroite {
             super();
             setPoints(pied1, sommet, pied2);
         }
-        
+
         {
             proprietesActualisation.add(largeur);
             proprietesActualisation.add(hauteur);

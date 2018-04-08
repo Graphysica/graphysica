@@ -85,7 +85,7 @@ public final class Droite extends Ligne {
                     new Vector2D(xQ, toile.getHeight())); // Q
         }
     }
-
+    
     @Override
     public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {

@@ -55,7 +55,7 @@ public class DroiteParallele extends Ligne {
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
     /**
-     * L'événement d'actualisation de la première position interne de cette
+     * L'événement d'actualisation de la deuxième position interne de cette
      * droite parallèle.
      */
     private final InvalidationListener evenementActualisation
@@ -86,7 +86,7 @@ public class DroiteParallele extends Ligne {
         positionExterne2.addListener(evenementActualisation);
         positionInterne1.addListener(evenementActualisation);
     }
-
+    
     @Override
     Forme creerForme() {
         return new org.graphysica.espace2d.forme.Droite(positionInterne1,

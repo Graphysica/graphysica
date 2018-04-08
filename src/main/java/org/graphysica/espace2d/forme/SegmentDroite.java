@@ -30,9 +30,9 @@ import org.graphysica.espace2d.Repere;
  * @author Marc-Antoine Ouimet
  */
 public class SegmentDroite extends Ligne {
-    
+
     public SegmentDroite(
-            @NotNull final ObjectProperty<? extends Position> position1, 
+            @NotNull final ObjectProperty<? extends Position> position1,
             @NotNull final ObjectProperty<? extends Position> position2) {
         super(position1, position2);
     }

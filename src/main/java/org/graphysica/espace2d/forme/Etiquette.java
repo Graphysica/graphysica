@@ -96,16 +96,16 @@ public class Etiquette extends Forme {
      */
     private final ObjectProperty<Vector2D> positionRelative
             = new SimpleObjectProperty<>(new Vector2D(5, -25));
-    
+
     public Etiquette(@NotNull final String texte) {
         setTexte(texte);
     }
-    
+
     public Etiquette(@NotNull final String texte, final int taille) {
         this(texte);
         setTailleCaractere(taille);
     }
-    
+
     static {
         TeXFormula.setDefaultDPI();
     }
@@ -238,7 +238,7 @@ public class Etiquette extends Forme {
      */
     private Position coinInferieurDroit(@NotNull final Repere repere) {
         return coinSuperieurGauche(repere).deplacer(
-                new Vector2D(getLargeur(), -getHauteur()), VIRTUELLE, 
+                new Vector2D(getLargeur(), -getHauteur()), VIRTUELLE,
                 repere);
     }
 

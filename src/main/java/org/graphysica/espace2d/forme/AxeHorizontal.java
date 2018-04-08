@@ -59,7 +59,7 @@ public class AxeHorizontal extends Axe {
         setOrigine(new PositionReelle(
                 new Vector2D(repere.abscisseReelle(0), positionReelleAxe)));
         setArrivee(new PositionReelle(
-                new Vector2D(repere.abscisseReelle(toile.getWidth()), 
+                new Vector2D(repere.abscisseReelle(toile.getWidth()),
                         positionReelleAxe)));
         dessinerGraduations(toile, graduationsVerticales,
                 positionVirtuelleAxe(toile, repere));
@@ -124,7 +124,7 @@ public class AxeHorizontal extends Axe {
             }
         }
     }
-    
+
     /**
      * Calcule l'ordonnée virtuelle de cet axe horizontal.
      *

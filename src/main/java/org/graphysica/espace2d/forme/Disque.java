@@ -19,19 +19,17 @@ package org.graphysica.espace2d.forme;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.Canvas;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
-import org.graphysica.espace2d.position.Type;
 
 /**
  *
  * @author Marc-Antoine Ouimet
  */
 public class Disque extends Aire {
-    
+
     private final DoubleProperty rayon = new SimpleDoubleProperty();
-    
+
     @Override
     public void dessinerNormal(Canvas toile, Repere repere) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -47,5 +45,4 @@ public class Disque extends Aire {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
 }

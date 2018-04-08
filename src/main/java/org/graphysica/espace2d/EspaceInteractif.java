@@ -195,6 +195,8 @@ public class EspaceInteractif extends Espace {
 
     /**
      * Actualise les positions virtuelles précédente et actuelle du curseur.
+     *
+     * @param evenement l'événement de la souris.
      */
     private void actualiserPositionsCurseur(
             @NotNull final MouseEvent evenement) {

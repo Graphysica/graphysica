@@ -76,7 +76,7 @@ public abstract class Ligne extends Forme {
 
     {
         proprietesActualisation.add(epaisseur);
-        proprietesActualisation.add(position1);        
+        proprietesActualisation.add(position1);
         proprietesActualisation.add(position2);
     }
 

@@ -56,9 +56,9 @@ public class AxeVertical extends Axe {
                 graduationsHorizontales);
         actualiserEtiquettes(ordonneesReelles, formatValeurs(repere));
         final double positionReelleAxe = positionReelleAxe(toile, repere);
-        setOrigine(new PositionReelle(new Vector2D(positionReelleAxe, 
+        setOrigine(new PositionReelle(new Vector2D(positionReelleAxe,
                 repere.ordonneeReelle(toile.getHeight()))));
-        setArrivee(new PositionReelle(new Vector2D(positionReelleAxe, 
+        setArrivee(new PositionReelle(new Vector2D(positionReelleAxe,
                 repere.ordonneeReelle(0))));
         dessinerGraduations(toile, graduationsHorizontales,
                 positionVirtuelleAxe(toile, repere));
@@ -157,9 +157,9 @@ public class AxeVertical extends Axe {
     }
 
     @Override
-    public double distance(@NotNull final Position curseur, 
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
         return Math.abs(curseur.virtuelle(repere).getX() - positionVirtuelle);
     }
-    
+
 }

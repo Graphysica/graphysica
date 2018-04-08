@@ -62,25 +62,25 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
      * Si la forme est affichée.
      */
     private final BooleanProperty affiche = new SimpleBooleanProperty(true);
-    
+
     /**
      * Si la forme est en surbrillance.
      */
-    private final BooleanProperty enSurbrillance 
+    private final BooleanProperty enSurbrillance
             = new SimpleBooleanProperty(false);
-    
+
     /**
-     * Si la forme est en prévisualisation. 
+     * Si la forme est en prévisualisation.
      */
     private boolean enPrevisualisation = false;
-    
+
     public Forme() {
     }
-    
+
     public Forme(@NotNull final ObjectProperty<Color> couleur) {
         couleurProperty().bind(couleur);
     }
-    
+
     {
         proprietesActualisation.add(couleur);
         proprietesActualisation.add(affiche);
@@ -95,7 +95,7 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
         }
         dessinerNormal(toile, repere);
     }
-    
+
     @Override
     public abstract void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere);
@@ -103,7 +103,7 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     @Override
     public abstract void dessinerSurbrillance(@NotNull final Canvas toile,
             @NotNull final Repere repere);
-    
+
     @Override
     public boolean isSelectionne(@NotNull final Position curseur,
             @NotNull final Repere repere) {
@@ -117,11 +117,11 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     public final Color getCouleur() {
         return couleur.getValue();
     }
-    
+
     final void setCouleur(final Color couleur) {
         this.couleur.setValue(couleur);
     }
-    
+
     protected final ObjectProperty<Color> couleurProperty() {
         return couleur;
     }
@@ -155,5 +155,5 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     public final void setEnPrevisualisation(final boolean enPrevisualisation) {
         this.enPrevisualisation = enPrevisualisation;
     }
-    
+
 }

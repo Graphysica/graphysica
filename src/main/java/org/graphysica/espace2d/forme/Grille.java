@@ -105,7 +105,7 @@ public final class Grille extends Forme {
     public void dessinerSurbrillance(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         calculerGraduations(toile, repere);
-        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales, 
+        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
                 getCouleur().deriveColor(1, 1, 1, 0.3), 3);
     }
 
@@ -142,13 +142,13 @@ public final class Grille extends Forme {
         double distanceVerticale = Double.MAX_VALUE;
         for (final double graduationHorizontale : graduationsHorizontales) {
             distanceVerticale = Math.min(distanceVerticale,
-                    Math.abs(curseur.virtuelle(repere).getY() 
+                    Math.abs(curseur.virtuelle(repere).getY()
                             - graduationHorizontale));
         }
         double distanceHorizontale = Double.MAX_VALUE;
         for (final double graduationVerticale : graduationsVerticales) {
             distanceHorizontale = Math.min(distanceHorizontale,
-                    Math.abs(curseur.virtuelle(repere).getX() 
+                    Math.abs(curseur.virtuelle(repere).getX()
                             - graduationVerticale));
         }
         return Math.min(Math.min(distanceVerticale, distanceHorizontale),

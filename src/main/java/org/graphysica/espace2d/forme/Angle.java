@@ -154,7 +154,7 @@ public class Angle extends Forme {
             @NotNull final Repere repere) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     public final Position getPoint1() {
         return point1.getValue();
     }
@@ -190,7 +190,7 @@ public class Angle extends Forme {
      * l'autre des points de l'angle.
      * @see Angle#isDefini()
      */
-    public double getAngleInitial(@NotNull final Repere repere) 
+    public double getAngleInitial(@NotNull final Repere repere)
             throws MathArithmeticException {
         final Vector2D vecteur1 = getPoint1().reelle(repere).subtract(
                 getSommet().reelle(repere));
@@ -207,7 +207,7 @@ public class Angle extends Forme {
      * l'autre des points de l'angle.
      * @see Angle#isDefini()
      */
-    public double getAngle(@NotNull final Repere repere) 
+    public double getAngle(@NotNull final Repere repere)
             throws MathArithmeticException {
         final Vector2D vecteur1 = getPoint1().reelle(repere).subtract(
                 getSommet().reelle(repere));
@@ -254,7 +254,7 @@ public class Angle extends Forme {
     }
 
     @Override
-    public double distance(@NotNull final Position curseur, 
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
         // TODO: Déterminer la distance entre le curseur et un secteur
         throw new UnsupportedOperationException("Not supported yet.");

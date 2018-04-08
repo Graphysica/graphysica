@@ -55,21 +55,22 @@ public class Point extends Forme {
      * La taille du point.
      */
     private final Taille taille = Taille.de("point");
-    
+
     /**
      * Construit un point par défaut.
      */
     public Point() {
     }
-    
+
     /**
      * Construit un point aux propriétés liées.
+     *
      * @param position la propriété de position du point.
      * @param couleur la propriété de couleur du point.
      * @param taille la propriété de taille du point.
      */
-    public Point(@NotNull final ObjectProperty<? extends Position> position, 
-            @NotNull final ObjectProperty<Color> couleur, 
+    public Point(@NotNull final ObjectProperty<? extends Position> position,
+            @NotNull final ObjectProperty<Color> couleur,
             @NotNull final Taille taille) {
         super(couleur);
         positionProperty().bind(position);
@@ -85,7 +86,7 @@ public class Point extends Forme {
     public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         final Vector2D centre = getPosition().virtuelle(repere);
-        dessinerRond(toile, centre, COULEUR_BORDURE, 
+        dessinerRond(toile, centre, COULEUR_BORDURE,
                 getTaille() + TAILLE_BORDURE);
         dessinerRond(toile, centre, getCouleur(), getTaille());
     }
@@ -116,10 +117,18 @@ public class Point extends Forme {
                 positionVirtuelle.getY() - rayon, 2 * rayon, 2 * rayon);
     }
 
+    /**
+     * Calcule la distance virtuelle entre ce point et la position du curseur
+     * pour déterminer la sélection de l'utilisateur.
+     *
+     * @param curseur la position du curseur.
+     * @param repere le repère d'espace.
+     * @return la distance virtuelle entre ce point et la position du curseur.
+     */
     @Override
     public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
-        return Math.max(0, getPosition().distance(curseur, VIRTUELLE, repere) 
+        return Math.max(0, getPosition().distance(curseur, VIRTUELLE, repere)
                 - getTaille());
     }
 

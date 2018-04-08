@@ -49,7 +49,7 @@ public class Polygone extends Aire {
 
     public Polygone() {
     }
-    
+
     /**
      * Construit un polygone sur un ensemble défini de points.
      *
@@ -97,7 +97,8 @@ public class Polygone extends Aire {
 
     /**
      * Récupère l'ensemble des abscisses des points dans leur séquence.
-     *
+     * @param points les points dont on veut les abscisses.
+     * 
      * @return les abscisses de points.
      */
     private static double[] abscisses(@NotNull final Vector2D[] points) {
@@ -112,7 +113,8 @@ public class Polygone extends Aire {
 
     /**
      * Récupère l'ensemble des ordonnées des points dans leur séquence.
-     *
+     * @param points les points dont on veut les ordonnées.
+     * 
      * @return les ordonnées de points.
      */
     private static double[] ordonnees(@NotNull final Vector2D[] points) {

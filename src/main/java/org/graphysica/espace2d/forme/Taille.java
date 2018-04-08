@@ -42,18 +42,12 @@ public final class Taille extends SimpleIntegerProperty {
 
     /**
      * La taille minimale d'un point. Doit être positive.
-     *
-     * @see Point#taille
-     * @see Point#setTaille(int)
      */
     static final int TAILLE_MINIMALE = 1;
 
     /**
      * La taille maximale d'un point. Doit être positive et supérieure à
      * {@code TAILLE_MINIMALE}.
-     *
-     * @see Point#taille
-     * @see Point#setTaille(int)
      */
     static final int TAILLE_MAXIMALE = 10;
 
@@ -148,6 +142,13 @@ public final class Taille extends SimpleIntegerProperty {
         return new Taille(chargerProprieteTaille(type));
     }
 
+    /**
+     * Modifie la valeur de taille. Si la taille spécifiée est inférieure à
+     * {@code TAILLE_MINIMALE} ou supérieure à {@code TAILLE_MAXIMALE}, défini
+     * la taille à sa valeur par défaut.
+     *
+     * @param valeur la nouvelle valeur de taille.
+     */
     @Override
     public void setValue(@NotNull final Number valeur) {
         set(valeur.intValue());
