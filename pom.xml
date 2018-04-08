@@ -43,6 +43,7 @@
                     <compilerArguments>
                         <bootclasspath>${sun.boot.class.path}${path.separator}${java.home}/lib/jfxrt.jar</bootclasspath>
                     </compilerArguments>
+                    <debug>false</debug>
                 </configuration>
             </plugin>
             <plugin>
