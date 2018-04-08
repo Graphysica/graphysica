@@ -28,6 +28,7 @@ import javafx.scene.shape.ArcType;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.util.FastMath;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
 /**
@@ -62,19 +63,19 @@ public class Angle extends Forme {
     /**
      * Le premier point extrême de l'angle.
      */
-    private final ObjectProperty<Vector2D> point1
+    private final ObjectProperty<Position> point1
             = new SimpleObjectProperty<>();
 
     /**
      * Le somme de l'angle.
      */
-    private final ObjectProperty<Vector2D> sommet
+    private final ObjectProperty<Position> sommet
             = new SimpleObjectProperty<>();
 
     /**
      * Le deuxième point extrême de l'angle.
      */
-    private final ObjectProperty<Vector2D> point2
+    private final ObjectProperty<Position> point2
             = new SimpleObjectProperty<>();
 
     /**
@@ -89,29 +90,11 @@ public class Angle extends Forme {
      * @param sommet le sommet, qui est à l'origine du secteur.
      * @param point2 le deuxième point délimitant l'angle.
      */
-    public Angle(@NotNull final Point point1, @NotNull final Point sommet,
-            @NotNull final Point point2) {
-        setCouleur(COULEUR_PAR_DEFAUT);
-        setPoint1(point1.getPosition());
-        this.point1.bind(point1.positionProperty());
-        setSommet(sommet.getPosition());
-        this.sommet.bind(sommet.positionProperty());
-        setPoint2(point2.getPosition());
-        this.point2.bind(point2.positionProperty());
-    }
-
-    /**
-     * Construit une prévisualisation d'angle à partir d'un point, d'un sommet
-     * et de la position du curseur.
-     *
-     * @param point le permier point délimitant l'angle.
-     * @param sommet le sommet, qui est à l'origine du secteur.
-     * @param curseur la position réelle du curseur, qui fait office de deuxième
-     * point délimitant l'angle.
-     */
-    public Angle(@NotNull final Point point, @NotNull final Point sommet,
-            @NotNull final ObjectProperty<Vector2D> curseur) {
-        this(point, sommet, new Point(curseur));
+    public Angle(@NotNull final Position point1, @NotNull final Position sommet,
+            @NotNull final Position point2) {
+        setPoint1(point1);
+        setSommet(sommet);
+        setPoint2(point2);
     }
 
     {
@@ -130,21 +113,20 @@ public class Angle extends Forme {
      * @param repere le repère de l'espace.
      */
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (isDefini()) {
             // TODO: Dessiner la surbrillance si l'angle est en surbrillance
             // Adapter l'angle à la convention du tracé
-            double angle = -getAngle();
-            double angleInitial = -getAngleInitial();
+            double angle = -getAngle(repere);
+            double angleInitial = -getAngleInitial(repere);
             // Restreindre l'angle du tracé à [0º, 180º]
             if (angle > 180) {
                 angle -= 360;
                 angleInitial += 360;
             }
             final int rayon = taille.getValue() * MULTIPLICATEUR_RAYON;
-            final Vector2D centreVirtuel = repere.positionVirtuelle(
-                    getSommet());
+            final Vector2D centreVirtuel = getSommet().virtuelle(repere);
             final GraphicsContext contexteGraphique = toile
                     .getGraphicsContext2D();
             final Color couleurRemplissage = couleurTransparente(getCouleur(),
@@ -172,46 +154,46 @@ public class Angle extends Forme {
             @NotNull final Repere repere) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    public final Vector2D getPoint1() {
+
+    public final Position getPoint1() {
         return point1.getValue();
     }
 
-    public final void setPoint1(@NotNull final Vector2D point1) {
+    public final void setPoint1(@NotNull final Position point1) {
         this.point1.setValue(point1);
-        this.point1.unbind();
     }
 
-    public final Vector2D getSommet() {
+    public final Position getSommet() {
         return sommet.getValue();
     }
 
-    public final void setSommet(@NotNull final Vector2D sommet) {
+    public final void setSommet(@NotNull final Position sommet) {
         this.sommet.setValue(sommet);
-        this.sommet.unbind();
     }
 
-    public final Vector2D getPoint2() {
+    public final Position getPoint2() {
         return point2.getValue();
     }
 
-    public final void setPoint2(@NotNull final Vector2D point2) {
+    public final void setPoint2(@NotNull final Position point2) {
         this.point2.setValue(point2);
-        this.point2.unbind();
     }
 
     /**
      * Calcule l'angle entre le vecteur partant du sommet vers le premier point
      * et l'horizontale.
      *
+     * @param repere le repère d'espace de cet angle.
      * @return la valeur de l'angle initial.
      * @see Angle#HORIZONTALE
      * @throws MathArithmeticException si le sommet est confondu à l'un ou
      * l'autre des points de l'angle.
      * @see Angle#isDefini()
      */
-    public double getAngleInitial() throws MathArithmeticException {
-        final Vector2D vecteur1 = getPoint1().subtract(getSommet());
+    public double getAngleInitial(@NotNull final Repere repere)
+            throws MathArithmeticException {
+        final Vector2D vecteur1 = getPoint1().reelle(repere).subtract(
+                getSommet().reelle(repere));
         return FastMath.toDegrees(angle(vecteur1, HORIZONTALE));
     }
 
@@ -219,14 +201,18 @@ public class Angle extends Forme {
      * Calcule l'angle entre les vecteurs partant du sommet vers les deux
      * points.
      *
+     * @param repere le repère d'espace de cet angle.
      * @return la valeur de l'angle représenté.
      * @throws MathArithmeticException si le sommet est confondu à l'un ou
      * l'autre des points de l'angle.
      * @see Angle#isDefini()
      */
-    public double getAngle() throws MathArithmeticException {
-        final Vector2D vecteur1 = getPoint1().subtract(getSommet());
-        final Vector2D vecteur2 = getPoint2().subtract(getSommet());
+    public double getAngle(@NotNull final Repere repere)
+            throws MathArithmeticException {
+        final Vector2D vecteur1 = getPoint1().reelle(repere).subtract(
+                getSommet().reelle(repere));
+        final Vector2D vecteur2 = getPoint2().reelle(repere).subtract(
+                getSommet().reelle(repere));
         return -FastMath.toDegrees(angle(vecteur1, vecteur2));
     }
 
@@ -268,7 +254,7 @@ public class Angle extends Forme {
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur, 
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
         // TODO: Déterminer la distance entre le curseur et un secteur
         throw new UnsupportedOperationException("Not supported yet.");

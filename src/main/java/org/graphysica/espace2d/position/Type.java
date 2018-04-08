@@ -14,29 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d.forme;
+package org.graphysica.espace2d.position;
 
 /**
- * Les instances de classes implémentant cette interface peuvent être
- * prévisualisées. Une forme qui est en état de prévisualisation ne devrait pas
- * être en état de surbrillance.
+ * L'énumération des types de données de localisation dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-interface Previsualisable {
+public enum Type {
 
     /**
-     * Renvoie si l'objet est en prévisualisation.
-     *
-     * @return {@code true} si l'objet est en prévisualisation.
+     * Une donnée de localisation de type réel est exprimée en mètres.
      */
-    boolean isEnPrevisualisation();
-
+    REELLE,
     /**
-     * Modifie l'état de prévisualisation de cet objet.
-     *
-     * @param enPrevisualisation le nouvel état de prévisualisation de l'objet.
+     * Une donnée de localisation de type virtuel est exprimée en pixels.
      */
-    void setEnPrevisualisation(final boolean enPrevisualisation);
-
+    VIRTUELLE
 }

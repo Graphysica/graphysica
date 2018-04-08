@@ -16,27 +16,28 @@
  */
 package org.graphysica.espace2d.forme;
 
+import com.sun.istack.internal.NotNull;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.Type;
+
 /**
- * Les instances de classes implémentant cette interface peuvent être
- * prévisualisées. Une forme qui est en état de prévisualisation ne devrait pas
- * être en état de surbrillance.
+ * Les objets implémentant cette interface peuvent être déplacés dans un repère
+ * d'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-interface Previsualisable {
+interface Deplaceable {
 
     /**
-     * Renvoie si l'objet est en prévisualisation.
+     * Déplace l'objet selon un déplacement de type spécifié dans un repère
+     * d'espace défini.
      *
-     * @return {@code true} si l'objet est en prévisualisation.
+     * @param deplacement le vecteur de déplacement.
+     * @param type le type du déplacement.
+     * @param repere le repère d'espace.
      */
-    boolean isEnPrevisualisation();
-
-    /**
-     * Modifie l'état de prévisualisation de cet objet.
-     *
-     * @param enPrevisualisation le nouvel état de prévisualisation de l'objet.
-     */
-    void setEnPrevisualisation(final boolean enPrevisualisation);
+    public void deplacer(@NotNull final Vector2D deplacement,
+            @NotNull final Type type, @NotNull final Repere repere);
 
 }

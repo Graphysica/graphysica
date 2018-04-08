@@ -21,55 +21,26 @@ import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.PositionVirtuelle;
 
 /**
  * Une droite bissecte l'espace en traversant deux points distincts.
  *
  * @author Marc-Antoine Ouimet
  */
-public final class Droite extends SegmentDroite {
+public final class Droite extends Ligne {
 
     /**
-     * L'écart entre les abscisses des points virtuels dans le sens du système
-     * d'axes virtuels. Correspond à
-     * {@code point2Virtuel.getX() - point1Virtuel.getX()}.
+     * Construit une droite passant par deux position définies.
      *
-     * @see Droite#point1Virtuel
-     * @see Droite#point2Virtuel
+     * @param position1 la première position.
+     * @param position2 la deuxième position.
      */
-    private double variationAbscisses;
-
-    /**
-     * L'écart entre les ordonnées des points virtuels dans le sens du système
-     * d'axes virtuels. Correspond à
-     * {@code point2Virtuel.getY() - point1Virtuel.getY()}.
-     *
-     * @see Droite#point1Virtuel
-     * @see Droite#point2Virtuel
-     */
-    private double variationOrdonnees;
-
-    /**
-     * Construit une droite passant par deux points.
-     *
-     * @param point1 le premier point en coordonnées réelles.
-     * @param point2 le deuxième point en coordonnées réelles.
-     */
-    public Droite(@NotNull final Point point1, @NotNull final Point point2) {
-        super(point1, point2);
-    }
-
-    /**
-     * Construit une prévisualisation de droite à partir d'un point défini et de
-     * la position du curseur.
-     *
-     * @param point le point initial de la droite.
-     * @param curseur l'emplacement réel du curseur sur la toile.
-     */
-    public Droite(@NotNull final Point point,
-            @NotNull final ObjectProperty<Vector2D> curseur) {
-        super(point, curseur);
+    public Droite(@NotNull final ObjectProperty<? extends Position> position1,
+            @NotNull final ObjectProperty<? extends Position> position2) {
+        super(position1, position2);
     }
 
     /**
@@ -82,10 +53,12 @@ public final class Droite extends SegmentDroite {
     @Override
     protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final Vector2D point1Virtuel = repere.positionVirtuelle(getPoint1());
-        final Vector2D point2Virtuel = repere.positionVirtuelle(getPoint2());
-        variationAbscisses = point2Virtuel.getX() - point1Virtuel.getX();
-        variationOrdonnees = point2Virtuel.getY() - point1Virtuel.getY();
+        final Vector2D point1Virtuel = getPosition1().virtuelle(repere);
+        final Vector2D point2Virtuel = getPosition2().virtuelle(repere);
+        final double variationAbscisses = point2Virtuel.getX()
+                - point1Virtuel.getX();
+        final double variationOrdonnees = point2Virtuel.getY()
+                - point1Virtuel.getY();
         if (Math.abs(variationAbscisses) > Math.abs(variationOrdonnees)) {
             // La droite est définie même si {@code variationOrdonnees == 0}
             final double m = variationOrdonnees / variationAbscisses;
@@ -95,8 +68,9 @@ public final class Droite extends SegmentDroite {
             // Soient les points P(xmin, yP) et  Q(xmax, yQ)
             final double yP = b;
             final double yQ = m * toile.getWidth() + b;
-            origineTrace = new Vector2D(0, yP); // P
-            arriveeTrace = new Vector2D(toile.getWidth(), yQ); // Q
+            origineTrace = new PositionVirtuelle(new Vector2D(0, yP)); // P
+            arriveeTrace = new PositionVirtuelle(
+                    new Vector2D(toile.getWidth(), yQ)); // Q
         } else {
             // La droite est définie même si {@code variationAbscisses == 0}
             final double m = variationAbscisses / variationOrdonnees;
@@ -106,15 +80,22 @@ public final class Droite extends SegmentDroite {
             // Soient les points P(xP, ymin) et Q(xQ, ymax)
             final double xP = b;
             final double xQ = m * toile.getHeight() + b;
-            origineTrace = new Vector2D(xP, 0); // P
-            arriveeTrace = new Vector2D(xQ, toile.getHeight()); // Q
+            origineTrace = new PositionVirtuelle(new Vector2D(xP, 0)); // P
+            arriveeTrace = new PositionVirtuelle(
+                    new Vector2D(xQ, toile.getHeight())); // Q
         }
     }
-
+    
     @Override
-    public double distance(@NotNull final Vector2D curseur,
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
-        return new Segment(origineTrace, arriveeTrace, null).distance(curseur);
+        /**
+         * La droite a déjà été dessinée, alors {@code origineTrace} et
+         * {@code arriveeTrace} sont aux bons endroits.
+         */
+        return new Segment(origineTrace.virtuelle(repere),
+                arriveeTrace.virtuelle(repere), null).distance(
+                curseur.virtuelle(repere));
     }
 
 }

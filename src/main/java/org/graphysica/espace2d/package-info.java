@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Classes décrivant un espace en deux dimensions en tant que composante graphique d'édition.
+ * Classes décrivant un espace en deux dimensions en tant que composante 
+ * graphique d'édition. Ce package encapsule les comportements de détection de 
+ * sélection, de navigation et de représentation d'un plan cartésien.
  */
 package org.graphysica.espace2d;

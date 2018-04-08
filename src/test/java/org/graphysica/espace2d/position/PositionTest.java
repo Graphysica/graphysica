@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.position;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.Position.Type;
-import static org.graphysica.espace2d.Position.Type.REELLE;
-import static org.graphysica.espace2d.Position.Type.VIRTUELLE;
+import org.graphysica.espace2d.Repere;
+import static org.graphysica.espace2d.position.Type.REELLE;
+import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -51,14 +51,14 @@ public class PositionTest {
      * {@code CHEMIN_FICHIER_POSITIONS}.
      */
     private static final Position[] POSITIONS = {
-        Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(new Vector2D(-1, 1), REELLE),
-        Position.a(new Vector2D(1, -1), REELLE),
-        Position.a(new Vector2D(-2, -3), REELLE),
-        Position.a(new Vector2D(2, 3), REELLE),
-        Position.a(new Vector2D(-10, 20), REELLE),
-        Position.a(new Vector2D(10, -20), REELLE)
+        new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(new Vector2D(-1, 1)),
+        new PositionReelle(new Vector2D(1, -1)),
+        new PositionReelle(new Vector2D(-2, -3)),
+        new PositionReelle(new Vector2D(2, 3)),
+        new PositionReelle(new Vector2D(-10, 20)),
+        new PositionReelle(new Vector2D(10, -20))
     };
 
     /**
@@ -72,54 +72,46 @@ public class PositionTest {
      */
     private static final PositionDeplacee[] POSITIONS_DEPLACEES = {
         // Déplacements réels
-        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(1, 1), REELLE), new Vector2D(1, 1),
-        REELLE),
-        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(-1, -1), REELLE), new Vector2D(-1, -1),
-        REELLE),
-        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(-1, 1), REELLE), new Vector2D(-1, 1),
-        REELLE),
-        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(1, -1), REELLE), new Vector2D(1, -1),
-        REELLE),
-        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(new Vector2D(2, 2), REELLE), new Vector2D(1, 1),
-        REELLE),
-        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(Vector2D.ZERO, REELLE), new Vector2D(-1, -1),
-        REELLE),
-        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(new Vector2D(0, 2), REELLE), new Vector2D(-1, 1),
-        REELLE),
-        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(new Vector2D(2, 0), REELLE), new Vector2D(1, -1),
-        REELLE),
+        new PositionDeplacee(new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(1, 1)), new Vector2D(1, 1), REELLE),
+        new PositionDeplacee(new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(-1, -1)), new Vector2D(-1, -1), REELLE),
+        new PositionDeplacee(new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(-1, 1)), new Vector2D(-1, 1), REELLE),
+        new PositionDeplacee(new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(1, -1)), new Vector2D(1, -1), REELLE),
+        new PositionDeplacee(new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(new Vector2D(2, 2)), new Vector2D(1, 1), REELLE),
+        new PositionDeplacee(new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(Vector2D.ZERO), new Vector2D(-1, -1), REELLE),
+        new PositionDeplacee(new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(new Vector2D(0, 2)), new Vector2D(-1, 1), REELLE),
+        new PositionDeplacee(new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(new Vector2D(2, 0)), new Vector2D(1, -1), REELLE),
         // Déplacements virtuels
-        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(1, -1), REELLE), new Vector2D(50, 50),
+        new PositionDeplacee(new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(1, -1)), new Vector2D(50, 50),
         VIRTUELLE),
-        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(-1, 1), REELLE),
-        new Vector2D(-50, -50), VIRTUELLE),
-        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(-1, -1), REELLE), new Vector2D(-50, 50),
+        new PositionDeplacee(new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(-1, 1)), new Vector2D(-50, -50),
         VIRTUELLE),
-        new PositionDeplacee(Position.a(Vector2D.ZERO, REELLE),
-        Position.a(new Vector2D(1, 1), REELLE), new Vector2D(50, -50),
+        new PositionDeplacee(new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(-1, -1)), new Vector2D(-50, 50),
         VIRTUELLE),
-        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(new Vector2D(2, 0), REELLE), new Vector2D(50, 50),
+        new PositionDeplacee(new PositionReelle(Vector2D.ZERO),
+        new PositionReelle(new Vector2D(1, 1)), new Vector2D(50, -50),
         VIRTUELLE),
-        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(new Vector2D(0, 2), REELLE), new Vector2D(-50, -50),
+        new PositionDeplacee(new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(new Vector2D(2, 0)), new Vector2D(50, 50),
         VIRTUELLE),
-        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(Vector2D.ZERO, REELLE), new Vector2D(-50, 50),
+        new PositionDeplacee(new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(new Vector2D(0, 2)), new Vector2D(-50, -50),
         VIRTUELLE),
-        new PositionDeplacee(Position.a(new Vector2D(1, 1), REELLE),
-        Position.a(new Vector2D(2, 2), REELLE), new Vector2D(50, -50),
+        new PositionDeplacee(new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(Vector2D.ZERO), new Vector2D(-50, 50),
+        VIRTUELLE),
+        new PositionDeplacee(new PositionReelle(new Vector2D(1, 1)),
+        new PositionReelle(new Vector2D(2, 2)), new Vector2D(50, -50),
         VIRTUELLE)
     };
 
@@ -137,7 +129,7 @@ public class PositionTest {
             ecriture.write(gson.toJson(POSITIONS));
         }
     }
-    
+
     /**
      * Teste la sérialisation des {@code POSITIONS} et leur désérialisation.
      *

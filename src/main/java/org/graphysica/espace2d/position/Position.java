@@ -14,14 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.espace2d;
+package org.graphysica.espace2d.position;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.sun.istack.internal.NotNull;
 import java.io.Serializable;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import static org.graphysica.espace2d.Position.Type.REELLE;
-import static org.graphysica.espace2d.Position.Type.VIRTUELLE;
+import org.graphysica.espace2d.Repere;
+import static org.graphysica.espace2d.position.Type.REELLE;
+import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 import org.graphysica.gson.PositionJsonAdaptateur;
 
 /**
@@ -42,11 +43,11 @@ import org.graphysica.gson.PositionJsonAdaptateur;
 public abstract class Position implements Serializable {
 
     /**
-     * L'énumération des types de position.
+     * Le message lorsqu'un type de position n'est pas supporté pour une
+     * opération.
      */
-    public static enum Type {
-        REELLE, VIRTUELLE
-    }
+    private static final String EXCEPTION_TYPE_NON_SUPPORTE
+            = "Type de position non supporté.";
 
     /**
      * La valeur de cette position.
@@ -58,7 +59,7 @@ public abstract class Position implements Serializable {
      *
      * @param position la valeur de la position.
      */
-    protected Position(@NotNull final Vector2D position) {
+    Position(@NotNull final Vector2D position) {
         this.position = position;
     }
 
@@ -93,13 +94,12 @@ public abstract class Position implements Serializable {
             @NotNull final Type type, @NotNull final Repere repere) {
         switch (type) {
             case REELLE:
-                return Position.a(reelle(repere).add(deplacement), REELLE);
+                return new PositionReelle(reelle(repere).add(deplacement));
             case VIRTUELLE:
-                return Position.a(virtuelle(repere).add(deplacement),
-                        VIRTUELLE);
+                return new PositionVirtuelle(
+                        virtuelle(repere).add(deplacement));
             default:
-                throw new IllegalArgumentException(
-                        "Type de position non supporté.");
+                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
         }
     }
 
@@ -113,21 +113,20 @@ public abstract class Position implements Serializable {
      * @return la distance entre les deux positions.
      */
     public double distance(@NotNull final Position position,
-            @NotNull final Repere repere, @NotNull final Type type) {
+            @NotNull final Type type, @NotNull final Repere repere) {
         switch (type) {
             case REELLE:
                 return reelle(repere).distance(position.reelle(repere));
             case VIRTUELLE:
                 return virtuelle(repere).distance(position.virtuelle(repere));
             default:
-                throw new IllegalArgumentException(
-                        "Type de position non supporté.");
+                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
         }
     }
 
     /**
-     * Calcule la distance vectorielle orientée de cette position vers une
-     * position spécifiée.
+     * Calcule la distance vectorielle orientée de type spécifié de cette
+     * position vers une position spécifiée.
      *
      * @param position la position distancée de ce point.
      * @param repere le repère d'espace d'emplacement des positions.
@@ -135,15 +134,14 @@ public abstract class Position implements Serializable {
      * @return la distance entre les deux positions.
      */
     public Vector2D distanceVectorielle(@NotNull final Position position,
-            @NotNull final Repere repere, @NotNull final Type type) {
+            @NotNull final Type type, @NotNull final Repere repere) {
         switch (type) {
             case REELLE:
                 return position.reelle(repere).subtract(reelle(repere));
             case VIRTUELLE:
                 return position.virtuelle(repere).subtract(virtuelle(repere));
             default:
-                throw new IllegalArgumentException(
-                        "Type de position non supporté.");
+                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
         }
     }
 
@@ -159,12 +157,11 @@ public abstract class Position implements Serializable {
             @NotNull final Type type) {
         switch (type) {
             case REELLE:
-                return new Reelle(position);
+                return new PositionReelle(position);
             case VIRTUELLE:
-                return new Virtuelle(position);
+                return new PositionVirtuelle(position);
             default:
-                throw new IllegalArgumentException(
-                        "Type de position non supporté.");
+                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
         }
     }
 
@@ -185,71 +182,5 @@ public abstract class Position implements Serializable {
      * @return le type de cette position.
      */
     public abstract Type getType();
-
-    /**
-     * Une position réelle est exprimée en unitées réelles.
-     */
-    @JsonAdapter(PositionJsonAdaptateur.class)
-    private static class Reelle extends Position {
-
-        /**
-         * Construit une position réelle dont la valeur et le repère sont
-         * définis.
-         *
-         * @param position la valeur de la position.
-         */
-        public Reelle(@NotNull final Vector2D position) {
-            super(position);
-        }
-
-        @Override
-        public Vector2D reelle(@NotNull final Repere repere) {
-            return position;
-        }
-
-        @Override
-        public Vector2D virtuelle(@NotNull final Repere repere) {
-            return repere.positionVirtuelle(position);
-        }
-
-        @Override
-        public Position.Type getType() {
-            return REELLE;
-        }
-
-    }
-
-    /**
-     * Une position virtuelle est exprimée en unités d'affichage à l'écran.
-     */
-    @JsonAdapter(PositionJsonAdaptateur.class)
-    private static class Virtuelle extends Position {
-
-        /**
-         * Construit une position virtuelle dont la valeur et le repère sont
-         * définis.
-         *
-         * @param position la valeur de la position.
-         */
-        public Virtuelle(@NotNull final Vector2D position) {
-            super(position);
-        }
-
-        @Override
-        public Vector2D reelle(@NotNull final Repere repere) {
-            return repere.positionReelle(position);
-        }
-
-        @Override
-        public Vector2D virtuelle(@NotNull final Repere repere) {
-            return position;
-        }
-
-        @Override
-        public Position.Type getType() {
-            return VIRTUELLE;
-        }
-
-    }
 
 }

@@ -34,7 +34,6 @@ interface Dessinable {
      * @param toile la toile surlaquelle dessiner l'objet.
      * @param repere le repère de l'espace.
      */
-    public void dessiner(@NotNull final Canvas toile,
-            @NotNull final Repere repere);
+    void dessiner(@NotNull final Canvas toile, @NotNull final Repere repere);
 
 }

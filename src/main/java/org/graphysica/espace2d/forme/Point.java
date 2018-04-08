@@ -23,19 +23,17 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.PositionReelle;
+import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 
 /**
  * Un point représente une position dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-public final class Point extends Forme {
-
-    /**
-     * La couleur par défaut d'un point.
-     */
-    static final Color COULEUR_PAR_DEFAUT = Color.BLUE;
+public class Point extends Forme {
 
     /**
      * La couleur de la bordure du point.
@@ -43,15 +41,10 @@ public final class Point extends Forme {
     private static final Color COULEUR_BORDURE = Color.BLACK;
 
     /**
-     * La position par défaut d'un point.
-     */
-    private static final Vector2D POSITION_PAR_DEFAUT = Vector2D.ZERO;
-
-    /**
      * La position réelle du point exprimée en mètres selon la base canonique.
      */
-    private final ObjectProperty<Vector2D> position
-            = new SimpleObjectProperty<>(POSITION_PAR_DEFAUT);
+    private final ObjectProperty<Position> position
+            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
     /**
      * La taille de la bordure du dessin du point exprimée en pixels.
@@ -64,60 +57,24 @@ public final class Point extends Forme {
     private final Taille taille = Taille.de("point");
 
     /**
-     * Construit un point de couleur, de taille et de position définies par
-     * défaut.
+     * Construit un point par défaut.
      */
     public Point() {
-        super(COULEUR_PAR_DEFAUT);
     }
 
     /**
-     * Construit un point de couleur et de taille définies par défaut à la
-     * position spécifiée.
+     * Construit un point aux propriétés liées.
      *
-     * @param position la position réelle du point.
+     * @param position la propriété de position du point.
+     * @param couleur la propriété de couleur du point.
+     * @param taille la propriété de taille du point.
      */
-    public Point(@NotNull final Vector2D position) {
-        this();
-        setPosition(position);
-    }
-
-    /**
-     * Construit un point de taille définie par défaut à la position et de
-     * couleur spécifiées.
-     *
-     * @param position la position réelle du point.
-     * @param couleur la couleur du point.
-     */
-    public Point(@NotNull final Vector2D position,
-            @NotNull final Color couleur) {
-        this(position);
-        setCouleur(couleur);
-    }
-
-    /**
-     * Construit un point dont la taille, la couleur et la position sont
-     * définies.
-     *
-     * @param position la position réelle du point.
-     * @param couleur la couleur du point.
-     * @param taille la taille du point.
-     */
-    public Point(@NotNull final Vector2D position,
-            @NotNull final Color couleur, final int taille) {
-        this(position, couleur);
-        this.taille.setValue(taille);
-    }
-
-    /**
-     * Construit une prévisualisation de point positionné à la position du
-     * curseur.
-     *
-     * @param curseur la position réelle du curseur.
-     */
-    public Point(@NotNull final ObjectProperty<Vector2D> curseur) {
-        setCouleur(COULEUR_PAR_DEFAUT);
-        position.bind(curseur);
+    public Point(@NotNull final ObjectProperty<? extends Position> position,
+            @NotNull final ObjectProperty<Color> couleur,
+            @NotNull final Taille taille) {
+        super(couleur);
+        positionProperty().bind(position);
+        tailleProperty().bind(taille);
     }
 
     {
@@ -126,22 +83,19 @@ public final class Point extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
-        }
-        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
-                COULEUR_BORDURE, getTaille() + TAILLE_BORDURE);
-        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
-                getCouleur(), getTaille());
+        final Vector2D centre = getPosition().virtuelle(repere);
+        dessinerRond(toile, centre, COULEUR_BORDURE,
+                getTaille() + TAILLE_BORDURE);
+        dessinerRond(toile, centre, getCouleur(), getTaille());
     }
 
     @Override
     public void dessinerSurbrillance(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         final int rayon = getTaille() + 6;
-        dessinerRond(toile, repere.positionVirtuelle(getPosition()),
+        dessinerRond(toile, getPosition().virtuelle(repere),
                 getCouleur().deriveColor(1, 1, 1, 0.3), rayon);
     }
 
@@ -163,53 +117,35 @@ public final class Point extends Forme {
                 positionVirtuelle.getY() - rayon, 2 * rayon, 2 * rayon);
     }
 
-    @Override
-    public double distance(@NotNull final Vector2D curseur,
-            @NotNull final Repere repere) {
-        final Vector2D positionVirtuelle = repere.positionVirtuelle(
-                getPosition());
-        return Math.max(0, positionVirtuelle.distance(curseur) - 5);
-    }
-
     /**
-     * Déplace le point selon un vecteur de déplcaement.
+     * Calcule la distance virtuelle entre ce point et la position du curseur
+     * pour déterminer la sélection de l'utilisateur.
      *
-     * @param deplacement le vecteur de déplacement du point.
+     * @param curseur la position du curseur.
+     * @param repere le repère d'espace.
+     * @return la distance virtuelle entre ce point et la position du curseur.
      */
-    public void deplacer(@NotNull final Vector2D deplacement) {
-        setPosition(getPosition().add(deplacement));
+    @Override
+    public double distance(@NotNull final Position curseur,
+            @NotNull final Repere repere) {
+        return Math.max(0, getPosition().distance(curseur, VIRTUELLE, repere)
+                - getTaille());
     }
 
-    public ObjectProperty<Vector2D> positionProperty() {
+    protected final ObjectProperty<Position> positionProperty() {
         return position;
     }
 
-    public Vector2D getPosition() {
+    protected final Position getPosition() {
         return position.getValue();
     }
 
-    public final void setPosition(@NotNull final Vector2D position) {
-        this.position.setValue(position);
-    }
-
-    public double getAbscisse() {
-        return position.getValue().getX();
-    }
-
-    public double getOrdonnee() {
-        return position.getValue().getY();
-    }
-
-    private int getTaille() {
-        return taille.getValue();
-    }
-
-    public void setTaille(final int taille) {
-        this.taille.setValue(taille);
-    }
-
-    public Taille tailleProperty() {
+    protected final Taille tailleProperty() {
         return taille;
+    }
+
+    protected final int getTaille() {
+        return taille.getValue();
     }
 
 }

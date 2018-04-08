@@ -23,6 +23,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
 /**
@@ -75,17 +76,6 @@ public final class Grille extends Forme {
         proprietesActualisation.add(epaisseur);
     }
 
-    @Override
-    public void dessiner(@NotNull final Canvas toile,
-            @NotNull final Repere repere) {
-        calculerGraduations(toile, repere);
-        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
-                getCouleur(), 1);
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
-        }
-    }
-
     /**
      * Calcule les graduations virtuelles de la grille.
      *
@@ -98,6 +88,25 @@ public final class Grille extends Forme {
                 toile.getHeight(), getEspacement().getY());
         graduationsVerticales = repere.graduationsVerticales(toile.getWidth(),
                 getEspacement().getY());
+    }
+
+    @Override
+    public void dessinerNormal(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        calculerGraduations(toile, repere);
+        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
+                getCouleur(), 1);
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        calculerGraduations(toile, repere);
+        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
+                getCouleur().deriveColor(1, 1, 1, 0.3), 3);
     }
 
     /**
@@ -128,25 +137,19 @@ public final class Grille extends Forme {
     }
 
     @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
-            @NotNull final Repere repere) {
-        calculerGraduations(toile, repere);
-        dessinerGrille(toile, graduationsHorizontales, graduationsVerticales, 
-                getCouleur().deriveColor(1, 1, 1, 0.3), 3);
-    }
-
-    @Override
-    public double distance(@NotNull final Vector2D curseur,
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
         double distanceVerticale = Double.MAX_VALUE;
         for (final double graduationHorizontale : graduationsHorizontales) {
             distanceVerticale = Math.min(distanceVerticale,
-                    Math.abs(curseur.getY() - graduationHorizontale));
+                    Math.abs(curseur.virtuelle(repere).getY()
+                            - graduationHorizontale));
         }
         double distanceHorizontale = Double.MAX_VALUE;
         for (final double graduationVerticale : graduationsVerticales) {
             distanceHorizontale = Math.min(distanceHorizontale,
-                    Math.abs(curseur.getX() - graduationVerticale));
+                    Math.abs(curseur.virtuelle(repere).getX()
+                            - graduationVerticale));
         }
         return Math.min(Math.min(distanceVerticale, distanceHorizontale),
                 new Vector2D(distanceHorizontale, distanceVerticale).getNorm());
