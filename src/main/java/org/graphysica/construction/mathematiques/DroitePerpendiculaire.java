@@ -27,29 +27,29 @@ import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Une droite est un espace linéaire qui bissecte un espace 2D. Une droite
- * parallèle est définie à partir d'une ligne avec laquelle elle doit être
- * parallèle, ainsi qu'un point qui lui est propre.
+ * perpendiculaire est définie à partir d'une ligne avec laquelle elle doit être
+ * perpendiculaire, ainsi qu'un point qui lui est propre.
  * <p>
  * Ici, les positions externes font référence aux positions de définition de la
- * ligne avec laquelle cette droite doit être parallèle, et les positions
+ * ligne avec laquelle cette droite doit être perpendiculaire, et les positions
  * internes font référence aux positions qui figurent dans la droite.
  *
  * @author Marc-Antoine Ouimet
  */
-public class DroiteParallele extends Ligne {
+public class DroitePerpendiculaire extends Ligne {
 
     /**
-     * La première position externe de la droite parallèle. La droite passant
-     * par {@code positionExterne1} et {@code positionExterne2} est parallèle à
-     * cette droite.
+     * La première position externe de la droite perpendiculaire. La droite
+     * passant par {@code positionExterne1} et {@code positionExterne2} est
+     * perpendiculaire à cette droite.
      */
     protected final ObjectProperty<PositionReelle> positionExterne1
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
     /**
-     * La deuxième position externe de la droite parallèle. La droite passant
-     * par {@code positionExterne1} et {@code positionExterne2} est parallèle à
-     * cette droite.
+     * La deuxième position externe de la droite perpendiculaire. La droite
+     * passant par {@code positionExterne1} et {@code positionExterne2} est
+     * perpendiculaire à cette droite.
      */
     protected final ObjectProperty<PositionReelle> positionExterne2
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
@@ -60,20 +60,22 @@ public class DroiteParallele extends Ligne {
      */
     private final InvalidationListener evenementActualisation
             = (@NotNull final Observable observable) -> {
-                final Vector2D distance = positionExterne1.getValue().distance(
-                        positionInterne1.getValue());
-                positionInterne2.setValue(positionExterne2.getValue().deplacer(
-                        distance));
+                final Vector2D distanceParallele = positionExterne1.getValue()
+                .distance(positionExterne2.getValue());
+                final Vector2D distancePerpendiculaire = new Vector2D(
+                        -distanceParallele.getY(), distanceParallele.getX());
+                positionInterne2.setValue(positionInterne1.getValue().deplacer(
+                        distancePerpendiculaire));
             };
 
     /**
-     * Construit une droite parallèle à une ligne et passant par un point
+     * Construit une droite perpendiculaire à une ligne et passant par un point
      * défini.
      *
-     * @param ligne la ligne avec laquelle cette droite sera parallèle.
+     * @param ligne la ligne avec laquelle cette droite sera perpendiculaire.
      * @param point un point compris dans la droite parallèle.
      */
-    public DroiteParallele(@NotNull final Ligne ligne,
+    public DroitePerpendiculaire(@NotNull final Ligne ligne,
             @NotNull final Point point) {
         positionExterne1.bind(ligne.positionInterne1Property());
         positionExterne2.bind(ligne.positionInterne2Property());
@@ -85,7 +87,7 @@ public class DroiteParallele extends Ligne {
         positionExterne2.addListener(evenementActualisation);
         positionInterne1.addListener(evenementActualisation);
     }
-    
+
     @Override
     Forme creerForme() {
         return new org.graphysica.espace2d.forme.Droite(positionInterne1,
