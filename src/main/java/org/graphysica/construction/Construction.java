@@ -22,7 +22,6 @@ import java.util.Set;
 import org.graphysica.construction.commande.Commande;
 import org.graphysica.construction.mathematiques.ObjetMathematique;
 import org.graphysica.espace2d.Espace;
-import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Une construction permet d'élaborer une scène de simulation de physique.

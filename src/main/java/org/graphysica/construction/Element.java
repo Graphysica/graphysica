@@ -35,7 +35,6 @@ public abstract class Element {
     
     {
         id = ++ELEMENTS;
-        System.out.println(this);
     }
 
     public long getId() {
