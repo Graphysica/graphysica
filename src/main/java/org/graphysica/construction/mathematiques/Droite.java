@@ -33,9 +33,10 @@ public class Droite extends Ligne {
      * @param point1 le premier point compris dans cette droite.
      * @param point2 le deuxième point compris dans cette droite.
      */
-    public Droite(@NotNull final Point point1, @NotNull final Point point2) {
-        positionInterne1.bind(point1.positionProperty());
-        positionInterne2.bind(point2.positionProperty());
+    public Droite(@NotNull final PointConcret point1, 
+            @NotNull final PointConcret point2) {
+        positionInterne1.bind(point1.positionInterneProperty());
+        positionInterne2.bind(point2.positionInterneProperty());
     }
 
     @Override

@@ -16,11 +16,8 @@
  */
 package org.graphysica.construction.mathematiques;
 
-import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.paint.Color;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Taille;
 import org.graphysica.espace2d.position.PositionReelle;
@@ -30,40 +27,30 @@ import org.graphysica.espace2d.position.PositionReelle;
  *
  * @author Marc-Antoine Ouimet
  */
-public class Point extends ObjetMathematique {
+public abstract class Point extends ObjetMathematique {
 
     /**
-     * La position réelle du point.
+     * La position interne réelle du point.
      */
-    private final ObjectProperty<PositionReelle> position
-            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
+    protected final ObjectProperty<PositionReelle> positionInterne
+            = new SimpleObjectProperty<>();
 
     /**
      * La taille du point dans sa représentation dans un espace.
      */
-    private final Taille taille = Taille.de("point");
-
-    /**
-     * Construit un point mathématique à une position réelle spécifiée.
-     *
-     * @param position la position réelle du point.
-     */
-    public Point(@NotNull final PositionReelle position) {
-        this.position.setValue(position);
-        couleurProperty().setValue(Color.BLUE);
-    }
+    protected final Taille taille = Taille.de("point");
 
     @Override
     protected Forme creerForme() {
-        return new org.graphysica.espace2d.forme.Point(positionProperty(),
-                couleurProperty(), tailleProperty());
+        return new org.graphysica.espace2d.forme.Point(
+                positionInterneProperty(), couleurProperty(), tailleProperty());
     }
 
-    public final ObjectProperty<PositionReelle> positionProperty() {
-        return position;
+    public final ObjectProperty<PositionReelle> positionInterneProperty() {
+        return positionInterne;
     }
 
-    public Taille tailleProperty() {
+    public final Taille tailleProperty() {
         return taille;
     }
 

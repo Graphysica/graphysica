@@ -14,31 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.construction;
+package org.graphysica.construction.mathematiques;
+
+import com.sun.istack.internal.NotNull;
+import javafx.scene.paint.Color;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
- * Un élément peut être créé et manipulé dans une construction.
+ * Un point concret est une position réelle indépendante dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Element {
-    
+public final class PointConcret extends Point {
+
     /**
-     * Le nombre d'éléments qui ont été construits.
+     * Construit un point mathématique à une position réelle spécifiée.
+     *
+     * @param position la position réelle du point.
      */
-    private static long ELEMENTS = 0;
-    
-    /**
-     * Le numéro d'identification de l'élément.
-     */
-    private final long id;
-    
-    {
-        id = ++ELEMENTS;
+    public PointConcret(@NotNull final PositionReelle position) {
+        positionInterne.setValue(position);
+        couleurProperty().setValue(Color.BLUE);
     }
 
-    public long getId() {
-        return id;
-    }
-    
 }
