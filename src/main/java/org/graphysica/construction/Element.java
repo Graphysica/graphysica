@@ -19,8 +19,27 @@ package org.graphysica.construction;
 /**
  * Un élément peut être créé et manipulé dans une construction.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public abstract class Element {
+    
+    /**
+     * Le nombre d'éléments qui ont été construits.
+     */
+    private static long ELEMENTS = 0;
+    
+    /**
+     * Le numéro d'identification de l'élément.
+     */
+    private final long id;
+    
+    {
+        id = ++ELEMENTS;
+        System.out.println(this);
+    }
 
+    public long getId() {
+        return id;
+    }
+    
 }

@@ -26,7 +26,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
-import org.graphysica.construction.Element;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
@@ -36,8 +35,8 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Forme extends Element implements Dessinable, Surbrillable,
-        Selectionnable, Previsualisable, Affichable {
+public abstract class Forme implements Dessinable, Surbrillable, Selectionnable, 
+        Previsualisable, Affichable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation
