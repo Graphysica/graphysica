@@ -17,18 +17,24 @@
 package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Grille;
 
 /**
+ * Le gestionnaire de sélections permet à l'utilisateur d'interagir avec la
+ * construction. Une gestion de surbrillance assure une réponse graphique du
+ * survol des éléments dans l'espace. Une gestion des sélections assure la
+ * sélection ponctuelle et multiples d'éléments de la construction.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -50,9 +56,20 @@ public class GestionnaireSelections {
     private final Set<Element> elementsSelectionnes = new LinkedHashSet<>();
 
     /**
+     * L'ensemble des formes présentement en surbrillance.
+     */
+    private final Set<Forme> formesEnSurbrillance = new HashSet<>();
+
+    /**
      * La gestion de la surbrillance des éléments.
      */
-    private final GestionSurbrillance gererSurbrillance = new GestionSurbrillance();
+    private final GestionSurbrillance gestionSurbrillance
+            = new GestionSurbrillance();
+
+    /**
+     * La gestion des sélections d'éléments.
+     */
+    private final GestionSelections gestionSelections = new GestionSelections();
 
     public GestionnaireSelections(@NotNull final Set<Element> elements) {
         this.elements = elements;
@@ -60,7 +77,12 @@ public class GestionnaireSelections {
 
     public void ajouterEspace(@NotNull final Espace espace) {
         espaces.add(espace);
-        espace.addEventFilter(MouseEvent.MOUSE_MOVED, gererSurbrillance);
+        espace.addEventFilter(MouseEvent.MOUSE_MOVED, gestionSurbrillance);
+        espace.addEventFilter(MouseEvent.MOUSE_CLICKED, gestionSelections);
+    }
+
+    public Set<Element> getElementsSelectionnes() {
+        return elementsSelectionnes;
     }
 
     /**
@@ -98,11 +120,6 @@ public class GestionnaireSelections {
      */
     private class GestionSurbrillance implements EventHandler<MouseEvent> {
 
-        /**
-         * L'ensemble des formes présentement en surbrillance.
-         */
-        private final Set<Forme> formesEnSurbrillance = new HashSet<>();
-
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
             for (final Espace espace : espaces) {
@@ -112,7 +129,8 @@ public class GestionnaireSelections {
                         = formesEnSurbrillance.iterator();
                 while (iteration.hasNext()) {
                     final Forme forme = iteration.next();
-                    if (!formesSelectionnees.contains(forme)) {
+                    if (!formesSelectionnees.contains(forme)
+                            && !elementsSelectionnesComprennentForme(forme)) {
                         forme.setEnSurbrillance(false);
                         iteration.remove();
                     }
@@ -128,6 +146,101 @@ public class GestionnaireSelections {
                     }
                 }
             }
+        }
+
+        /**
+         * Détermine si une forme spécifiée figure parmi les formes des éléments
+         * sélectionnés.
+         *
+         * @param forme la forme à vérifier.
+         * @return {@code true} si un élément sélectionné est représenté par la
+         * forme spécifiée.
+         */
+        private boolean elementsSelectionnesComprennentForme(
+                @NotNull final Forme forme) {
+            for (final Element element : elementsSelectionnes) {
+                for (final Forme correspondante : element.getFormes()) {
+                    if (forme == correspondante) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+    }
+
+    /**
+     * Une gestion de sélections permet de sélectionner des éléments à partir
+     * des formes dans les espaces.
+     */
+    private class GestionSelections implements EventHandler<MouseEvent> {
+
+        @Override
+        public void handle(@NotNull final MouseEvent evenement) {
+            if (evenement.getButton() == MouseButton.PRIMARY) {
+                Element elementCorrespondant = null;
+                for (final Espace espace : espaces) {
+                    final Set<Forme> formesSelectionnees
+                            = espace.formesSelectionnees();
+                    if (!formesSelectionnees.isEmpty()) {
+                        final Forme formeSelectionnee = formesSelectionnees
+                                .iterator().next();
+                        elementCorrespondant = elementCorrespondant(
+                                formeSelectionnee);
+                        break;
+                    }
+                }
+                if (evenement.isControlDown()) {
+                    if (elementCorrespondant != null) {
+                        if (elementsSelectionnes.contains(
+                                elementCorrespondant)) {
+                            elementsSelectionnes.remove(elementCorrespondant);
+                        } else {
+                            elementsSelectionnes.add(elementCorrespondant);
+                        }
+                    }
+                } else {
+                    deselectionner();
+                    if (elementCorrespondant != null) {
+                        elementsSelectionnes.add(elementCorrespondant);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Récupère l'élément correspondant à une forme définie parmi les
+         * éléments du gestionnaire de sélections.
+         *
+         * @param forme la forme dont on cherche l'élément.
+         * @return l'élément associé à la forme ou {@code null} si aucun élément
+         * n'est associé à la forme spécifiée.
+         */
+        @Nullable
+        private Element elementCorrespondant(@NotNull final Forme forme) {
+            for (final Element element : elements) {
+                for (final Forme composantes : element.getFormes()) {
+                    if (composantes == forme) {
+                        return element;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Déselectionne l'ensemble des éléments sélectionnés et actualise
+         * l'état de surbrillance de leurs formes.
+         */
+        private void deselectionner() {
+            elementsSelectionnes.forEach((element) -> {
+                for (final Forme forme : element.getFormes()) {
+                    forme.setEnSurbrillance(false);
+                    formesEnSurbrillance.remove(forme);
+                }
+            });
+            elementsSelectionnes.clear();
         }
 
     }
