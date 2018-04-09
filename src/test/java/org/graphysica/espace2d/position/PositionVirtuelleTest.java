@@ -22,26 +22,26 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Teste les fonctions propres aux positions réelles.
+ * Teste les fonctions propres aux positions virtuelles.
  *
  * @author Marc-Antoine Ouimet
  */
-public class PositionReelleTest {
+public class PositionVirtuelleTest {
 
     /**
      * L'ensemble des positions distancées de test.
      */
     private static final PositionDistancee[] POSITIONS_DISTANCEES = {
-        new PositionDistancee(new PositionReelle(new Vector2D(1, 1)),
-        new PositionReelle(new Vector2D(1, 2)), new Vector2D(0, 1)),
-        new PositionDistancee(new PositionReelle(new Vector2D(1, 2)),
-        new PositionReelle(new Vector2D(1, 3)), new Vector2D(0, 1)),
-        new PositionDistancee(new PositionReelle(new Vector2D(-1, 2)),
-        new PositionReelle(new Vector2D(1, 3)), new Vector2D(2, 1)),
-        new PositionDistancee(new PositionReelle(new Vector2D(1, 2)),
-        new PositionReelle(new Vector2D(-1, 3)), new Vector2D(-2, 1)),
-        new PositionDistancee(new PositionReelle(new Vector2D(1, 4)),
-        new PositionReelle(new Vector2D(-1, 3)), new Vector2D(-2, -1))
+        new PositionDistancee(new PositionVirtuelle(new Vector2D(1, 1)),
+        new PositionVirtuelle(new Vector2D(1, 2)), new Vector2D(0, 1)),
+        new PositionDistancee(new PositionVirtuelle(new Vector2D(1, 2)),
+        new PositionVirtuelle(new Vector2D(1, 3)), new Vector2D(0, 1)),
+        new PositionDistancee(new PositionVirtuelle(new Vector2D(-1, 2)),
+        new PositionVirtuelle(new Vector2D(1, 3)), new Vector2D(2, 1)),
+        new PositionDistancee(new PositionVirtuelle(new Vector2D(1, 2)),
+        new PositionVirtuelle(new Vector2D(-1, 3)), new Vector2D(-2, 1)),
+        new PositionDistancee(new PositionVirtuelle(new Vector2D(1, 4)),
+        new PositionVirtuelle(new Vector2D(-1, 3)), new Vector2D(-2, -1))
     };
 
     /**
@@ -86,12 +86,12 @@ public class PositionReelleTest {
         /**
          * La position initiale du déplacement.
          */
-        private final PositionReelle positionInitiale;
+        private final PositionVirtuelle positionInitiale;
 
         /**
          * La position finale du déplacement.
          */
-        private final PositionReelle positionFinale;
+        private final PositionVirtuelle positionFinale;
 
         /**
          * La distance de la première position vers la deuxième position.
@@ -106,8 +106,9 @@ public class PositionReelleTest {
          * @param distance la distance entre la première et la deuxième
          * positioné
          */
-        public PositionDistancee(@NotNull final PositionReelle positionInitiale,
-                @NotNull final PositionReelle positionFinale,
+        public PositionDistancee(
+                @NotNull final PositionVirtuelle positionInitiale,
+                @NotNull final PositionVirtuelle positionFinale,
                 @NotNull final Vector2D distance) {
             this.positionInitiale = positionInitiale;
             this.positionFinale = positionFinale;
