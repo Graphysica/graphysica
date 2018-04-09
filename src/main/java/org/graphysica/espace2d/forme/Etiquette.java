@@ -97,12 +97,49 @@ public class Etiquette extends Forme {
     private final ObjectProperty<Vector2D> positionRelative
             = new SimpleObjectProperty<>(new Vector2D(5, -25));
 
-    public Etiquette(@NotNull final String texte) {
+    /**
+     * Construit une étiquette dont le texte est défini.
+     *
+     * @param texte le texte de l'étiquette.
+     */
+    Etiquette(@NotNull final String texte) {
         setTexte(texte);
     }
 
-    public Etiquette(@NotNull final String texte, final int taille) {
+    /**
+     * Construit une étiquette dont le texte et la taille sont définis.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param taille la taille du texte de l'étiquette, exprimée en points.
+     */
+    Etiquette(@NotNull final String texte, final int taille) {
         this(texte);
+        setTailleCaractere(taille);
+    }
+
+    /**
+     * Construit une étiquette ancrée à une position d'ancrage définie.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param positionAncrage la position d'ancrage de l'étiquette.
+     */
+    public Etiquette(@NotNull final String texte,
+            @NotNull final ObjectProperty<? extends Position> positionAncrage) {
+        setTexte(texte);
+        this.positionAncrage.bind(positionAncrage);
+    }
+
+    /**
+     * Construit une étiquette ancrée à une position d'ancrage définie.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param positionAncrage la position d'ancrage de l'étiquette.
+     * @param taille la taille du texte de l'étiquette, exprimée en points.
+     */
+    public Etiquette(@NotNull final String texte,
+            @NotNull final ObjectProperty<? extends Position> positionAncrage,
+            final int taille) {
+        this(texte, positionAncrage);
         setTailleCaractere(taille);
     }
 
@@ -242,11 +279,11 @@ public class Etiquette extends Forme {
                 repere);
     }
 
-    public final String getTexte() {
+    private String getTexte() {
         return texte.getValue();
     }
-
-    public final void setTexte(@NotNull final String texte) {
+    
+    private void setTexte(@NotNull final String texte) {
         this.texte.setValue(texte);
     }
 
@@ -254,7 +291,7 @@ public class Etiquette extends Forme {
         return texte;
     }
 
-    public final int getTailleCaractere() {
+    private int getTailleCaractere() {
         return tailleCaractere.getValue();
     }
 
@@ -269,7 +306,7 @@ public class Etiquette extends Forme {
         return tailleCaractere;
     }
 
-    public final Vector2D getPositionRelative() {
+    private Vector2D getPositionRelative() {
         return positionRelative.getValue();
     }
 
@@ -278,12 +315,11 @@ public class Etiquette extends Forme {
         this.positionRelative.setValue(positionRelative);
     }
 
-    public final Position getPositionAncrage() {
+    private Position getPositionAncrage() {
         return positionAncrage.getValue();
     }
-
-    public final void setPositionAncrage(
-            @NotNull final Position positionAncrage) {
+    
+    void setPositionAncrage(@NotNull final Position positionAncrage) {
         this.positionAncrage.setValue(positionAncrage);
     }
 

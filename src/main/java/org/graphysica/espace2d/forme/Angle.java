@@ -61,9 +61,9 @@ public class Angle extends Forme {
     private static final Vector2D HORIZONTALE = new Vector2D(1, 0);
 
     /**
-     * Le premier point extrême de l'angle.
+     * La première position extrême de l'angle.
      */
-    private final ObjectProperty<Position> point1
+    private final ObjectProperty<Position> position1
             = new SimpleObjectProperty<>();
 
     /**
@@ -73,9 +73,9 @@ public class Angle extends Forme {
             = new SimpleObjectProperty<>();
 
     /**
-     * Le deuxième point extrême de l'angle.
+     * La deuxième position extrême de l'angle.
      */
-    private final ObjectProperty<Position> point2
+    private final ObjectProperty<Position> position2
             = new SimpleObjectProperty<>();
 
     /**
@@ -84,24 +84,25 @@ public class Angle extends Forme {
     private final DoubleProperty opacite = new SimpleDoubleProperty(0.5);
 
     /**
-     * Construit un angle entre deux points à partir d'un sommet.
+     * Construit un angle entre deux positions à partir d'un sommet.
      *
-     * @param point1 le premier point délimitant l'angle.
-     * @param sommet le sommet, qui est à l'origine du secteur.
-     * @param point2 le deuxième point délimitant l'angle.
+     * @param position1 la première position délimitant l'angle.
+     * @param sommet la position du sommet, qui est à l'origine du secteur.
+     * @param position2 la deuxième position délimitant l'angle.
      */
-    public Angle(@NotNull final Position point1, @NotNull final Position sommet,
-            @NotNull final Position point2) {
-        setPoint1(point1);
-        setSommet(sommet);
-        setPoint2(point2);
+    public Angle(@NotNull final ObjectProperty<? extends Position> position1, 
+            @NotNull final ObjectProperty<? extends Position> sommet,
+            @NotNull final ObjectProperty<? extends Position> position2) {
+        position1Property().bind(position1);
+        sommetProperty().bind(sommet);
+        position2Property().bind(position2);
     }
 
     {
         proprietesActualisation.add(taille);
-        proprietesActualisation.add(point1);
+        proprietesActualisation.add(position1);
         proprietesActualisation.add(sommet);
-        proprietesActualisation.add(point2);
+        proprietesActualisation.add(position2);
         proprietesActualisation.add(opacite);
     }
 
@@ -155,30 +156,6 @@ public class Angle extends Forme {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public final Position getPoint1() {
-        return point1.getValue();
-    }
-
-    public final void setPoint1(@NotNull final Position point1) {
-        this.point1.setValue(point1);
-    }
-
-    public final Position getSommet() {
-        return sommet.getValue();
-    }
-
-    public final void setSommet(@NotNull final Position sommet) {
-        this.sommet.setValue(sommet);
-    }
-
-    public final Position getPoint2() {
-        return point2.getValue();
-    }
-
-    public final void setPoint2(@NotNull final Position point2) {
-        this.point2.setValue(point2);
-    }
-
     /**
      * Calcule l'angle entre le vecteur partant du sommet vers le premier point
      * et l'horizontale.
@@ -192,7 +169,7 @@ public class Angle extends Forme {
      */
     public double getAngleInitial(@NotNull final Repere repere)
             throws MathArithmeticException {
-        final Vector2D vecteur1 = getPoint1().reelle(repere).subtract(
+        final Vector2D vecteur1 = getPosition1().reelle(repere).subtract(
                 getSommet().reelle(repere));
         return FastMath.toDegrees(angle(vecteur1, HORIZONTALE));
     }
@@ -209,9 +186,9 @@ public class Angle extends Forme {
      */
     public double getAngle(@NotNull final Repere repere)
             throws MathArithmeticException {
-        final Vector2D vecteur1 = getPoint1().reelle(repere).subtract(
+        final Vector2D vecteur1 = getPosition1().reelle(repere).subtract(
                 getSommet().reelle(repere));
-        final Vector2D vecteur2 = getPoint2().reelle(repere).subtract(
+        final Vector2D vecteur2 = getPosition2().reelle(repere).subtract(
                 getSommet().reelle(repere));
         return -FastMath.toDegrees(angle(vecteur1, vecteur2));
     }
@@ -250,7 +227,7 @@ public class Angle extends Forme {
      * @return si l'angle est défini.
      */
     public boolean isDefini() {
-        return !(point1.equals(sommet) || point2.equals(sommet));
+        return !(position1.equals(sommet) || position2.equals(sommet));
     }
 
     @Override
@@ -258,6 +235,30 @@ public class Angle extends Forme {
             @NotNull final Repere repere) {
         // TODO: Déterminer la distance entre le curseur et un secteur
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    protected final Position getPosition1() {
+        return position1.getValue();
+    }
+    
+    public final ObjectProperty<Position> position1Property() {
+        return position1;
+    }
+
+    protected final Position getSommet() {
+        return sommet.getValue();
+    }
+    
+    public final ObjectProperty<Position> sommetProperty() {
+        return sommet;
+    }
+
+    protected final Position getPosition2() {
+        return position2.getValue();
+    }
+    
+    public final ObjectProperty<Position> position2Property() {
+        return position2;
     }
 
 }

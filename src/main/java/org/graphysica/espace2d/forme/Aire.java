@@ -30,10 +30,4 @@ public abstract class Aire extends Forme {
     protected static final Color COULEUR_PAR_DEFAUT = new Color(0.72, 0.52,
             0.04, 0.4);
     
-    /**
-     * Construit une aire vide.
-     */
-    public Aire(){
-    }
-
 }

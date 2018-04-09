@@ -45,7 +45,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Un espace permet d'afficher un ensemble de formes dans un repère.
+ * Un espace permet d'afficher un ensemble de formes dans un repère. Le repère
+ * de l'espace permet de décrire les positions de l'environnement d'édition
+ * graphique. Les positions virtuelles sont exprimées en fonction de l'origine
+ * virtuelle située au coin supérieur gauche de l'espace et selon un axe
+ * vertical orienté négativement.
+ * <p>
+ * L'espace peut être navigué à l'aide du bouton du milieu de la souris. Le
+ * défilement de la souris est associé à la translation du repère, et le
+ * roulement de la molette est associée l'échelle du repère.
+ * <p>
+ * L'espace permet de récupérer l'ensemble des formes qui sont sélectionnées par
+ * l'utilisateur selon la distance minimale du curseur à la forme en
+ * considération avec l'ordre de rendu des formes. Un gestionnaire de sélections
+ * devra s'occuper des sélections ponctuelles et multiples.
+ * <p>
+ * Les formes graphiques de repérage dans l'espace, qui comprennent les axes et
+ * les grilles, sont propres à chaque espace. Il est possible de créer des
+ * espaces à partir d'un autre espace qui s'actualise à l'ajout et le retrait de
+ * formes dans chaque espace effectuant le rendu d'un même ensemble de formes.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -260,22 +278,25 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
         // Ajouter les formes dans l'ordre inverse
         final List<Forme> formesSelectionnees = new ArrayList<>();
         final Map<Forme, Double> distances = distancesFormes();
-        for (final Class classe : ordreRendu) {
+        ordreRendu.stream().map((classe) -> {
             // Retenir les formes de la classe
             final List<Map.Entry<Forme, Double>> formesRetenues
                     = new ArrayList<>();
-            for (final Map.Entry<Forme, Double> entree : distances.entrySet()) {
-                if (classe.isInstance(entree.getKey())) {
-                    formesRetenues.add(entree);
-                }
-            }
+            distances.entrySet().stream().filter((entree) -> (
+                    classe.isInstance(entree.getKey()))).forEach((entree) -> {
+                formesRetenues.add(entree);
+            });
+            return formesRetenues;
+        }).map((formesRetenues) -> {
             // Trier en ordre décroissant
-            formesRetenues.sort((forme1, forme2)
-                    -> forme2.getValue().compareTo(forme1.getValue()));
-            for (final Map.Entry<Forme, Double> entree : formesRetenues) {
+            formesRetenues.sort((forme1, forme2) -> forme2.getValue()
+                    .compareTo(forme1.getValue()));
+            return formesRetenues;
+        }).forEach((formesRetenues) -> {
+            formesRetenues.stream().forEach((entree) -> {
                 formesSelectionnees.add(entree.getKey());
-            }
-        }
+            });
+        });
         Collections.reverse(formesSelectionnees);
         return new LinkedHashSet<>(formesSelectionnees);
     }
@@ -291,12 +312,11 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
                 = new LinkedHashSet<>(reperage);
         formesDistantes.addAll(formes());
         final Map<Forme, Double> distances = new HashMap<>();
-        for (final Forme forme : formesDistantes) {
-            if (forme.isSelectionne(getPositionCurseur(), repere)) {
-                distances.put(forme, forme.distance(
-                        getPositionCurseur(), repere));
-            }
-        }
+        formesDistantes.stream().filter((forme) -> (forme.isSelectionne(
+                getPositionCurseur(), repere))).forEach((forme) -> {
+            distances.put(forme, forme.distance(
+                    getPositionCurseur(), repere));
+        });
         return distances;
     }
 

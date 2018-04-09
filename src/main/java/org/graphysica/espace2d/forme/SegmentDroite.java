@@ -31,6 +31,12 @@ import org.graphysica.espace2d.Repere;
  */
 public class SegmentDroite extends Ligne {
 
+    /**
+     * Construit un segment de droite reliant deux positions.
+     *
+     * @param position1 la première position du segment de droite.
+     * @param position2 la deuxième position du segment de droite.
+     */
     public SegmentDroite(
             @NotNull final ObjectProperty<? extends Position> position1,
             @NotNull final ObjectProperty<? extends Position> position2) {

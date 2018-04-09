@@ -25,7 +25,6 @@ import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
-import org.graphysica.espace2d.position.PositionReelle;
 import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 
 /**
@@ -44,7 +43,7 @@ public class Point extends Forme {
      * La position réelle du point exprimée en mètres selon la base canonique.
      */
     private final ObjectProperty<Position> position
-            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
+            = new SimpleObjectProperty<>();
 
     /**
      * La taille de la bordure du dessin du point exprimée en pixels.

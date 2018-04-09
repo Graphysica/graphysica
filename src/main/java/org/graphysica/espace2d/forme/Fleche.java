@@ -97,15 +97,27 @@ public class Fleche extends SegmentDroite {
          */
         private final Taille largeur = Taille.de("teteflechelargeur");
 
+        /**
+         * Le sommet du triangle.
+         */
         private final ObjectProperty<Position> sommet
                 = new SimpleObjectProperty<>();
 
+        /**
+         * Le premier pied du triangle.
+         */
         private final ObjectProperty<Position> pied1
                 = new SimpleObjectProperty<>();
 
+        /**
+         * Le deuxième pied du triangle.
+         */
         private final ObjectProperty<Position> pied2
                 = new SimpleObjectProperty<>();
 
+        /**
+         * Construit un triangle aux positions définies.
+         */
         public Triangle() {
             super();
             setPoints(pied1, sommet, pied2);

@@ -19,9 +19,8 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import javafx.beans.property.ObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -44,10 +43,12 @@ public class Polygone extends Aire {
      * L'ensemble ordonné des points de coordonnées réelles délimitant ce
      * polygone.
      */
-    private final ObservableSet<ObjectProperty<Position>> points
-            = FXCollections.observableSet(new LinkedHashSet<>());
+    private final Set<ObjectProperty<Position>> points = new LinkedHashSet<>();
 
-    public Polygone() {
+    /**
+     * Construit un polygone aux points non-définis.
+     */
+    protected Polygone() {
     }
 
     /**
@@ -61,7 +62,9 @@ public class Polygone extends Aire {
     }
 
     {
-        proprietesActualisation.add(points);
+        for (final ObjectProperty<Position> point : points) {
+            proprietesActualisation.add(point);
+        }
     }
 
     @Override
@@ -101,7 +104,7 @@ public class Polygone extends Aire {
      * 
      * @return les abscisses de points.
      */
-    private static double[] abscisses(@NotNull final Vector2D[] points) {
+    private static double[] abscisses(@NotNull final Vector2D... points) {
         final double[] abscisses = new double[points.length];
         int i = 0;
         for (final Vector2D point : points) {
@@ -117,7 +120,7 @@ public class Polygone extends Aire {
      * 
      * @return les ordonnées de points.
      */
-    private static double[] ordonnees(@NotNull final Vector2D[] points) {
+    private static double[] ordonnees(@NotNull final Vector2D... points) {
         final double[] ordonnees = new double[points.length];
         int i = 0;
         for (final Vector2D point : points) {
@@ -195,7 +198,7 @@ public class Polygone extends Aire {
      * @param repere le repère d'espace du polygone.
      * @return les points délimitant ce polygone.
      */
-    public Vector2D[] getPoints(@NotNull final Repere repere) {
+    private Vector2D[] getPoints(@NotNull final Repere repere) {
         final Vector2D[] pointsReels = new Vector2D[points.size()];
         int i = 0;
         for (final ObjectProperty<Position> point : points) {
@@ -205,15 +208,8 @@ public class Polygone extends Aire {
         return pointsReels;
     }
 
-    public final void setPoints(
-            @NotNull final LinkedHashSet<ObjectProperty<Position>> points) {
-        this.points.clear();
-        this.points.addAll(points);
-    }
-
-    public final void setPoints(
+    protected final void setPoints(
             @NotNull final ObjectProperty<Position>... points) {
-        this.points.clear();
         for (final ObjectProperty<Position> point : points) {
             this.points.add(point);
         }
