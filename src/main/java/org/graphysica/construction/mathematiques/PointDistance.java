@@ -30,7 +30,7 @@ import org.graphysica.espace2d.position.PositionReelle;
  * Un point distancé est une position réelle dépendante distante d'une certaine
  * valeur réelle à partir d'un autre point dans l'espace.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public final class PointDistance extends Point {
 
