@@ -19,10 +19,10 @@ package org.graphysica.construction.commande;
 /**
  * Les classes implémentant cette inferface peuvent être exécutées.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public interface Executable {
-    
+
     /**
      * Exécute l'action.
      */

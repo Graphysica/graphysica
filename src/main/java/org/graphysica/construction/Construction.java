@@ -20,7 +20,7 @@ import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 import org.graphysica.construction.commande.Commande;
-import org.graphysica.espace2d.EspaceInteractif;
+import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
 
 /**
@@ -34,7 +34,7 @@ public class Construction {
      * L'espace graphique de la construction.
      * TODO: Déterminer les dimensions de l'espace selon le panneau du logiciel
      */
-    private final EspaceInteractif espace = new EspaceInteractif(500, 500);
+    private final Espace espace = new Espace(500, 500);
     
     /**
      * Le gestionnaire des commandes de la construction.
@@ -66,7 +66,7 @@ public class Construction {
      */
     public boolean ajouterElement(@NotNull final Element element) {
         if (element instanceof Forme) {
-            espace.ajouter((Forme) element);
+            espace.getFormes().ajouter((Forme) element);
         }
         return elements.add(element);
     }
@@ -80,7 +80,7 @@ public class Construction {
      */
     public boolean retirerElement(@NotNull final Element element) {
         if (element instanceof Forme) {
-            espace.retirer((Forme) element);
+            espace.getFormes().retirer((Forme) element);
         }
         return elements.remove(element);
     }
@@ -93,7 +93,7 @@ public class Construction {
         gestionnaireCommandes.refaire();
     }
 
-    public EspaceInteractif getEspace() {
+    public Espace getEspace() {
         return espace;
     }
     

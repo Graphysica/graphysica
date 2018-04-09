@@ -35,13 +35,22 @@ import org.graphysica.espace2d.Repere;
 interface Surbrillable extends Dessinable {
 
     /**
+     * Dessine normalement l'objet dans un contexte graphique d'espace spécifié.
+     *
+     * @param toile la toile surlaquelle dessiner l'objet.
+     * @param repere le repère de l'espace.
+     */
+    void dessinerNormal(@NotNull final Canvas toile,
+            @NotNull final Repere repere);
+
+    /**
      * Dessine la surbrillance de l'objet dans un contexte graphique d'espace
      * spécifié.
      *
      * @param toile la toile surlaquelle dessiner l'objet.
      * @param repere le repère de l'espace.
      */
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
+    void dessinerSurbrillance(@NotNull final Canvas toile,
             @NotNull final Repere repere);
 
     /**
@@ -49,13 +58,13 @@ interface Surbrillable extends Dessinable {
      *
      * @return {@code true} si l'objet est en surbrillance.
      */
-    public boolean isEnSurbrillance();
+    boolean isEnSurbrillance();
 
     /**
      * Modifie l'état de surbrillance de l'objet.
      *
      * @param enSurbrillance le nouvel état de surbrillance de l'objet.
      */
-    public void setEnSurbrillance(final boolean enSurbrillance);
+    void setEnSurbrillance(final boolean enSurbrillance);
 
 }

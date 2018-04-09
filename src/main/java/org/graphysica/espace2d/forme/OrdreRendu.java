@@ -32,7 +32,7 @@ public class OrdreRendu extends LinkedHashSet<Class> {
     {
         add(Grille.class);
         add(Axe.class);
-        add(Aire.class);
+        add(Polygone.class);
         add(Angle.class);
         add(Ligne.class);
         add(Point.class);

@@ -17,26 +17,9 @@
 package org.graphysica.espace2d.forme;
 
 /**
- * Les instances de classes implémentant cette interface peuvent être
- * prévisualisées. Une forme qui est en état de prévisualisation ne devrait pas
- * être en état de surbrillance.
  *
  * @author Marc-Antoine Ouimet
  */
-interface Previsualisable {
-
-    /**
-     * Renvoie si l'objet est en prévisualisation.
-     *
-     * @return {@code true} si l'objet est en prévisualisation.
-     */
-    boolean isEnPrevisualisation();
-
-    /**
-     * Modifie l'état de prévisualisation de cet objet.
-     *
-     * @param enPrevisualisation le nouvel état de prévisualisation de l'objet.
-     */
-    void setEnPrevisualisation(final boolean enPrevisualisation);
-
+public class Ellipse {
+    
 }

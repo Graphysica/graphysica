@@ -33,7 +33,9 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
+import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 
@@ -49,7 +51,7 @@ public class Etiquette extends Forme {
      * La taille par défaut des caractères de cette étiquette exprimée en
      * points.
      */
-    private static final int TAILLE_CARACTERE_PAR_DEFAUT = 16;
+    private static final int TAILLE_CARACTERE_PAR_DEFAUT = 12;
 
     /**
      * La couleur par défaut des étiquettes.
@@ -85,8 +87,8 @@ public class Etiquette extends Forme {
     /**
      * La position réelle d'ancrage de cette étiquette.
      */
-    private final ObjectProperty<Vector2D> positionAncrage
-            = new SimpleObjectProperty<>(Vector2D.ZERO);
+    private final ObjectProperty<Position> positionAncrage
+            = new SimpleObjectProperty<>();
 
     /**
      * La position virtuelle relative de l'étiquette par rapport à la position
@@ -95,74 +97,54 @@ public class Etiquette extends Forme {
     private final ObjectProperty<Vector2D> positionRelative
             = new SimpleObjectProperty<>(new Vector2D(5, -25));
 
-    public Etiquette(@NotNull final String texte) {
+    /**
+     * Construit une étiquette dont le texte est défini.
+     *
+     * @param texte le texte de l'étiquette.
+     */
+    Etiquette(@NotNull final String texte) {
         setTexte(texte);
-        setCouleur(COULEUR_PAR_DEFAUT);
     }
 
-    public Etiquette(@NotNull final String texte,
-            @NotNull final Color couleur) {
-        this(texte);
-        setCouleur(couleur);
-    }
-
-    public Etiquette(@NotNull final String texte, final int taille) {
+    /**
+     * Construit une étiquette dont le texte et la taille sont définis.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param taille la taille du texte de l'étiquette, exprimée en points.
+     */
+    Etiquette(@NotNull final String texte, final int taille) {
         this(texte);
         setTailleCaractere(taille);
     }
 
-    public Etiquette(@NotNull final String texte, final int taille,
-            @NotNull final Color couleur) {
-        this(texte, taille);
-        setCouleur(couleur);
-    }
-
+    /**
+     * Construit une étiquette ancrée à une position d'ancrage définie.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param positionAncrage la position d'ancrage de l'étiquette.
+     */
     public Etiquette(@NotNull final String texte,
-            @NotNull final ObjectProperty<Vector2D> positionAncrage) {
-        this(texte);
+            @NotNull final ObjectProperty<? extends Position> positionAncrage) {
+        setTexte(texte);
         this.positionAncrage.bind(positionAncrage);
     }
 
-    public Etiquette(@NotNull final String texte, final int taille,
-            @NotNull final ObjectProperty<Vector2D> positionAncrage) {
-        this(texte, positionAncrage);
-        setTailleCaractere(taille);
-    }
-
-    public Etiquette(@NotNull final String texte, final int taille,
-            @NotNull final Color couleur,
-            @NotNull final ObjectProperty<Vector2D> positionAncrage) {
-        this(texte, taille, positionAncrage);
-        setCouleur(couleur);
-    }
-
+    /**
+     * Construit une étiquette ancrée à une position d'ancrage définie.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param positionAncrage la position d'ancrage de l'étiquette.
+     * @param taille la taille du texte de l'étiquette, exprimée en points.
+     */
     public Etiquette(@NotNull final String texte,
-            @NotNull final Vector2D positionAncrage) {
-        this(texte);
-        setPositionAncrage(positionAncrage);
-    }
-
-    public Etiquette(@NotNull final String texte,
-            @NotNull final Vector2D positionAncrage,
-            @NotNull final Vector2D positionRelative) {
-        this(texte, positionAncrage);
-        setPositionRelative(positionRelative);
-    }
-
-    public Etiquette(@NotNull final String texte,
-            @NotNull final Vector2D positionAncrage,
-            @NotNull final Vector2D positionRelative,
+            @NotNull final ObjectProperty<? extends Position> positionAncrage,
             final int taille) {
-        this(texte, positionAncrage, positionRelative);
+        this(texte, positionAncrage);
         setTailleCaractere(taille);
     }
 
-    public Etiquette(@NotNull final String texte,
-            @NotNull final Vector2D positionAncrage,
-            @NotNull final Vector2D positionRelative,
-            final int taille, @NotNull final Color couleur) {
-        this(texte, positionAncrage, positionRelative, taille);
-        setCouleur(couleur);
+    static {
+        TeXFormula.setDefaultDPI();
     }
 
     {
@@ -176,14 +158,14 @@ public class Etiquette extends Forme {
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (imageFormule == null) {
             construireImage();
         }
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
-        final Vector2D position = repere.positionVirtuelle(getPositionAncrage())
-                .add(getPositionRelative());
+        final Vector2D position = getPositionAncrage().deplacer(
+                getPositionRelative(), VIRTUELLE, repere).virtuelle(repere);
         contexteGraphique.drawImage(imageFormule, (int) (position.getX()),
                 (int) (position.getY()));
         if (isEnSurbrillance()) {
@@ -194,12 +176,12 @@ public class Etiquette extends Forme {
     @Override
     public void dessinerSurbrillance(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final Vector2D coinSuperieurGauche = repere.positionVirtuelle(
-                getPositionAncrage()).add(getPositionRelative());
+        final Vector2D coinSuperieurGauche = coinSuperieurGauche(repere)
+                .virtuelle(repere);
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
         contexteGraphique.setStroke(getCouleur());
         contexteGraphique.setLineWidth(1);
-        contexteGraphique.strokeRect(coinSuperieurGauche.getX(), 
+        contexteGraphique.strokeRect(coinSuperieurGauche.getX(),
                 coinSuperieurGauche.getY(), getLargeur(), getHauteur());
     }
 
@@ -207,7 +189,6 @@ public class Etiquette extends Forme {
      * Construit l'image de la formule TeX à partir du texte.
      */
     private void construireImage() {
-        //TODO: ajuster TeXFormula#setDPITarget(float) à l'écran 
         imageFormule = SwingFXUtils.toFXImage(
                 (BufferedImage) new TeXFormula(getTexte()).createBufferedImage(
                         TeXConstants.STYLE_TEXT, getTailleCaractere(),
@@ -227,36 +208,82 @@ public class Etiquette extends Forme {
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur,
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
-        final Vector2D coinSuperieurGauche = repere.positionVirtuelle(
-                getPositionAncrage()).add(getPositionRelative());
-        final Vector2D coinSuperieurDroit = coinSuperieurGauche.add(
-                new Vector2D(getLargeur(), 0));
-        final Vector2D coinInferieurDroit = coinSuperieurDroit.add(
-                new Vector2D(0, getHauteur()));
-        final Vector2D coinInferieurGauche = coinInferieurDroit.add(
-                new Vector2D(-getLargeur(), 0));
-        if (curseur.getX() >= coinSuperieurGauche.getX()
-                && curseur.getX() <= coinSuperieurDroit.getX()
-                && curseur.getY() >= coinSuperieurDroit.getY()
-                && curseur.getY() <= coinInferieurDroit.getY()) {
+        if (curseurSurEtiquette(curseur, repere)) {
             return 0;
         }
+        final Vector2D coinSuperieurGauche = coinSuperieurGauche(repere)
+                .virtuelle(repere);
+        final Vector2D coinSuperieurDroit = coinSuperieurGauche.add(
+                new Vector2D(getLargeur(), 0));
+        final Vector2D coinInferieurDroit = coinInferieurDroit(repere)
+                .virtuelle(repere);
+        final Vector2D coinInferieurGauche = coinInferieurDroit.add(
+                new Vector2D(-getLargeur(), 0));
         return Math.min(new Segment(coinSuperieurGauche, coinSuperieurDroit,
-                null).distance(curseur), Math.min(new Segment(
-                coinSuperieurDroit, coinInferieurDroit, null).distance(curseur),
-                Math.min(new Segment(coinInferieurDroit, coinInferieurGauche,
-                        null).distance(curseur), new Segment(
-                        coinInferieurGauche, coinSuperieurGauche, null)
-                        .distance(curseur))));
+                null).distance(curseur.virtuelle(repere)), Math.min(new Segment(
+                coinSuperieurDroit, coinInferieurDroit, null).distance(
+                curseur.virtuelle(repere)), Math.min(
+                new Segment(coinInferieurDroit, coinInferieurGauche,
+                        null).distance(curseur.virtuelle(repere)), new Segment(
+                coinInferieurGauche, coinSuperieurGauche, null)
+                .distance(curseur.virtuelle(repere)))));
     }
 
-    public final String getTexte() {
+    /**
+     * Détermine si la position du curseur se retrouve dans l'espace
+     * rectangulaire délimitant l'étiquette.
+     *
+     * @param curseur la position du curseur.
+     * @param repere le repère d'espace.
+     * @return {@code true} si la position du curseur est par-dessus
+     * l'étiquette.
+     */
+    private boolean curseurSurEtiquette(@NotNull final Position curseur,
+            @NotNull final Repere repere) {
+        final Position coinSuperieurGauche = coinSuperieurGauche(repere);
+        final Position coinInferieurDroit = coinInferieurDroit(repere);
+        boolean curseurSurEtiquette = true;
+        curseurSurEtiquette &= curseur.virtuelle(repere).getX()
+                >= coinSuperieurGauche.virtuelle(repere).getX();
+        curseurSurEtiquette &= curseur.virtuelle(repere).getX()
+                <= coinInferieurDroit.virtuelle(repere).getX();
+        curseurSurEtiquette &= curseur.virtuelle(repere).getY()
+                >= coinSuperieurGauche.virtuelle(repere).getY();
+        curseurSurEtiquette &= curseur.virtuelle(repere).getY()
+                <= coinInferieurDroit.virtuelle(repere).getY();
+        return curseurSurEtiquette;
+    }
+
+    /**
+     * Récupère la position supérieure gauche de l'étiquette.
+     *
+     * @param repere le repère d'espace de l'étiquette.
+     * @return la position supérieure gauche de l'étiquette.
+     */
+    private Position coinSuperieurGauche(@NotNull final Repere repere) {
+        return getPositionAncrage().deplacer(
+                getPositionRelative(), VIRTUELLE, repere);
+    }
+
+    /**
+     * Récupère la position inférieure droit de l'étiquette.
+     *
+     * @param repere le repère d'espace de l'étiquette.
+     * @return la position inférieure droit de l'étiquette.
+     */
+    private Position coinInferieurDroit(@NotNull final Repere repere) {
+        return coinSuperieurGauche(repere).deplacer(
+                new Vector2D(getLargeur(), -getHauteur()), VIRTUELLE,
+                repere);
+    }
+
+    private String getTexte() {
         return texte.getValue();
     }
-
-    public final void setTexte(@NotNull final String texte) {
+    
+    private void setTexte(@NotNull final String texte) {
         this.texte.setValue(texte);
     }
 
@@ -264,7 +291,7 @@ public class Etiquette extends Forme {
         return texte;
     }
 
-    public final int getTailleCaractere() {
+    private int getTailleCaractere() {
         return tailleCaractere.getValue();
     }
 
@@ -279,7 +306,7 @@ public class Etiquette extends Forme {
         return tailleCaractere;
     }
 
-    public final Vector2D getPositionRelative() {
+    private Vector2D getPositionRelative() {
         return positionRelative.getValue();
     }
 
@@ -288,12 +315,11 @@ public class Etiquette extends Forme {
         this.positionRelative.setValue(positionRelative);
     }
 
-    public final Vector2D getPositionAncrage() {
+    private Position getPositionAncrage() {
         return positionAncrage.getValue();
     }
-
-    public final void setPositionAncrage(
-            @NotNull final Vector2D positionAncrage) {
+    
+    void setPositionAncrage(@NotNull final Position positionAncrage) {
         this.positionAncrage.setValue(positionAncrage);
     }
 

@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Classes de formes aux coordonnées réelles pouvant être dessinées sur une 
- * toile avec un repère. Ce package encapsule les comportements de dessin des
- * types de formes dans un espace ayant un repère.
+ * Les positions permettent de représenter des emplacements dans l'espace. Ce
+ * package encapsule les définitions d'emplacements dans un espace ayant un
+ * repère afin de passer librement de positions virtuelles à réelles par une
+ * transformation affine.
  */
-package org.graphysica.espace2d.forme;
+package org.graphysica.espace2d.position;

@@ -23,7 +23,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Un axe vertical permet de représenter les valeurs d'ordonnée de l'espace.
@@ -38,12 +40,12 @@ public class AxeVertical extends Axe {
      * @param espacement la valeur virtuelle d'espacement minimal entre les
      * graduations de l'axe.
      */
-    protected AxeVertical(final double espacement) {
-        setEspacement(espacement);
+    public AxeVertical(final double espacement) {
+        super(espacement);
     }
 
     @Override
-    public void dessiner(@NotNull final Canvas toile,
+    public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (isEnSurbrillance()) {
             dessinerSurbrillance(toile, repere);
@@ -54,11 +56,10 @@ public class AxeVertical extends Axe {
                 graduationsHorizontales);
         actualiserEtiquettes(ordonneesReelles, formatValeurs(repere));
         final double positionReelleAxe = positionReelleAxe(toile, repere);
-        fleche.setOrigine(new Vector2D(
-                positionReelleAxe,
-                repere.ordonneeReelle(toile.getHeight())));
-        fleche.setArrivee(new Vector2D(
-                positionReelleAxe, repere.ordonneeReelle(0)));
+        setOrigine(new PositionReelle(new Vector2D(positionReelleAxe,
+                repere.ordonneeReelle(toile.getHeight()))));
+        setArrivee(new PositionReelle(new Vector2D(positionReelleAxe,
+                repere.ordonneeReelle(0))));
         dessinerGraduations(toile, graduationsHorizontales,
                 positionVirtuelleAxe(toile, repere));
         fleche.dessiner(toile, repere);
@@ -68,14 +69,8 @@ public class AxeVertical extends Axe {
         });
     }
 
-    /**
-     * Dessine des marques de graduations sur l'axe.
-     *
-     * @param toile la toile affichant cet axe.
-     * @param valeursVirtuelles les valeurs virtuelles de graduation.
-     * @param positionAxe la position virtuelle de l'axe.
-     */
-    private void dessinerGraduations(@NotNull final Canvas toile,
+    @Override
+    protected void dessinerGraduations(@NotNull final Canvas toile,
             @NotNull final double[] valeursVirtuelles,
             final double positionAxe) {
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
@@ -115,8 +110,8 @@ public class AxeVertical extends Axe {
             final Map.Entry<Double, Etiquette> entree = iteration.next();
             final double valeur = entree.getKey();
             final Etiquette etiquette = entree.getValue();
-            etiquette.setPositionAncrage(
-                    new Vector2D(abscisseReelleAxe, valeur));
+            etiquette.setPositionAncrage(new PositionReelle(
+                    new Vector2D(abscisseReelleAxe, valeur)));
             if (positionVirtuelle >= toile.getWidth()
                     - etiquette.getLargeur()) {
                 etiquette.setPositionRelative(new Vector2D(
@@ -139,7 +134,14 @@ public class AxeVertical extends Axe {
      */
     private double positionVirtuelleAxe(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        return repere.abscisseVirtuelle(positionReelleAxe(toile, repere));
+        final double abscisseVirtuelleZero = repere.abscisseVirtuelle(0);
+        if (abscisseVirtuelleZero < 0) {
+            return 0;
+        } else if (abscisseVirtuelleZero > toile.getWidth()) {
+            return toile.getWidth();
+        } else {
+            return abscisseVirtuelleZero;
+        }
     }
 
     /**
@@ -151,20 +153,13 @@ public class AxeVertical extends Axe {
      */
     private double positionReelleAxe(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        final double abscisseVirtuelleZero = repere.abscisseVirtuelle(0);
-        if (abscisseVirtuelleZero < 0) {
-            return repere.abscisseReelle(0);
-        } else if (abscisseVirtuelleZero > toile.getWidth()) {
-            return repere.abscisseReelle(toile.getWidth());
-        } else {
-            return 0;
-        }
+        return repere.abscisseReelle(positionVirtuelleAxe(toile, repere));
     }
 
     @Override
-    public double distance(@NotNull final Vector2D curseur, 
+    public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {
-        return Math.abs(curseur.getX() - positionVirtuelle);
+        return Math.abs(curseur.virtuelle(repere).getX() - positionVirtuelle);
     }
-    
+
 }

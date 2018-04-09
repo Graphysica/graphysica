@@ -20,7 +20,7 @@ package org.graphysica.construction.commande;
  * Une commande annulable est une action exécutable sur la construction qui peut
  * être annulée par la suite.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public abstract class CommandeAnnulable extends Commande implements Annulable {
 
@@ -28,5 +28,5 @@ public abstract class CommandeAnnulable extends Commande implements Annulable {
     public boolean estAnnulable() {
         return true;
     }
-    
+
 }

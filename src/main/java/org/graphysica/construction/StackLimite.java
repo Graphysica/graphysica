@@ -46,7 +46,7 @@ public final class StackLimite<E> extends Stack<E> {
     public StackLimite(final int capacite) {
         setCapacite(capacite);
     }
-
+    
     @Override
     public E push(@NotNull final E element) {
         while(size() >= capacite) {

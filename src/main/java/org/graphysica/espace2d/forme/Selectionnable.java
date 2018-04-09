@@ -17,7 +17,7 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
 /**
@@ -34,22 +34,22 @@ interface Selectionnable {
     /**
      * Détermine si cette forme est sélectionnée.
      *
-     * @param curseur la position virtuelle du curseur.
+     * @param curseur la position du curseur.
      * @param repere le repère de l'espace.
      * @return {@code true} si la forme est sélectionnée.
      */
-    public boolean isSelectionne(@NotNull final Vector2D curseur,
+    boolean isSelectionne(@NotNull final Position curseur,
             @NotNull final Repere repere);
 
     /**
      * Calcule la distance entre la position virtuelle du curseur et cette forme
      * dans un repère défini.
      *
-     * @param curseur la position virtuelle du curseur.
+     * @param curseur la position du curseur.
      * @param repere le repère de l'espace.
      * @return la distance entre le curseur et cette forme.
      */
-    public double distance(@NotNull final Vector2D curseur,
+    double distance(@NotNull final Position curseur,
             @NotNull final Repere repere);
 
 }
