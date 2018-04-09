@@ -1,3 +1,6 @@
+/**
+ * FXML Controller class
+ *
 /*
  * Copyright (C) 2018 Graphysica
  *
@@ -23,11 +26,11 @@ import javafx.fxml.Initializable;
 /**
  * FXML Controller class
  *
-<<<<<<< HEAD
+
  * @author Victor Babin
 =======
  * @author Victor Babin <vicbab@Graphysica>
->>>>>>> origin/master
+ * @author Victor Babin <vicbab@Graphysica>
  */
 public class ProprietesController implements Initializable {
 

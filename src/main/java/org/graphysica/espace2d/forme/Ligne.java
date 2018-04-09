@@ -17,15 +17,18 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
+import org.graphysica.espace2d.position.Position;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
- * Une ligne a une épaisseur et une couleur par défaut pour relier deux points
+ * Une ligne a une épaisseur et une couleur par défaut pour relier des points
  * dans l'espace.
  *
  * @author Marc-Antoine Ouimet
@@ -40,27 +43,61 @@ public abstract class Ligne extends Forme {
     /**
      * L'épaisseur du tracé de la droite.
      */
-    protected final IntegerProperty epaisseur = Taille.de("ligne");
+    protected final Taille epaisseur = new Taille(Taille.de("ligne"));
 
     /**
      * La position d'origine de la trace de la ligne dans le contexte graphique.
      */
-    protected Vector2D origineTrace;
+    protected Position origineTrace;
 
     /**
      * La position de l'arrivée de la trace de la ligne dans le contexte
      * graphique.
      */
-    protected Vector2D arriveeTrace;
+    protected Position arriveeTrace;
 
-    public Ligne() {
-        setCouleur(COULEUR_PAR_DEFAUT);
+    /**
+     * La position du premier point dans la ligne.
+     */
+    protected final ObjectProperty<Position> position1
+            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
+
+    /**
+     * La position du deuxième point dans la ligne.
+     */
+    protected final ObjectProperty<Position> position2
+            = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
+
+    public Ligne(@NotNull final ObjectProperty<? extends Position> position1,
+            @NotNull final ObjectProperty<? extends Position> position2) {
+        this.position1.bind(position1);
+        this.position2.bind(position2);
     }
 
     {
         proprietesActualisation.add(epaisseur);
+        proprietesActualisation.add(position1);
+        proprietesActualisation.add(position2);
     }
-    
+
+    @Override
+    public void dessinerNormal(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        calculerOrigineEtArrivee(toile, repere);
+        dessinerLigne(toile, origineTrace.virtuelle(repere),
+                arriveeTrace.virtuelle(repere), getCouleur(), getEpaisseur());
+    }
+
+    @Override
+    public void dessinerSurbrillance(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        calculerOrigineEtArrivee(toile, repere);
+        dessinerLigne(toile, origineTrace.virtuelle(repere),
+                arriveeTrace.virtuelle(repere),
+                getCouleur().deriveColor(1, 1, 1, 0.3),
+                3 * getEpaisseur());
+    }
+
     /**
      * Dessine une ligne définie par son origine et son arrivée virtuelles, sa
      * couleur et son épaisseur sur une toile. Dans le cas d'une droite,
@@ -81,30 +118,32 @@ public abstract class Ligne extends Forme {
         contexteGraphique.strokeLine(origine.getX(), origine.getY(),
                 arrivee.getX(), arrivee.getY());
     }
-    
+
     /**
-     * Calcule la position virtuelle de l'origine et de l'arrivée de la trace de
+     * Calcule et actualise la position virtuelle de l'origine
+     * {@code origineTrace} et de l'arrivée {@code arriveeTrace} de la trace de
      * cette ligne.
      *
      * @param toile la toile sur laquelle dessiner la ligne.
      * @param repere le repère de l'espace.
      */
-    protected abstract void calculerOrigineEtArrivee(@NotNull final Canvas toile,
-            @NotNull final Repere repere);
+    protected abstract void calculerOrigineEtArrivee(
+            @NotNull final Canvas toile, @NotNull final Repere repere);
 
-    /**
-     * Récupère un vecteur dont l'orientation est la même que celle de la ligne.
-     *
-     * @return le vecteur directeur de la ligne.
-     */
-    public abstract Vector2D getVecteurDirecteur();
-
-    public final int getEpaisseur() {
+    protected final int getEpaisseur() {
         return epaisseur.getValue();
     }
 
-    public final void setEpaisseur(final int epaisseur) {
-        this.epaisseur.setValue(epaisseur);
+    protected final Taille epaisseurProperty() {
+        return epaisseur;
+    }
+
+    protected final Position getPosition1() {
+        return position1.getValue();
+    }
+
+    protected final Position getPosition2() {
+        return position2.getValue();
     }
 
 }

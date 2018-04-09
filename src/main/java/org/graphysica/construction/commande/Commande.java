@@ -19,10 +19,10 @@ package org.graphysica.construction.commande;
 /**
  * Une commande est une action exécutable sur la construction.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public abstract class Commande implements Executable {
-    
+
     /**
      * Détermine si une commande peut être annulée.
      * @return {@code true} si la commande est annulable.
@@ -30,5 +30,5 @@ public abstract class Commande implements Executable {
     public boolean estAnnulable() {
         return false;
     }
-    
+
 }

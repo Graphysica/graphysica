@@ -27,7 +27,7 @@ import org.graphysica.construction.Element;
  * de l'espace. Un outil créera donc d'abord des éléments de prévisualiation des
  * composantes à ajouter à la construction avant de les ajouter concrètement.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public class CreerElement extends CommandeAnnulable {
 

@@ -23,8 +23,6 @@ import java.util.Properties;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.graphysica.espace2d.Point;
-import org.graphysica.espace2d.Taille;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +40,6 @@ public class Outil extends Button {
         DEPLACEMENT, EFFACER, CHAMP_VECTORIEL,
         CORPS, INSPECTEUR, SOL;
     }
-    private static final Logger LOGGER = LoggerFactory.getLogger(Taille.class);
     private Image img;
     private String name;
     
@@ -72,16 +69,16 @@ public class Outil extends Button {
                 final String valeur = proprietes.getProperty(propriete);
                 return valeur;
             } else {
-                LOGGER.error(
-                        "Fichier de propriétés de taille introuvable au chemin "
-                        + CHEMIN_PROPRIETES);
+//                LOGGER.error(
+//                        "Fichier de propriétés de taille introuvable au chemin "
+//                        + CHEMIN_PROPRIETES);
             }
         } catch (final IOException ioex) {
-            LOGGER.error("Erreur lors de la lecture du fichier de propriétés "
-                    + "au chemin " + CHEMIN_PROPRIETES);
+//            LOGGER.error("Erreur lors de la lecture du fichier de propriétés "
+//                    + "au chemin " + CHEMIN_PROPRIETES);
         } catch (final NumberFormatException nfex) {
-            LOGGER.error("Format inattendu de la propriété '" + propriete
-                    + "' au chemin " + CHEMIN_PROPRIETES);
+//            LOGGER.error("Format inattendu de la propriété '" + propriete
+//                    + "' au chemin " + CHEMIN_PROPRIETES);
         }
         return "RIEN";
     }

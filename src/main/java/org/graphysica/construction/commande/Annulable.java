@@ -20,18 +20,18 @@ package org.graphysica.construction.commande;
  * Les classes implémentant cette interface peuvent annuler et refaire des
  * actions.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public interface Annulable {
-    
+
     /**
      * Annule la dernière action effectuée.
      */
-    public void annuler();
-    
+    void annuler();
+
     /**
      * Refait la dernière action annulée.
      */
-    public void refaire();
+    void refaire();
 
 }

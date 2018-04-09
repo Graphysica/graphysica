@@ -3,13 +3,10 @@ package org.graphysica;
 import java.io.IOException;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToolBar;
@@ -19,9 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
-import org.graphysica.espace2d.Point;
-import org.graphysica.espace2d.SegmentDroite;
-import org.graphysica.vue.barreoutils.Outil;
+import org.graphysica.construction.mathematiques.*;
+import org.graphysica.espace2d.position.PositionReelle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,25 +29,23 @@ public class MainApp extends Application {
     private MenuBar menubar;
     private VBox vertical;
     private VBox chronometre;
-    private SplitPane splitPane;
+    private HBox horizontal;
     private ToolBar toolBar;
     private TabPane information;
     private MenuBar menuBar;
-    
-    
+
     @Override
     public void start(Stage stage) throws Exception {
         panneauPrincipal = new AnchorPane();
         initialiserPanneau();
-        
+
         Scene scene = new Scene(panneauPrincipal);
         LOGGER.debug("");
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("Graphysica");
         stage.setScene(scene);
         stage.show();
-        
-        
+
 //        showDialog();
     }
 
@@ -65,17 +59,14 @@ public class MainApp extends Application {
 
     public void initialiserPanneau() throws IOException {
         panneauPrincipal.setPrefSize(900, 700);
-        
-        espace = new Espace(869,517);
+        espace = new Espace(800, 600);
         menuBar = FXMLLoader.load(getClass().getResource("/fxml/Menu.fxml"));
         vertical = new VBox();
-        information = FXMLLoader.load(getClass().getResource("/fxml/Information.fxml"));
-        splitPane = new SplitPane(information, espace);
+        horizontal = new HBox();
         chronometre = FXMLLoader.load(getClass().getResource("/fxml/Chronometre.fxml"));
-//        toolBar = FXMLLoader.load(getClass().getResource("/fxml/BarreOutils.fxml"));
-        toolBar = new ToolBar(new Outil("sol", ""), new Outil("perpendiculaire", ""));
-        
-        
+        toolBar = FXMLLoader.load(getClass().getResource("/fxml/BarreOutils.fxml"));
+        information = FXMLLoader.load(getClass().getResource("/fxml/Information.fxml"));
+
         initialiserDimensions();
         ajouterObjetsEspace();
         ajouterComposantes();
@@ -85,24 +76,27 @@ public class MainApp extends Application {
         panneauPrincipal.getChildren().add(vertical);
         vertical.getChildren().add(menuBar);
         vertical.getChildren().add(toolBar);
-        vertical.getChildren().add(splitPane);
+        vertical.getChildren().add(horizontal);
+        horizontal.getChildren().add(information);
+        horizontal.getChildren().add(espace);
         vertical.getChildren().add(chronometre);
     }
 
     private void ajouterObjetsEspace() {
-        espace.ajouter(new Point(Vector2D.ZERO));
-        espace.ajouter(new Point(new Vector2D(0.2, 0.5)));
-        espace.ajouter(new SegmentDroite(new Point(Vector2D.ZERO), new Point(new Vector2D(0.2, 0.5))));
+        Point point1 = new Point(new PositionReelle(Vector2D.ZERO));
+        Point point2 = new Point(new PositionReelle(new Vector2D(4, 8)));
+        SegmentDroite sd1 = new SegmentDroite(point1, point2);
+        espace.getFormes().ajouter(point1.getForme());
+        espace.getFormes().ajouter(sd1.getForme());
     }
 
     private void initialiserDimensions() {
         menuBar.prefWidthProperty().bind(panneauPrincipal.widthProperty());
         toolBar.prefWidthProperty().bind(panneauPrincipal.widthProperty());
         vertical.prefWidthProperty().bind(panneauPrincipal.widthProperty());
-        information.setPrefSize(300, panneauPrincipal.getPrefHeight() - chronometre.getPrefHeight());
-        espace.setPrefSize(panneauPrincipal.getPrefWidth() - information.getPrefWidth(), panneauPrincipal.getPrefHeight() - chronometre.getPrefHeight());
+//        espace.setPrefSize(panneauPrincipal.getPrefWidth() - information.getPrefWidth(), panneauPrincipal.getPrefHeight() - chronometre.getPrefHeight());
     }
-
+    
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
      * main() serves only as fallback in case the application can not be

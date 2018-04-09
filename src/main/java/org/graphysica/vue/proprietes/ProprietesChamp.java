@@ -1,3 +1,5 @@
+/**
+ *
 /*
  * Copyright (C) 2018 Graphysica
  *
@@ -21,11 +23,11 @@ import javafx.scene.control.TextField;
 
 /**
  *
-<<<<<<< HEAD
+
  * @author Victor Babin
 =======
  * @author Victor Babin <vicbab@Graphysica>
->>>>>>> origin/master
+ * @author Victor Babin <vicbab@Graphysica>
  */
 public abstract class ProprietesChamp {
     

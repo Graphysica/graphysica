@@ -26,8 +26,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.construction.Element;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 
 /**
@@ -37,7 +37,7 @@ import org.graphysica.espace2d.Repere;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Forme extends Element implements Dessinable, Surbrillable,
-        Selectionnable {
+        Selectionnable, Previsualisable, Affichable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation
@@ -47,56 +47,65 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
     protected final Set<Observable> proprietesActualisation = new HashSet<>();
 
     /**
-     * La couleur par défaut d'une forme.
-     */
-    private static final Color COULEUR_PAR_DEFAUT = Color.BLACK;
-
-    /**
      * La couleur d'affichage de la forme.
      */
     private final ObjectProperty<Color> couleur
-            = new SimpleObjectProperty<>(COULEUR_PAR_DEFAUT);
+            = new SimpleObjectProperty<>(Color.BLACK);
 
     /**
      * Le seuil de distance de sélection entre la position virtuelle du curseur
-     * et la forme exprimée en pixels.
+     * et cette forme, exprimé en pixels.
      */
     private static final double DISTANCE_SELECTION = 5;
 
     /**
      * Si la forme est affichée.
      */
-    private final BooleanProperty affichee = new SimpleBooleanProperty(true);
-    
+    private final BooleanProperty affiche = new SimpleBooleanProperty(true);
+
     /**
      * Si la forme est en surbrillance.
      */
-    private final BooleanProperty enSurbrillance 
+    private final BooleanProperty enSurbrillance
             = new SimpleBooleanProperty(false);
-    
+
+    /**
+     * Si la forme est en prévisualisation.
+     */
+    private boolean enPrevisualisation = false;
+
     public Forme() {
     }
 
-    public Forme(@NotNull final Color couleur) {
-        setCouleur(couleur);
+    public Forme(@NotNull final ObjectProperty<Color> couleur) {
+        couleurProperty().bind(couleur);
     }
 
     {
         proprietesActualisation.add(couleur);
-        proprietesActualisation.add(affichee);
+        proprietesActualisation.add(affiche);
         proprietesActualisation.add(enSurbrillance);
     }
 
     @Override
-    public abstract void dessiner(@NotNull final Canvas toile,
+    public final void dessiner(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
+        if (isEnSurbrillance()) {
+            dessinerSurbrillance(toile, repere);
+        }
+        dessinerNormal(toile, repere);
+    }
+
+    @Override
+    public abstract void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere);
 
     @Override
     public abstract void dessinerSurbrillance(@NotNull final Canvas toile,
             @NotNull final Repere repere);
-    
+
     @Override
-    public boolean isSelectionne(@NotNull final Vector2D curseur,
+    public boolean isSelectionne(@NotNull final Position curseur,
             @NotNull final Repere repere) {
         return distance(curseur, repere) <= DISTANCE_SELECTION;
     }
@@ -109,34 +118,42 @@ public abstract class Forme extends Element implements Dessinable, Surbrillable,
         return couleur.getValue();
     }
 
-    public final void setCouleur(final Color couleur) {
+    final void setCouleur(final Color couleur) {
         this.couleur.setValue(couleur);
     }
 
-    public final ObjectProperty<Color> couleurProperty() {
+    protected final ObjectProperty<Color> couleurProperty() {
         return couleur;
     }
 
-    public final boolean isAffichee() {
-        return affichee.getValue();
-    }
-
-    public final void setAffichee(final boolean affichee) {
-        this.affichee.setValue(affichee);
-    }
-
-    public final BooleanProperty afficheeProperty() {
-        return affichee;
+    @Override
+    public final boolean isAffiche() {
+        return affiche.getValue();
     }
 
     @Override
-    public boolean isEnSurbrillance() {
+    public final void setAffiche(final boolean affichee) {
+        this.affiche.setValue(affichee);
+    }
+
+    @Override
+    public final boolean isEnSurbrillance() {
         return enSurbrillance.getValue();
     }
 
     @Override
-    public void setEnSurbrillance(final boolean enSurbrillance) {
+    public final void setEnSurbrillance(final boolean enSurbrillance) {
         this.enSurbrillance.setValue(enSurbrillance);
     }
-    
+
+    @Override
+    public final boolean isEnPrevisualisation() {
+        return enPrevisualisation;
+    }
+
+    @Override
+    public final void setEnPrevisualisation(final boolean enPrevisualisation) {
+        this.enPrevisualisation = enPrevisualisation;
+    }
+
 }
