@@ -17,7 +17,6 @@
 package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
-import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Une droite est un espace linéaire qui bissecte un espace 2D. Une droite peut
@@ -33,16 +32,10 @@ public class Droite extends Ligne {
      * @param point1 le premier point compris dans cette droite.
      * @param point2 le deuxième point compris dans cette droite.
      */
-    public Droite(@NotNull final PointConcret point1, 
-            @NotNull final PointConcret point2) {
+    public Droite(@NotNull final Point point1, 
+            @NotNull final Point point2) {
         positionInterne1.bind(point1.positionInterneProperty());
         positionInterne2.bind(point2.positionInterneProperty());
-    }
-
-    @Override
-    Forme creerForme() {
-        return new org.graphysica.espace2d.forme.Droite(
-                positionInterne1Property(), positionInterne2Property());
     }
 
 }
