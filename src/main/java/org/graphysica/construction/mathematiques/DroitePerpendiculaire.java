@@ -76,10 +76,10 @@ public class DroitePerpendiculaire extends Ligne {
      * @param point un point compris dans la droite parallèle.
      */
     public DroitePerpendiculaire(@NotNull final Ligne ligne,
-            @NotNull final Point point) {
+            @NotNull final PointConcret point) {
         positionExterne1.bind(ligne.positionInterne1Property());
         positionExterne2.bind(ligne.positionInterne2Property());
-        positionInterne1.bind(point.positionProperty());
+        positionInterne1.bind(point.positionInterneProperty());
     }
 
     {
