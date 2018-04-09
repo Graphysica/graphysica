@@ -37,14 +37,14 @@ public class SegmentDroite extends Ligne {
      */
     public SegmentDroite(@NotNull final Point point1,
             @NotNull final Point point2) {
-        this.positionInterne1.bind(point1.positionProperty());
-        this.positionInterne2.bind(point2.positionProperty());
+        this.positionInterne1.bind(point1.positionInterneProperty());
+        this.positionInterne2.bind(point2.positionInterneProperty());
     }
 
     @Override
-    Forme creerForme() {
-        return new org.graphysica.espace2d.forme.SegmentDroite(
-                positionInterne1Property(), positionInterne2Property());
+    protected Forme[] creerFormes() {
+        return new Forme[]{new org.graphysica.espace2d.forme.SegmentDroite(
+            positionInterne1Property(), positionInterne2Property())};
     }
 
 }

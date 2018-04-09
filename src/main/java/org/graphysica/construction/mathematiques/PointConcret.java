@@ -17,25 +17,24 @@
 package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
+import javafx.scene.paint.Color;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
- * Une droite est un espace linéaire qui bissecte un espace 2D. Une droite peut
- * être définie à partir de deux points réels de l'espace.
+ * Un point concret est une position réelle indépendante dans l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-public class Droite extends Ligne {
+public final class PointConcret extends Point {
 
     /**
-     * Construit une droite passant par deux points définis.
+     * Construit un point mathématique à une position réelle spécifiée.
      *
-     * @param point1 le premier point compris dans cette droite.
-     * @param point2 le deuxième point compris dans cette droite.
+     * @param position la position réelle du point.
      */
-    public Droite(@NotNull final Point point1, 
-            @NotNull final Point point2) {
-        positionInterne1.bind(point1.positionInterneProperty());
-        positionInterne2.bind(point2.positionInterneProperty());
+    public PointConcret(@NotNull final PositionReelle position) {
+        positionInterne.setValue(position);
+        couleurProperty().setValue(Color.BLUE);
     }
 
 }

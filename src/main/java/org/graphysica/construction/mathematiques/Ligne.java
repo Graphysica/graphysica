@@ -19,6 +19,7 @@ package org.graphysica.construction.mathematiques;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Taille;
 import org.graphysica.espace2d.position.PositionReelle;
 
@@ -28,24 +29,30 @@ import org.graphysica.espace2d.position.PositionReelle;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Ligne extends ObjetMathematique {
-    
+
     /**
      * L'épaisseur de la ligne dans sa représentation dans un espace.
      */
     private final Taille epaisseur = Taille.de("point");
-    
+
     /**
      * La première position interne de la ligne.
      */
-    protected final ObjectProperty<PositionReelle> positionInterne1 
+    protected final ObjectProperty<PositionReelle> positionInterne1
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
-    
+
     /**
      * La deuxième position interne de la ligne.
      */
-    protected final ObjectProperty<PositionReelle> positionInterne2 
+    protected final ObjectProperty<PositionReelle> positionInterne2
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
-    
+
+    @Override
+    protected Forme[] creerFormes() {
+        return new Forme[]{new org.graphysica.espace2d.forme.Droite(
+            positionInterne1, positionInterne2)};
+    }
+
     public ObjectProperty<PositionReelle> positionInterne1Property() {
         return positionInterne1;
     }
@@ -53,7 +60,7 @@ public abstract class Ligne extends ObjetMathematique {
     public ObjectProperty<PositionReelle> positionInterne2Property() {
         return positionInterne2;
     }
-    
+
     public Taille epaisseurProperty() {
         return epaisseur;
     }

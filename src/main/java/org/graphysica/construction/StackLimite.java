@@ -25,7 +25,7 @@ import java.util.Stack;
  * D'après 
  * https://stackoverflow.com/questions/7727919/creating-a-fixed-size-stack.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  * @param <E> le type d'éléments du stack.
  */
 public final class StackLimite<E> extends Stack<E> {

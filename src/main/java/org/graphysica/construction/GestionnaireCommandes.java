@@ -25,7 +25,7 @@ import org.graphysica.construction.commande.CommandeAnnulable;
  * Un gestionnaire de commandes permet d'annuler et de refaire des commandes en
  * série.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public class GestionnaireCommandes {
 

@@ -16,11 +16,53 @@
  */
 package org.graphysica.construction;
 
+import org.graphysica.espace2d.forme.Forme;
+
 /**
  * Un élément peut être créé et manipulé dans une construction.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public abstract class Element {
+
+    private transient Forme[] formes = null;
+
+    /**
+     * Le nombre d'éléments qui ont été construits.
+     */
+    private static long ELEMENTS = 0;
+
+    /**
+     * Le numéro d'identification de l'élément.
+     */
+    private final long id;
+
+    {
+        id = ++ELEMENTS;
+    }
+
+    /**
+     * Crée les formes représentant cet élément.
+     *
+     * @return les formes créées.
+     */
+    protected abstract Forme[] creerFormes();
+
+    /**
+     * Récupère les formes représentant cet élément. S'il s'agit de la première
+     * fois que les formes sont demandées, elles sont d'abord crées.
+     *
+     * @return les formes représentant cet élément.
+     */
+    public Forme[] getFormes() {
+        if (formes == null) {
+            formes = creerFormes();
+        }
+        return formes;
+    }
+
+    public long getId() {
+        return id;
+    }
 
 }
