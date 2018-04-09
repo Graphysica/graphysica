@@ -41,13 +41,23 @@ public class Construction {
      */
     private final GestionnaireCommandes gestionnaireCommandes
             = new GestionnaireCommandes();
-
+    
     /**
      * L'ensemble des éléments de la construction. Comprend les corps physiques
      * et leurs formes d'affichage.
      */
     private final Set<Element> elements = new HashSet<>();
 
+    /**
+     * Le gestionnaire des sélections de la construction.
+     */
+    private final GestionnaireSelections gestionnaireSelections 
+            = new GestionnaireSelections(elements);
+
+    {
+        gestionnaireSelections.ajouterEspace(espace);
+    }
+    
     /**
      * Exécute une commande.
      *
@@ -67,7 +77,7 @@ public class Construction {
     public boolean ajouterElement(@NotNull final Element element) {
         if (element instanceof ObjetMathematique) {
             espace.getFormes()
-                    .ajouter(((ObjetMathematique) element).getForme());
+                    .ajouter(((ObjetMathematique) element).getFormes());
         }
         return elements.add(element);
     }
@@ -82,7 +92,7 @@ public class Construction {
     public boolean retirerElement(@NotNull final Element element) {
         if (element instanceof ObjetMathematique) {
             espace.getFormes()
-                    .retirer(((ObjetMathematique) element).getForme());
+                    .retirer(((ObjetMathematique) element).getFormes());
         }
         return elements.remove(element);
     }

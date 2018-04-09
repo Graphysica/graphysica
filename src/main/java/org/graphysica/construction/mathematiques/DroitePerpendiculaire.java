@@ -22,7 +22,6 @@ import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.position.PositionReelle;
 
 /**
@@ -76,7 +75,7 @@ public class DroitePerpendiculaire extends Ligne {
      * @param point un point compris dans la droite parallèle.
      */
     public DroitePerpendiculaire(@NotNull final Ligne ligne,
-            @NotNull final PointConcret point) {
+            @NotNull final Point point) {
         positionExterne1.bind(ligne.positionInterne1Property());
         positionExterne2.bind(ligne.positionInterne2Property());
         positionInterne1.bind(point.positionInterneProperty());
@@ -86,12 +85,6 @@ public class DroitePerpendiculaire extends Ligne {
         positionExterne1.addListener(evenementActualisation);
         positionExterne2.addListener(evenementActualisation);
         positionInterne1.addListener(evenementActualisation);
-    }
-
-    @Override
-    Forme creerForme() {
-        return new org.graphysica.espace2d.forme.Droite(positionInterne1,
-                positionInterne2);
     }
 
 }

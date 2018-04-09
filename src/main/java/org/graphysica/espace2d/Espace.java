@@ -29,6 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Cursor;
@@ -176,18 +177,27 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
         reperage.add(grillePrincipale);
         reperage.add(axeVertical);
         reperage.add(axeHorizontal);
+        reperage.forEach((forme) -> {
+            forme.getProprietesActualisation().forEach((propriete) -> {
+                propriete.addListener(evenementActualisation);
+            });
+        });
     }
 
     /**
      * Définit les interactions entre l'espace et le curseur.
      */
     private void definirInteractionCurseur() {
+        final Cursor curseurParDefaut = Cursor.CROSSHAIR;
         setOnMouseEntered((@NotNull final MouseEvent evenement) -> {
             requestFocus();
-            setCursor(Cursor.CROSSHAIR);
+            setCursor(curseurParDefaut);
         });
         setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
             actualiserPositionsCurseur(evenement);
+            if (formesSelectionnees().isEmpty()) {
+                setCursor(curseurParDefaut);
+            }
         });
         setOnScroll((@NotNull final ScrollEvent evenement) -> {
             zoomer(evenement.getDeltaY());

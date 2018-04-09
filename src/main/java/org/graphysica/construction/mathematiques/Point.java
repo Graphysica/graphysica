@@ -41,9 +41,10 @@ public abstract class Point extends ObjetMathematique {
     protected final Taille taille = Taille.de("point");
 
     @Override
-    protected Forme creerForme() {
-        return new org.graphysica.espace2d.forme.Point(
-                positionInterneProperty(), couleurProperty(), tailleProperty());
+    protected Forme[] creerFormes() {
+        return new Forme[]{new org.graphysica.espace2d.forme.Point(
+            positionInterneProperty(), couleurProperty(),
+            tailleProperty())};
     }
 
     public final ObjectProperty<PositionReelle> positionInterneProperty() {

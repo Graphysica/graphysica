@@ -35,34 +35,9 @@ public abstract class ObjetMathematique extends Element
         implements Serializable {
 
     /**
-     * La forme représentant cet objet mathématique.
-     */
-    transient Forme forme = null;
-
-    /**
      * La couleur de cet objet mathématique.
      */
     private final ObjectProperty<Color> couleur = new SimpleObjectProperty<>();
-
-    /**
-     * Crée une forme représentant cet objet mathématique dans l'espace.
-     *
-     * @return une forme représentant cet objet mathématique.
-     */
-    abstract Forme creerForme();
-
-    /**
-     * Récupère la forme représentant cet objet mathématique dans l'espace.
-     * Initialise cette forme si elle n'a pas préalablement été créée.
-     *
-     * @return la forme représentant cet objet mathématique.
-     */
-    public Forme getForme() {
-        if (forme == null) {
-            forme = creerForme();
-        }
-        return forme;
-    }
 
     public final ObjectProperty<Color> couleurProperty() {
         return couleur;

@@ -35,16 +35,16 @@ public class SegmentDroite extends Ligne {
      * @param point2 le deuxième point à la deuxième extrémité du segmente de
      * droite.
      */
-    public SegmentDroite(@NotNull final PointConcret point1,
-            @NotNull final PointConcret point2) {
+    public SegmentDroite(@NotNull final Point point1,
+            @NotNull final Point point2) {
         this.positionInterne1.bind(point1.positionInterneProperty());
         this.positionInterne2.bind(point2.positionInterneProperty());
     }
 
     @Override
-    Forme creerForme() {
-        return new org.graphysica.espace2d.forme.SegmentDroite(
-                positionInterne1Property(), positionInterne2Property());
+    protected Forme[] creerFormes() {
+        return new Forme[]{new org.graphysica.espace2d.forme.SegmentDroite(
+            positionInterne1Property(), positionInterne2Property())};
     }
 
 }
