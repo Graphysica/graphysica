@@ -41,6 +41,11 @@ import org.junit.Test;
 public class PositionTest {
 
     /**
+     * L'incertitude sur les comparaison de valeurs <code>double</code>.
+     */
+    private static final double DELTA = 1e-8;
+
+    /**
      * Le chemin du fichier des positions sérialisées.
      */
     private static final String CHEMIN_FICHIER_POSITIONS
@@ -169,6 +174,55 @@ public class PositionTest {
                     .deplacer(position.deplacement, position.type, REPERE)
                     .virtuelle(REPERE));
         }
+    }
+
+    /**
+     * Teste les distances entre des positions déplacées.
+     */
+    @Test
+    public void testDistances() {
+        for (final PositionDeplacee position : POSITIONS_DEPLACEES) {
+            assertEquals(position.deplacement.getNorm(),
+                    position.initiale.distance(position.finale, position.type,
+                            REPERE), DELTA);
+        }
+    }
+
+    /**
+     * Teste les distances vectorielles entre des positions déplacées.
+     */
+    @Test
+    public void testDistancesVectorielles() {
+        for (final PositionDeplacee position : POSITIONS_DEPLACEES) {
+            assertEquals(position.deplacement,
+                    position.initiale.distanceVectorielle(
+                            position.finale, position.type, REPERE));
+        }
+    }
+
+    /**
+     * Teste la méthode de comparaison d'équivalence entre deux positions.
+     */
+    @Test
+    public void testEquals() {
+        final Position positionReelle1
+                = new PositionReelle(Vector2D.ZERO);
+        final Position positionReelle2
+                = new PositionReelle(Vector2D.ZERO);
+        final Position positionVirtuelle1
+                = new PositionVirtuelle(Vector2D.ZERO);
+        final Position positionVirtuelle2
+                = new PositionVirtuelle(Vector2D.ZERO);
+        assertTrue(!positionReelle1.equals(null));
+        assertTrue(!positionReelle1.equals("Fausse position"));
+        assertTrue(positionReelle1.equals(positionReelle1));
+        assertTrue(positionReelle1.equals(positionReelle2));
+        assertTrue(positionReelle2.equals(positionReelle1));
+        assertTrue(positionVirtuelle1.equals(positionVirtuelle1));
+        assertTrue(positionVirtuelle1.equals(positionVirtuelle2));
+        assertTrue(positionVirtuelle2.equals(positionVirtuelle1));
+        assertTrue(!positionReelle1.equals(positionVirtuelle1));
+        assertTrue(!positionVirtuelle1.equals(positionReelle1));
     }
 
     /**

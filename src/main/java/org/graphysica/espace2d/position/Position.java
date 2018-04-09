@@ -98,9 +98,8 @@ public abstract class Position implements Serializable {
             case VIRTUELLE:
                 return new PositionVirtuelle(
                         virtuelle(repere).add(deplacement));
-            default:
-                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
         }
+        throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
     }
 
     /**
@@ -119,9 +118,8 @@ public abstract class Position implements Serializable {
                 return reelle(repere).distance(position.reelle(repere));
             case VIRTUELLE:
                 return virtuelle(repere).distance(position.virtuelle(repere));
-            default:
-                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
         }
+        throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
     }
 
     /**
@@ -140,29 +138,8 @@ public abstract class Position implements Serializable {
                 return position.reelle(repere).subtract(reelle(repere));
             case VIRTUELLE:
                 return position.virtuelle(repere).subtract(virtuelle(repere));
-            default:
-                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
         }
-    }
-
-    /**
-     * Construit une nouvelle position de valeur et de type spécifié dans un
-     * repère d'espace.
-     *
-     * @param position la valeur de la position.
-     * @param type le type de la position.
-     * @return la position construite.
-     */
-    public static Position a(@NotNull final Vector2D position,
-            @NotNull final Type type) {
-        switch (type) {
-            case REELLE:
-                return new PositionReelle(position);
-            case VIRTUELLE:
-                return new PositionVirtuelle(position);
-            default:
-                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
-        }
+        throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
     }
 
     /**
@@ -182,5 +159,23 @@ public abstract class Position implements Serializable {
      * @return le type de cette position.
      */
     public abstract Type getType();
+
+    @Override
+    public boolean equals(final Object objet) {
+        if (objet == null) {
+            return false;
+        } else if (!(objet.getClass() == getClass())) {
+            return false;
+        } else if (this == objet) {
+            return true;
+        } else {
+            return getValeur().equals(((Position) objet).getValeur());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return getType().hashCode() * getValeur().hashCode();
+    }
 
 }
