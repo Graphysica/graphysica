@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received positionA copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.graphysica.gson;
@@ -25,6 +25,8 @@ import com.sun.istack.internal.Nullable;
 import java.io.IOException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
+import org.graphysica.espace2d.position.PositionReelle;
+import org.graphysica.espace2d.position.PositionVirtuelle;
 import org.graphysica.espace2d.position.Type;
 import static org.graphysica.espace2d.position.Type.REELLE;
 import org.slf4j.Logger;
@@ -37,20 +39,27 @@ import org.slf4j.LoggerFactory;
  * @author Marc-Antoine Ouimet
  */
 public final class PositionJsonAdaptateur extends TypeAdapter<Position> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(
             PositionJsonAdaptateur.class);
-    
+
+    /**
+     * Le message lorsqu'un type de position n'est pas supporté pour une
+     * opération.
+     */
+    private static final String EXCEPTION_TYPE_NON_SUPPORTE
+            = "Type de position non supporté.";
+
     /**
      * Le nom de la propriété JSON de l'abscisse d'une position.
      */
     private static final String X = "x";
-    
+
     /**
      * Le nom de la propriété JSON de l'ordonnée d'une position.
      */
     private static final String Y = "y";
-    
+
     /**
      * Le nom de la propriété JSON du type d'une position.
      */
@@ -97,7 +106,7 @@ public final class PositionJsonAdaptateur extends TypeAdapter<Position> {
             }
             entree.endObject();
         }
-        return Position.a(new Vector2D(adaptation.getX(), adaptation.getY()),
+        return positionA(new Vector2D(adaptation.getX(), adaptation.getY()),
                 adaptation.getType());
     }
 
@@ -115,6 +124,25 @@ public final class PositionJsonAdaptateur extends TypeAdapter<Position> {
             }
         }
         return null;
+    }
+
+    /**
+     * Construit une nouvelle position de valeur et de type spécifié.
+     *
+     * @param position la valeur de la position.
+     * @param type le type de la position.
+     * @return la position construite.
+     */
+    public static Position positionA(@NotNull final Vector2D position,
+            @NotNull final Type type) {
+        switch (type) {
+            case REELLE:
+                return new PositionReelle(position);
+            case VIRTUELLE:
+                return new PositionVirtuelle(position);
+            default:
+                throw new IllegalArgumentException(EXCEPTION_TYPE_NON_SUPPORTE);
+        }
     }
 
     /**
