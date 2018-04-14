@@ -63,7 +63,7 @@ public class Polygone extends Aire {
 
     {
         for (final ObjectProperty<Position> point : points) {
-            proprietesActualisation.add(point);
+            proprietes.add(point);
         }
     }
 
@@ -75,7 +75,7 @@ public class Polygone extends Aire {
     }
 
     @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
+    public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         dessinerPolygone(toile, repere.positionsVirtuelles(getPoints(repere)),
                 getCouleur().darker());

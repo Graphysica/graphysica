@@ -21,50 +21,46 @@ import javafx.scene.canvas.Canvas;
 import org.graphysica.espace2d.Repere;
 
 /**
- * Les classes implémentant cette interface peuvent être dessinées en
- * surbrillance. La surbrillance permet de signaler à l'utilisateur que son
- * curseur est par-dessus une forme. L'état de surbrillance d'un objet est
- * déterminé à partir de son état de sélection, et dans un contexte où plusieurs
- * objets sont sélectionnés, en fonction de la distance minimale du curseur aux
- * objets sélectionnés. Ce faisant, une seule forme est en surbrillance au
- * défilement du curseur sur l'espace interactif. Plusieurs formes peuvent être
- * en surbrillance dans le cas où une sélection multiple a été effectuée.
+ * Les classes implémentant cette interface peuvent être dessinées en survol. Le
+ * survol permet de signaler à l'utilisateur que son curseur est par-dessus une
+ * forme. Plusieurs formes peuvent aussi être en survol dans le cas où une
+ * sélection multiple a été effectuée.
  *
  * @author Marc-Antoine Ouimet
  */
-interface Surbrillable extends Dessinable {
+interface Survolable extends Dessinable {
 
     /**
      * Dessine normalement l'objet dans un contexte graphique d'espace spécifié.
      *
-     * @param toile la toile surlaquelle dessiner l'objet.
+     * @param toile la toile sur laquelle dessiner l'objet.
      * @param repere le repère de l'espace.
      */
     void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere);
 
     /**
-     * Dessine la surbrillance de l'objet dans un contexte graphique d'espace
-     * spécifié.
+     * Dessine le survol de l'objet dans un contexte graphique d'espace
+     * spécifié. =
      *
-     * @param toile la toile surlaquelle dessiner l'objet.
+     * @param toile la toile sur laquelle dessiner l'objet.
      * @param repere le repère de l'espace.
      */
-    void dessinerSurbrillance(@NotNull final Canvas toile,
+    void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere);
 
     /**
-     * Renvoie si l'objet est en surbrillance.
+     * Renvoie si l'objet est en survol.
      *
-     * @return {@code true} si l'objet est en surbrillance.
+     * @return {@code true} si l'objet est en survol.
      */
-    boolean isEnSurbrillance();
+    boolean isEnSurvol();
 
     /**
-     * Modifie l'état de surbrillance de l'objet.
+     * Modifie l'état de survol de l'objet.
      *
-     * @param enSurbrillance le nouvel état de surbrillance de l'objet.
+     * @param enSurbrillance le nouvel état de survol de l'objet.
      */
-    void setEnSurbrillance(final boolean enSurbrillance);
+    void setEnSurvol(final boolean enSurbrillance);
 
 }

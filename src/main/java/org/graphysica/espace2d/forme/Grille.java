@@ -73,7 +73,7 @@ public final class Grille extends Forme {
     }
 
     {
-        proprietesActualisation.add(epaisseur);
+        proprietes.add(epaisseur);
     }
 
     /**
@@ -96,17 +96,17 @@ public final class Grille extends Forme {
         calculerGraduations(toile, repere);
         dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
                 getCouleur(), 1);
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
+        if (isEnSurvol()) {
+            dessinerSurvol(toile, repere);
         }
     }
 
     @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
+    public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         calculerGraduations(toile, repere);
         dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
-                getCouleur().deriveColor(1, 1, 1, 0.3), 3);
+                getCouleur().deriveColor(1, 1, 1, 0.3), 2);
     }
 
     /**

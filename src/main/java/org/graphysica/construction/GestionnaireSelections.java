@@ -38,7 +38,7 @@ import org.graphysica.espace2d.forme.Grille;
  *
  * @author Marc-Antoine Ouimet
  */
-public class GestionnaireSelections {
+public final class GestionnaireSelections {
 
     /**
      * L'ensemble des espaces compris par ce gestionnaire de sélections.
@@ -124,20 +124,20 @@ public class GestionnaireSelections {
         public void handle(@NotNull final MouseEvent evenement) {
             for (final Espace espace : espaces) {
                 final Set<Forme> formesSelectionnees
-                        = espace.formesSelectionnees();
+                        = espace.formesSurvolees();
                 final Iterator<Forme> iteration
                         = formesEnSurbrillance.iterator();
                 while (iteration.hasNext()) {
                     final Forme forme = iteration.next();
                     if (!formesSelectionnees.contains(forme)
                             && !elementsSelectionnesComprennentForme(forme)) {
-                        forme.setEnSurbrillance(false);
+                        forme.setEnSurvol(false);
                         iteration.remove();
                     }
                 }
                 formesEnSurbrillance.addAll(formesSelectionnees);
                 formesSelectionnees.forEach((forme) -> {
-                    forme.setEnSurbrillance(true);
+                    forme.setEnSurvol(true);
                 });
                 for (final Forme forme : formesEnSurbrillance) {
                     if (!(forme instanceof Grille)) {
@@ -182,7 +182,7 @@ public class GestionnaireSelections {
                 Element elementCorrespondant = null;
                 for (final Espace espace : espaces) {
                     final Set<Forme> formesSelectionnees
-                            = espace.formesSelectionnees();
+                            = espace.formesSurvolees();
                     if (!formesSelectionnees.isEmpty()) {
                         final Forme formeSelectionnee = formesSelectionnees
                                 .iterator().next();
@@ -236,7 +236,7 @@ public class GestionnaireSelections {
         private void deselectionner() {
             elementsSelectionnes.forEach((element) -> {
                 for (final Forme forme : element.getFormes()) {
-                    forme.setEnSurbrillance(false);
+                    forme.setEnSurvol(false);
                     formesEnSurbrillance.remove(forme);
                 }
             });
