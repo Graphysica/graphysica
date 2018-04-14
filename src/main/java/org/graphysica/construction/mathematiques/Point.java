@@ -18,7 +18,6 @@ package org.graphysica.construction.mathematiques;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Taille;
 import org.graphysica.espace2d.position.PositionReelle;
 
@@ -39,12 +38,11 @@ public abstract class Point extends ObjetMathematique {
      * La taille du point dans sa représentation dans un espace.
      */
     protected final Taille taille = Taille.de("point");
-
-    @Override
-    protected Forme[] creerFormes() {
-        return new Forme[]{new org.graphysica.espace2d.forme.Point(
-            positionInterneProperty(), couleurProperty(),
-            tailleProperty())};
+    
+    {
+        formes.add(new org.graphysica.espace2d.forme.Point(
+                positionInterneProperty(), couleurProperty(),
+                tailleProperty()));
     }
 
     public final ObjectProperty<PositionReelle> positionInterneProperty() {

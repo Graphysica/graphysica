@@ -29,9 +29,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -68,7 +70,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Marc-Antoine Ouimet
  */
-public class Espace extends ToileRedimensionnable implements Actualisable {
+public final class Espace extends ToileRedimensionnable
+        implements Actualisable {
 
     /**
      * L'utilitaire d'enregistrement de traces d'exécution.
@@ -78,17 +81,17 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     /**
      * L'ensemble ordonné observable des formes dessinées dans l'espace.
      */
-    protected final Formes formes;
+    private final ObservableList<Forme> formes;
 
     /**
      * L'ordre de rendu des formes dams l'espace.
      */
-    protected final OrdreRendu ordreRendu = new OrdreRendu();
+    private final OrdreRendu ordreRendu = new OrdreRendu();
 
     /**
      * Le repère de l'espace.
      */
-    protected final Repere repere;
+    private final Repere repere;
 
     /**
      * La grille principale de l'espace.
@@ -134,21 +137,30 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
     /**
-     * Construit un espace dont les dimensions virtuelles et l'ensemble de
-     * formes sont définis.
+     * Construit un espace dont les dimensions virtuelles et les formes intiales
+     * à afficher sont définies. L'espace a son propre repère lié à son
+     * événement d'actualisation. La liste des formes est liées à l'événement
+     * d'actualisation de l'espace lorsque des formes y sont ajoutées ou
+     * retirées.
      *
      * @param largeur la largeur de l'espace exprimée en pixels.
      * @param hauteur la hauteur de l'espace exprimée en pixels.
      * @param formes l'ensemble des formes de l'espace.
      */
     private Espace(final double largeur, final double hauteur,
-            @NotNull Formes formes) {
+            @NotNull final ObservableList<Forme> formes) {
         super(largeur, hauteur);
         repere = new Repere(largeur, hauteur);
         repere.echelleProperty().addListener(evenementActualisation);
         repere.origineVirtuelleProperty().addListener(evenementActualisation);
+        formes.addListener(changementFormes);
+        formes.addListener(evenementActualisation);
+        formes.stream().forEach((forme) -> {
+            forme.getProprietes().stream().forEach((propriete) -> {
+                propriete.addListener(evenementActualisation);
+            });
+        });
         this.formes = formes;
-        this.formes.ajouterEspace(this);
         definirInteractionCurseur();
     }
 
@@ -159,7 +171,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      * @param hauteur la hauteur de l'espace exprimée en pixels.
      */
     public Espace(final double largeur, final double hauteur) {
-        this(largeur, hauteur, new Formes());
+        this(largeur, hauteur, FXCollections.observableArrayList());
     }
 
     /**
@@ -178,7 +190,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
         reperage.add(axeVertical);
         reperage.add(axeHorizontal);
         reperage.forEach((forme) -> {
-            forme.getProprietesActualisation().forEach((propriete) -> {
+            forme.getProprietes().forEach((propriete) -> {
                 propriete.addListener(evenementActualisation);
             });
         });
@@ -195,7 +207,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
         });
         setOnMouseMoved((@NotNull final MouseEvent evenement) -> {
             actualiserPositionsCurseur(evenement);
-            if (formesSelectionnees().isEmpty()) {
+            if (formesSurvolees().isEmpty()) {
                 setCursor(curseurParDefaut);
             }
         });
@@ -236,8 +248,30 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     public void actualiser() {
         effacerAffichage();
         dessinerFormes(reperage);
-        dessinerFormes(formes());
+        dessinerFormes(formes);
     }
+
+    /**
+     * L'événement d'actualisation de la liste des formes de l'espace. Lie
+     * l'événement d'actualisation de l'espace aux formes ajoutées à la liste,
+     * ou retire l'événement d'actualisation de l'espace aux formes retirées de
+     * la liste.
+     */
+    private final ListChangeListener<Forme> changementFormes
+            = (@NotNull final ListChangeListener.Change<? extends Forme> changements) -> {
+                while (changements.next()) {
+                    changements.getAddedSubList().stream().forEach((forme) -> {
+                        forme.getProprietes().stream().forEach((propriete) -> {
+                            propriete.addListener(evenementActualisation);
+                        });
+                    });
+                    changements.getRemoved().stream().forEach((forme) -> {
+                        forme.getProprietes().stream().forEach((propriete) -> {
+                            propriete.removeListener(evenementActualisation);
+                        });
+                    });
+                }
+            };
 
     /**
      * Dessine une collection de formes sur l'espace.
@@ -273,7 +307,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     }
 
     /**
-     * Récupère les formes sélectionnées par l'utilisateur en ordre croissant de
+     * Récupère les formes survolées par l'utilisateur en ordre croissant de
      * distance au curseur en considérant l'ordre de rendu des formes. Ce
      * faisant, la forme qui correspond le plus à une sélection ponctuelle de la
      * part de l'utilisateur est le premier élément de l'ensemble récupéré. Il
@@ -282,20 +316,21 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      * trouver les deux premières droites ou deux premières figures
      * d'intersection. Il est fort probable que cet ensemble soit vide.
      *
-     * @return les formes sélectionnées en ordre croissant de distance.
+     * @return les formes survolées en ordre croissant de distance.
      */
-    public Set<Forme> formesSelectionnees() {
+    public Set<Forme> formesSurvolees() {
         // Ajouter les formes dans l'ordre inverse
-        final List<Forme> formesSelectionnees = new ArrayList<>();
+        final List<Forme> formesSurvolees = new ArrayList<>();
         final Map<Forme, Double> distances = distancesFormes();
         ordreRendu.stream().map((classe) -> {
             // Retenir les formes de la classe
             final List<Map.Entry<Forme, Double>> formesRetenues
                     = new ArrayList<>();
-            distances.entrySet().stream().filter((entree) -> (
-                    classe.isInstance(entree.getKey()))).forEach((entree) -> {
-                formesRetenues.add(entree);
-            });
+            distances.entrySet().stream().filter((
+                    entree) -> (classe.isInstance(entree.getKey())))
+                    .forEach((entree) -> {
+                        formesRetenues.add(entree);
+                    });
             return formesRetenues;
         }).map((formesRetenues) -> {
             // Trier en ordre décroissant
@@ -304,11 +339,11 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
             return formesRetenues;
         }).forEach((formesRetenues) -> {
             formesRetenues.stream().forEach((entree) -> {
-                formesSelectionnees.add(entree.getKey());
+                formesSurvolees.add(entree.getKey());
             });
         });
-        Collections.reverse(formesSelectionnees);
-        return new LinkedHashSet<>(formesSelectionnees);
+        Collections.reverse(formesSurvolees);
+        return new LinkedHashSet<>(formesSurvolees);
     }
 
     /**
@@ -320,7 +355,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     private Map<Forme, Double> distancesFormes() {
         final LinkedHashSet<Forme> formesDistantes
                 = new LinkedHashSet<>(reperage);
-        formesDistantes.addAll(formes());
+        formesDistantes.addAll(formes);
         final Map<Forme, Double> distances = new HashMap<>();
         formesDistantes.stream().filter((forme) -> (forme.isSelectionne(
                 getPositionCurseur(), repere))).forEach((forme) -> {
@@ -359,13 +394,22 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     }
 
     /**
-     * Défile l'espace de la toile selon la variation des positions du curseur.
+     * Défile l'espace selon un défilement virtuel spécifié.
+     *
+     * @param defilement le défilement de l'espace, exprimé en pixels.
+     */
+    public void defiler(@NotNull final Vector2D defilement) {
+        repere.setOrigineVirtuelle(repere.getOrigineVirtuelle()
+                .add(defilement));
+    }
+
+    /**
+     * Défile l'espace selon la variation des positions du curseur.
      */
     private void defiler() {
-        final Vector2D deplacement = getPositionCurseur().virtuelle(repere)
+        final Vector2D defilement = getPositionCurseur().virtuelle(repere)
                 .subtract(getPositionPrecedenteCurseur().virtuelle(repere));
-        repere.setOrigineVirtuelle(repere.getOrigineVirtuelle()
-                .add(deplacement));
+        defiler(defilement);
     }
 
     /**
@@ -398,21 +442,12 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
     }
 
     /**
-     * Récupère le module de gestion des formes de l'espace.
+     * Récupère les formes affichées dans cet espace.
      *
-     * @return le module de gestion des formes de l'espace.
+     * @return les formes affichées dans cet espace.
      */
-    public final Formes getFormes() {
+    public Collection<Forme> getFormes() {
         return formes;
-    }
-
-    /**
-     * Récupère l'ensemble des formes affichées dans cet espace.
-     *
-     * @return l'ensemble des formes affichées dans cet espace.
-     */
-    private Set<Forme> formes() {
-        return formes.get();
     }
 
     private Position getPositionPrecedenteCurseur() {
@@ -442,10 +477,8 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      * dans la construction.
      *
      * @return la propriété de position virtuelle du curseur.
-     * @see EspaceInteractif#positionReelleCurseur() la position réelle du
-     * curseur à utiliser pour la création d'éléments de construction.
      */
-    public final ObjectProperty<Position> positionCurseurProperty() {
+    public ObjectProperty<Position> positionCurseurProperty() {
         return positionCurseur;
     }
 
@@ -454,7 +487,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      *
      * @return la position réelle du curseur.
      */
-    public final Vector2D positionReelleCurseur() {
+    public Vector2D positionReelleCurseur() {
         return getPositionCurseur().reelle(repere);
     }
 
@@ -463,7 +496,7 @@ public class Espace extends ToileRedimensionnable implements Actualisable {
      *
      * @return la position virtuelle du curseur.
      */
-    public final Vector2D positionVirtuelleCurseur() {
+    public Vector2D positionVirtuelleCurseur() {
         return getPositionCurseur().virtuelle(repere);
     }
 

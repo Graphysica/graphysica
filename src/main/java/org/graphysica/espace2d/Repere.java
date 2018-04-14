@@ -358,6 +358,11 @@ public final class Repere {
         return origineVirtuelle.getValue();
     }
 
+    /**
+     * Modifie la valeur de l'origine virtuelle de ce repère.
+     *
+     * @param origineVirtuelle l'origine de ce repère, exprimée en pixels.
+     */
     public void setOrigineVirtuelle(@NotNull final Vector2D origineVirtuelle) {
         this.origineVirtuelle.setValue(origineVirtuelle);
     }
@@ -370,6 +375,11 @@ public final class Repere {
         return echelle.getValue();
     }
 
+    /**
+     * Modifie la valeur d'échelle de ce repère.
+     *
+     * @param echelle l'échelle de ce repère, exprimée en pixels par mètre.
+     */
     public void setEchelle(@NotNull final Vector2D echelle) {
         this.echelle.setValue(echelle);
     }

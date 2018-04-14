@@ -106,7 +106,7 @@ public final class Grille extends Forme {
             @NotNull final Repere repere) {
         calculerGraduations(toile, repere);
         dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
-                getCouleur().deriveColor(1, 1, 1, 0.3), 2);
+                getCouleur().deriveColor(1, 1, 1, 0.2), 2);
     }
 
     /**
