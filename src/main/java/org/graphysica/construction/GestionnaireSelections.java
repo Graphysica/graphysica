@@ -18,10 +18,14 @@ package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
@@ -43,7 +47,7 @@ public final class GestionnaireSelections {
     /**
      * L'ensemble des espaces compris par ce gestionnaire de sélections.
      */
-    private final Set<Espace> espaces = new HashSet<>();
+    private final ObservableList<Espace> espaces;
 
     /**
      * L'ensemble des éléments à considérer dans ce gestionnaire de sélections.
@@ -61,26 +65,81 @@ public final class GestionnaireSelections {
     private final Set<Forme> formesEnSurbrillance = new HashSet<>();
 
     /**
-     * La gestion de la surbrillance des éléments.
+     * L'association des espaces à leur gestion de survol de formes.
      */
-    private final GestionSurbrillance gestionSurbrillance
-            = new GestionSurbrillance();
+    private final Map<Espace, GestionSurvol> gestionsSurvol = new HashMap<>();
 
     /**
-     * La gestion des sélections d'éléments.
+     * L'association des espaces à leur gestion de sélection d'éléments.
      */
-    private final GestionSelections gestionSelections = new GestionSelections();
+    private final Map<Espace, GestionSelection> gestionsSelection
+            = new HashMap<>();
 
-    public GestionnaireSelections(@NotNull final Set<Element> elements) {
+    /**
+     * Construit un gestionnaire de sélections sur une liste d'espaces et un
+     * ensemble d'éléments qui y sont représentés.
+     *
+     * @param espaces les espaces à gérer.
+     * @param elements les éléments pouvant être sélectionnés.
+     */
+    public GestionnaireSelections(@NotNull final ObservableList<Espace> espaces,
+            @NotNull final Set<Element> elements) {
+        espaces.addListener(changementEspaces);
+        for (final Espace espace : espaces) {
+            ajouterGestionsSelection(espace);
+        }
+        this.espaces = espaces;
         this.elements = elements;
     }
 
-    public void ajouterEspace(@NotNull final Espace espace) {
-        espaces.add(espace);
-        espace.addEventFilter(MouseEvent.MOUSE_MOVED, gestionSurbrillance);
-        espace.addEventFilter(MouseEvent.MOUSE_CLICKED, gestionSelections);
+    /**
+     * L'événement d'actualisation de la liste des espaces.
+     */
+    private final ListChangeListener<Espace> changementEspaces
+            = (@NotNull final ListChangeListener.Change<? extends Espace> changements) -> {
+                while (changements.next()) {
+                    changements.getAddedSubList().stream().forEach((espace) -> {
+                        ajouterGestionsSelection(espace);
+                    });
+                    changements.getRemoved().stream().forEach((espace) -> {
+                        retirerGestionsSelection(espace);
+                    });
+                }
+            };
+
+    /**
+     * Ajoute des modules de gestion de sélection sur un espace défini.
+     *
+     * @param espace l'espace à gérer.
+     */
+    private void ajouterGestionsSelection(@NotNull final Espace espace) {
+        final GestionSurvol gestionSurvol = new GestionSurvol(espace);
+        espace.addEventFilter(MouseEvent.MOUSE_MOVED, gestionSurvol);
+        gestionsSurvol.put(espace, gestionSurvol);
+        final GestionSelection gestionSelection = new GestionSelection(espace);
+        espace.addEventFilter(MouseEvent.MOUSE_CLICKED, gestionSelection);
+        gestionsSelection.put(espace, gestionSelection);
     }
 
+    /**
+     * Retire les modules de gestion de sélection d'un espace défini.
+     *
+     * @param espace l'espace qui n'est plus gérer par le gestionnaire de
+     * sélections.
+     */
+    private void retirerGestionsSelection(@NotNull final Espace espace) {
+        espace.removeEventFilter(MouseEvent.MOUSE_MOVED,
+                gestionsSurvol.remove(espace));
+        espace.removeEventFilter(MouseEvent.MOUSE_CLICKED,
+                gestionsSelection.remove(espace));
+    }
+
+    /**
+     * Renvoie l'ensemble des éléments sélectionnés à travers les espaces du
+     * gestionnaire de sélections.
+     *
+     * @return l'ensemble des éléments sélectionnés.
+     */
     public Set<Element> getElementsSelectionnes() {
         return elementsSelectionnes;
     }
@@ -115,35 +174,98 @@ public final class GestionnaireSelections {
     }
 
     /**
-     * Une gestion de surbrillance s'occupe d'actualiser l'état de surbrillance
-     * des formes parmi les espaces de ce gestionnaire de sélections.
+     * Sélectionne un élément défini parmi les éléments du gestionnaire de
+     * sélections.
+     *
+     * @param element l'élément à sélectionner.
      */
-    private class GestionSurbrillance implements EventHandler<MouseEvent> {
+    public void selectionner(@NotNull final Element element) {
+        if (elements.contains(element)) {
+            if (elementsSelectionnes.add(element)) {
+                for (final Forme forme : element.getFormes()) {
+                    forme.setEnSurvol(true);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sélectionne tous les éléments du gestionnaire de sélections.
+     */
+    public void toutSelectionner() {
+        for (final Element element : elements) {
+            selectionner(element);
+        }
+    }
+
+    /**
+     * Déselectionne un élément défini.
+     *
+     * @param element l'élément à désélectionner.
+     */
+    public void deselectionner(@NotNull final Element element) {
+        if (elementsSelectionnes.remove(element)) {
+            for (final Forme forme : element.getFormes()) {
+                forme.setEnSurvol(false);
+            }
+        }
+    }
+
+    /**
+     * Déselectionne l'ensemble des éléments sélectionnés et actualise l'état de
+     * surbrillance de leurs formes.
+     */
+    public void toutDeselectionner() {
+        for (final Element element : elementsSelectionnes) {
+            for (final Forme forme : element.getFormes()) {
+                forme.setEnSurvol(false);
+            }
+        }
+        elementsSelectionnes.clear();
+    }
+
+    /**
+     * Une gestion de survol s'occupe d'actualiser l'état de survol des formes
+     * parmi les espaces de ce gestionnaire de sélections.
+     */
+    private class GestionSurvol implements EventHandler<MouseEvent> {
+
+        /**
+         * L'espace de cette gestion de survol.
+         */
+        private final Espace espace;
+
+        /**
+         * Construit une gestion de survol de formes sur un espace défini.
+         *
+         * @param espace l'espace à gérer.
+         */
+        public GestionSurvol(@NotNull final Espace espace) {
+            this.espace = espace;
+        }
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
-            for (final Espace espace : espaces) {
-                final Set<Forme> formesSelectionnees
-                        = espace.formesSurvolees();
-                final Iterator<Forme> iteration
-                        = formesEnSurbrillance.iterator();
-                while (iteration.hasNext()) {
-                    final Forme forme = iteration.next();
-                    if (!formesSelectionnees.contains(forme)
-                            && !elementsSelectionnesComprennentForme(forme)) {
-                        forme.setEnSurvol(false);
-                        iteration.remove();
-                    }
+            final Set<Forme> formesSelectionnees
+                    = espace.formesSurvolees();
+            final Iterator<Forme> iteration
+                    = formesEnSurbrillance.iterator();
+            while (iteration.hasNext()) {
+                final Forme forme = iteration.next();
+                if (!formesSelectionnees.contains(forme)
+                        && !elementsSelectionnesComprennentForme(forme)) {
+                    forme.setEnSurvol(false);
+                    iteration.remove();
                 }
-                formesEnSurbrillance.addAll(formesSelectionnees);
-                formesSelectionnees.forEach((forme) -> {
-                    forme.setEnSurvol(true);
-                });
-                for (final Forme forme : formesEnSurbrillance) {
-                    if (!(forme instanceof Grille)) {
-                        espace.setCursor(Cursor.HAND);
-                        break;
-                    }
+            }
+            formesEnSurbrillance.addAll(formesSelectionnees);
+            formesSelectionnees.forEach((forme) -> {
+                forme.setEnSurvol(true);
+            });
+            for (final Forme forme : formesEnSurbrillance) {
+                if (!(forme instanceof Grille)) {
+                    espace.setCursor(Cursor.HAND);
+                    break;
                 }
             }
         }
@@ -171,39 +293,50 @@ public final class GestionnaireSelections {
     }
 
     /**
-     * Une gestion de sélections permet de sélectionner des éléments à partir
-     * des formes dans les espaces.
+     * Une gestion de sélection permet de sélectionner des éléments à partir des
+     * formes dans les espaces.
      */
-    private class GestionSelections implements EventHandler<MouseEvent> {
+    private class GestionSelection implements EventHandler<MouseEvent> {
+
+        /**
+         * L'espace de cette gestion de sélection.
+         */
+        private final Espace espace;
+
+        /**
+         * Construit une gestion de sélection sur un espace défini.
+         *
+         * @param espace l'espace à gérer.
+         */
+        public GestionSelection(@NotNull final Espace espace) {
+            this.espace = espace;
+        }
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
             if (evenement.getButton() == MouseButton.PRIMARY) {
                 Element elementCorrespondant = null;
-                for (final Espace espace : espaces) {
-                    final Set<Forme> formesSelectionnees
-                            = espace.formesSurvolees();
-                    if (!formesSelectionnees.isEmpty()) {
-                        final Forme formeSelectionnee = formesSelectionnees
-                                .iterator().next();
-                        elementCorrespondant = elementCorrespondant(
-                                formeSelectionnee);
-                        break;
-                    }
+                final Set<Forme> formesSurvolees
+                        = espace.formesSurvolees();
+                if (!formesSurvolees.isEmpty()) {
+                    final Forme formeSelectionnee = formesSurvolees
+                            .iterator().next();
+                    elementCorrespondant = elementCorrespondant(
+                            formeSelectionnee);
                 }
                 if (evenement.isControlDown()) {
                     if (elementCorrespondant != null) {
                         if (elementsSelectionnes.contains(
                                 elementCorrespondant)) {
-                            elementsSelectionnes.remove(elementCorrespondant);
+                            deselectionner(elementCorrespondant);
                         } else {
-                            elementsSelectionnes.add(elementCorrespondant);
+                            selectionner(elementCorrespondant);
                         }
                     }
                 } else {
-                    deselectionner();
+                    toutDeselectionner();
                     if (elementCorrespondant != null) {
-                        elementsSelectionnes.add(elementCorrespondant);
+                        selectionner(elementCorrespondant);
                     }
                 }
             }
@@ -227,20 +360,6 @@ public final class GestionnaireSelections {
                 }
             }
             return null;
-        }
-
-        /**
-         * Déselectionne l'ensemble des éléments sélectionnés et actualise
-         * l'état de surbrillance de leurs formes.
-         */
-        private void deselectionner() {
-            elementsSelectionnes.forEach((element) -> {
-                for (final Forme forme : element.getFormes()) {
-                    forme.setEnSurvol(false);
-                    formesEnSurbrillance.remove(forme);
-                }
-            });
-            elementsSelectionnes.clear();
         }
 
     }
