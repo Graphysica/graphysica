@@ -1,4 +1,6 @@
-[![GitHub issues](https://img.shields.io/github/issues/Graphysica/graphysica.svg)](https://github.com/Graphysica/graphysica/issues) [![GitHub license](https://img.shields.io/github/license/Graphysica/graphysica.svg)](https://github.com/Graphysica/graphysica/blob/master/LICENSE)[![GitHub Stats](https://img.shields.io/badge/github-stats-ff5500.svg)](http://githubstats.com/Graphysica/graphysica)
+[![GitHub issues](https://img.shields.io/github/issues/Graphysica/graphysica.svg)](https://github.com/Graphysica/graphysica/issues)
+[![GitHub license](https://img.shields.io/github/license/Graphysica/graphysica.svg)](https://github.com/Graphysica/graphysica/blob/master/LICENSE)
+[![GitHub Stats](https://img.shields.io/badge/github-stats-ff5500.svg)](http://githubstats.com/Graphysica/graphysica)
 # Graphysica
 
 Graphysica est un logiciel de simulation de physique mécanique multiplateforme développé en Java. Il permet de modéliser des situations de physique classique en deux dimensions à l'aide d'outils mathématiques compréhensifs.
