@@ -85,6 +85,8 @@ public class DroitePerpendiculaire extends Ligne {
         positionExterne1.addListener(evenementActualisation);
         positionExterne2.addListener(evenementActualisation);
         positionInterne1.addListener(evenementActualisation);
+        formes.add(new org.graphysica.espace2d.forme.Droite(
+                positionInterne1, positionInterne2));
     }
 
 }

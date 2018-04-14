@@ -36,7 +36,7 @@ public class Disque extends Aire {
     }
 
     @Override
-    public void dessinerSurbrillance(Canvas toile, Repere repere) {
+    public void dessinerSurvol(Canvas toile, Repere repere) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

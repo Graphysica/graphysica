@@ -19,7 +19,7 @@ package org.graphysica.espace2d.forme;
 /**
  * Les instances de classes implémentant cette interface peuvent être
  * prévisualisées. Une forme qui est en état de prévisualisation ne devrait pas
- * être en état de surbrillance.
+ * être en état de survol.
  *
  * @author Marc-Antoine Ouimet
  */

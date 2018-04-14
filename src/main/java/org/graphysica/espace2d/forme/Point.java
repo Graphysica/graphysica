@@ -77,8 +77,8 @@ public class Point extends Forme {
     }
 
     {
-        proprietesActualisation.add(position);
-        proprietesActualisation.add(taille);
+        proprietes.add(position);
+        proprietes.add(taille);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Point extends Forme {
     }
 
     @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
+    public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         final int rayon = getTaille() + 6;
         dessinerRond(toile, getPosition().virtuelle(repere),

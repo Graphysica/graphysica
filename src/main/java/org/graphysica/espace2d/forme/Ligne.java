@@ -75,9 +75,9 @@ public abstract class Ligne extends Forme {
     }
 
     {
-        proprietesActualisation.add(epaisseur);
-        proprietesActualisation.add(position1);
-        proprietesActualisation.add(position2);
+        proprietes.add(epaisseur);
+        proprietes.add(position1);
+        proprietes.add(position2);
     }
 
     @Override
@@ -89,7 +89,7 @@ public abstract class Ligne extends Forme {
     }
 
     @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
+    public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         calculerOrigineEtArrivee(toile, repere);
         dessinerLigne(toile, origineTrace.virtuelle(repere),
