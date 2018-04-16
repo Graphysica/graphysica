@@ -91,12 +91,6 @@ public final class GestionnaireSelections {
             = new HashMap<>();
 
     /**
-     * L'association des espaces à leur gestion de désélection d'éléments.
-     */
-    private final Map<Espace, GestionSelection> gestionsDeselection
-            = new HashMap<>();
-
-    /**
      * Construit un gestionnaire de sélections sur une liste d'espaces et un
      * ensemble d'éléments qui y sont représentés.
      *
@@ -143,10 +137,6 @@ public final class GestionnaireSelections {
         final GestionSelection gestionSelection = new GestionSelection(espace);
         espace.addEventFilter(MouseEvent.MOUSE_PRESSED, gestionSelection);
         gestionsSelection.put(espace, gestionSelection);
-        final GestionDeselection gestionDeselection = new GestionDeselection(
-                espace);
-        espace.addEventFilter(MouseEvent.MOUSE_CLICKED, gestionDeselection);
-        gestionsDeselection.put(espace, gestionSelection);
     }
 
     /**
@@ -162,8 +152,6 @@ public final class GestionnaireSelections {
                 gestionsSurvol.remove(espace));
         espace.removeEventFilter(MouseEvent.MOUSE_PRESSED,
                 gestionsSelection.remove(espace));
-        espace.removeEventFilter(MouseEvent.MOUSE_CLICKED,
-                gestionsDeselection.remove(espace));
     }
 
     /**
@@ -379,20 +367,20 @@ public final class GestionnaireSelections {
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
-            final Set<Forme> formesSelectionnees
+            final Set<Forme> formesSurvolees
                     = getEspace().formesSurvolees();
             final Iterator<Forme> iteration
                     = formesEnSurbrillance.iterator();
             while (iteration.hasNext()) {
                 final Forme forme = iteration.next();
-                if (!formesSelectionnees.contains(forme)
+                if (!formesSurvolees.contains(forme)
                         && !elementsSelectionnesComprennentForme(forme)) {
                     forme.setEnSurvol(false);
                     iteration.remove();
                 }
             }
-            formesEnSurbrillance.addAll(formesSelectionnees);
-            formesSelectionnees.forEach((forme) -> {
+            formesEnSurbrillance.addAll(formesSurvolees);
+            formesSurvolees.forEach((forme) -> {
                 forme.setEnSurvol(true);
             });
             for (final Forme forme : formesEnSurbrillance) {
@@ -452,7 +440,7 @@ public final class GestionnaireSelections {
                     elementCorrespondant = elementCorrespondant(
                             formeSelectionnee);
                 }
-                actualiserSelections(elementCorrespondant, 
+                actualiserSelections(elementCorrespondant,
                         evenement.isControlDown());
             }
         }
@@ -463,7 +451,7 @@ public final class GestionnaireSelections {
          * @param elementSurvole l'élément survolé.
          */
         private void actualiserSelections(
-                @Nullable final Element elementSurvole, 
+                @Nullable final Element elementSurvole,
                 final boolean controleAppuyee) {
             if (elementSurvole != null) {
                 if (controleAppuyee) {
@@ -476,43 +464,10 @@ public final class GestionnaireSelections {
                     toutDeselectionner();
                     selectionner(elementSurvole);
                 }
+            } else {
+                toutDeselectionner();
             }
-            
-        }
 
-    }
-
-    /**
-     * Une gestion de désélection permet de désélectionner des éléments à partir
-     * des formes dans un espace.
-     */
-    private class GestionDeselection extends Gestion {
-
-        /**
-         * Construit une gestion de désélection sur un espace défini.
-         *
-         * @param espace l'espace à gérer.
-         */
-        public GestionDeselection(@NotNull final Espace espace) {
-            super(espace);
-        }
-
-        @Override
-        public void handle(@NotNull final MouseEvent evenement) {
-            if (evenement.getButton() == MouseButton.PRIMARY) {
-                Element elementCorrespondant = null;
-                final Set<Forme> formesSurvolees
-                        = getEspace().formesSurvolees();
-                if (!formesSurvolees.isEmpty()) {
-                    final Forme formeSelectionnee = formesSurvolees
-                            .iterator().next();
-                    elementCorrespondant = elementCorrespondant(
-                            formeSelectionnee);
-                }
-                if (elementCorrespondant == null) {
-                    toutDeselectionner();
-                }
-            }
         }
 
     }
