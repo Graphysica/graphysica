@@ -1,15 +1,12 @@
-<center>
-	<p>
-		<img height='150' alt='Graphysica' src='https://rawgit.com/Graphysica/graphysica/graphysica.svg' />
-	</p>
-  <hr />
-	<p>
-		<a alt='Problèmes du projet' href='https://github.com/Graphysica/graphysica/issues'><img alt='GitHub issues' src='https://img.shields.io/github/issues/Graphysica/graphysica.svg' /></a>
-		<a alt='License GPL-3.0' href='https://github.com/Graphysica/graphysica/blob/master/LICENSE'><img alt='GitHub license' src='https://img.shields.io/github/license/Graphysica/graphysica.svg' /></a>
-		<a alt='Statistiques du projet' href='http://githubstats.com/Graphysica/graphysica'><img alt='GitHub Stats' src='https://img.shields.io/badge/github-stats-ff5500.svg' /></a>
-	</p>
-</center>
-# Graphysica
+<p align='center'>
+	<img height='150' alt='Graphysica' src='https://rawgit.com/Graphysica/graphysica/graphysica.svg' />
+</p>
+<hr />
+<p align='center'>
+	<a alt='Problèmes du projet' href='https://github.com/Graphysica/graphysica/issues'><img alt='GitHub issues' src='https://img.shields.io/github/issues/Graphysica/graphysica.svg' /></a>
+	<a alt='License GPL-3.0' href='https://github.com/Graphysica/graphysica/blob/master/LICENSE'><img alt='GitHub license' src='https://img.shields.io/github/license/Graphysica/graphysica.svg' /></a>
+	<a alt='Statistiques du projet' href='http://githubstats.com/Graphysica/graphysica'><img alt='GitHub Stats' src='https://img.shields.io/badge/github-stats-ff5500.svg' /></a>
+</p>
 
 Graphysica est un logiciel de simulation de physique mécanique multiplateforme développé en Java. Il permet de modéliser des situations de physique classique en deux dimensions à l'aide d'outils mathématiques compréhensifs.
 
