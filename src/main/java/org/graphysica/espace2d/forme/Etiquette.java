@@ -148,10 +148,10 @@ public class Etiquette extends Forme {
     }
 
     {
-        proprietesActualisation.add(texte);
-        proprietesActualisation.add(tailleCaractere);
-        proprietesActualisation.add(positionAncrage);
-        proprietesActualisation.add(positionRelative);
+        proprietes.add(texte);
+        proprietes.add(tailleCaractere);
+        proprietes.add(positionAncrage);
+        proprietes.add(positionRelative);
         texte.addListener(reconstruireImage);
         tailleCaractere.addListener(reconstruireImage);
         couleurProperty().addListener(reconstruireImage);
@@ -168,13 +168,13 @@ public class Etiquette extends Forme {
                 getPositionRelative(), VIRTUELLE, repere).virtuelle(repere);
         contexteGraphique.drawImage(imageFormule, (int) (position.getX()),
                 (int) (position.getY()));
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
+        if (isEnSurvol()) {
+            dessinerSurvol(toile, repere);
         }
     }
 
     @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
+    public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         final Vector2D coinSuperieurGauche = coinSuperieurGauche(repere)
                 .virtuelle(repere);

@@ -47,8 +47,8 @@ public class AxeHorizontal extends Axe {
     @Override
     public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
+        if (isEnSurvol()) {
+            dessinerSurvol(toile, repere);
         }
         final double[] graduationsVerticales = repere
                 .graduationsVerticales(toile.getWidth(), getEspacement());

@@ -96,14 +96,13 @@ abstract class Axe extends Forme {
     }
 
     {
-        proprietesActualisation.add(espacement);
-        proprietesActualisation.add(tailleCaracteres);
+        proprietes.add(espacement);
+        proprietes.add(tailleCaracteres);
     }
 
     @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
+    public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        fleche.dessinerSurbrillance(toile, repere);
     }
 
     /**

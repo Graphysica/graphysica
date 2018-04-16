@@ -90,7 +90,7 @@ public class Angle extends Forme {
      * @param sommet la position du sommet, qui est à l'origine du secteur.
      * @param position2 la deuxième position délimitant l'angle.
      */
-    public Angle(@NotNull final ObjectProperty<? extends Position> position1, 
+    public Angle(@NotNull final ObjectProperty<? extends Position> position1,
             @NotNull final ObjectProperty<? extends Position> sommet,
             @NotNull final ObjectProperty<? extends Position> position2) {
         position1Property().bind(position1);
@@ -99,11 +99,11 @@ public class Angle extends Forme {
     }
 
     {
-        proprietesActualisation.add(taille);
-        proprietesActualisation.add(position1);
-        proprietesActualisation.add(sommet);
-        proprietesActualisation.add(position2);
-        proprietesActualisation.add(opacite);
+        proprietes.add(taille);
+        proprietes.add(position1);
+        proprietes.add(sommet);
+        proprietes.add(position2);
+        proprietes.add(opacite);
     }
 
     /**
@@ -151,7 +151,7 @@ public class Angle extends Forme {
     }
 
     @Override
-    public void dessinerSurbrillance(@NotNull final Canvas toile,
+    public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -226,7 +226,7 @@ public class Angle extends Forme {
      *
      * @return si l'angle est défini.
      */
-    public boolean isDefini() {
+    public final boolean isDefini() {
         return !(position1.equals(sommet) || position2.equals(sommet));
     }
 

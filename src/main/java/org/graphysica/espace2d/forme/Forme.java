@@ -35,15 +35,16 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Forme implements Dessinable, Surbrillable, Selectionnable, 
+public abstract class Forme implements Dessinable, Survolable, Selectionnable,
         Previsualisable, Affichable {
 
     /**
      * L'ensemble des propriétés de la forme qui provoquent une actualisation
      * lorsqu'elles sont invalidées. Si l'une de ces propriétés est modifiée,
-     * alors la forme doit être redessinée.
+     * alors la forme doit être redessinée pour l'ensemble des espaces qui
+     * l'affichent.
      */
-    protected final Set<Observable> proprietesActualisation = new HashSet<>();
+    protected final Set<Observable> proprietes = new HashSet<>();
 
     /**
      * La couleur d'affichage de la forme.
@@ -81,16 +82,16 @@ public abstract class Forme implements Dessinable, Surbrillable, Selectionnable,
     }
 
     {
-        proprietesActualisation.add(couleur);
-        proprietesActualisation.add(affiche);
-        proprietesActualisation.add(enSurbrillance);
+        proprietes.add(couleur);
+        proprietes.add(affiche);
+        proprietes.add(enSurbrillance);
     }
 
     @Override
     public final void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        if (isEnSurbrillance()) {
-            dessinerSurbrillance(toile, repere);
+        if (isEnSurvol()) {
+            dessinerSurvol(toile, repere);
         }
         dessinerNormal(toile, repere);
     }
@@ -100,7 +101,7 @@ public abstract class Forme implements Dessinable, Surbrillable, Selectionnable,
             @NotNull final Repere repere);
 
     @Override
-    public abstract void dessinerSurbrillance(@NotNull final Canvas toile,
+    public abstract void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere);
 
     @Override
@@ -109,8 +110,8 @@ public abstract class Forme implements Dessinable, Surbrillable, Selectionnable,
         return distance(curseur, repere) <= DISTANCE_SELECTION;
     }
 
-    public Set<Observable> getProprietesActualisation() {
-        return proprietesActualisation;
+    public Set<Observable> getProprietes() {
+        return proprietes;
     }
 
     public final Color getCouleur() {
@@ -136,12 +137,12 @@ public abstract class Forme implements Dessinable, Surbrillable, Selectionnable,
     }
 
     @Override
-    public final boolean isEnSurbrillance() {
+    public final boolean isEnSurvol() {
         return enSurbrillance.getValue();
     }
 
     @Override
-    public final void setEnSurbrillance(final boolean enSurbrillance) {
+    public final void setEnSurvol(final boolean enSurbrillance) {
         this.enSurbrillance.setValue(enSurbrillance);
     }
 

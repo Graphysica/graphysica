@@ -46,13 +46,7 @@ public abstract class Ligne extends ObjetMathematique {
      */
     protected final ObjectProperty<PositionReelle> positionInterne2
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
-
-    @Override
-    protected Forme[] creerFormes() {
-        return new Forme[]{new org.graphysica.espace2d.forme.Droite(
-            positionInterne1, positionInterne2)};
-    }
-
+    
     public ObjectProperty<PositionReelle> positionInterne1Property() {
         return positionInterne1;
     }

@@ -16,6 +16,8 @@
  */
 package org.graphysica.construction;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.graphysica.espace2d.forme.Forme;
 
 /**
@@ -25,7 +27,10 @@ import org.graphysica.espace2d.forme.Forme;
  */
 public abstract class Element {
 
-    private transient Forme[] formes = null;
+    /**
+     * L'ensemble des formes d'affichage de cet élément.
+     */
+    protected transient Set<Forme> formes = new HashSet<>();
 
     /**
      * Le nombre d'éléments qui ont été construits.
@@ -41,23 +46,7 @@ public abstract class Element {
         id = ++ELEMENTS;
     }
 
-    /**
-     * Crée les formes représentant cet élément.
-     *
-     * @return les formes créées.
-     */
-    protected abstract Forme[] creerFormes();
-
-    /**
-     * Récupère les formes représentant cet élément. S'il s'agit de la première
-     * fois que les formes sont demandées, elles sont d'abord crées.
-     *
-     * @return les formes représentant cet élément.
-     */
-    public Forme[] getFormes() {
-        if (formes == null) {
-            formes = creerFormes();
-        }
+    public Set<Forme> getFormes() {
         return formes;
     }
 
