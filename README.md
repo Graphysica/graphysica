@@ -1,5 +1,5 @@
 <p align='center'>
-	<img height='150' alt='Graphysica' src='https://rawgit.com/Graphysica/graphysica/graphysica.svg' />
+	<img height='150' alt='Graphysica' src='https://rawgit.com/Graphysica/graphysica/master/graphysica.svg' />
 </p>
 <p align='center'>
 	<a alt='Problèmes du projet' href='https://github.com/Graphysica/graphysica/issues'><img alt='GitHub issues' src='https://img.shields.io/github/issues/Graphysica/graphysica.svg' /></a>
