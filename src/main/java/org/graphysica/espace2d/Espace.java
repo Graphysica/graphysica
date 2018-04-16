@@ -485,8 +485,8 @@ public final class Espace extends ToileRedimensionnable
      *
      * @return la position réelle du curseur.
      */
-    public Vector2D getPositionReelleCurseur() {
-        return getPositionCurseur().reelle(repere);
+    public PositionReelle getPositionReelleCurseur() {
+        return new PositionReelle(getPositionCurseur().reelle(repere));
     }
 
     /**
@@ -494,8 +494,8 @@ public final class Espace extends ToileRedimensionnable
      *
      * @return la position virtuelle du curseur.
      */
-    public Vector2D getPositionVirtuelleCurseur() {
-        return getPositionCurseur().virtuelle(repere);
+    public PositionVirtuelle getPositionVirtuelleCurseur() {
+        return new PositionVirtuelle(getPositionCurseur().virtuelle(repere));
     }
 
     /**
