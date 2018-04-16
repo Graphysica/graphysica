@@ -16,8 +16,10 @@
  */
 package org.graphysica.construction;
 
+import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Forme;
 
 /**
@@ -25,7 +27,7 @@ import org.graphysica.espace2d.forme.Forme;
  *
  * @author Marc-Antoine Ouimet
  */
-public abstract class Element {
+public abstract class Element implements Deplaceable {
 
     /**
      * Les dépendances de création de cet élément. Permet d'effacer cet élément
@@ -58,6 +60,42 @@ public abstract class Element {
 
     public long getId() {
         return id;
+    }
+
+    /**
+     * Déplace les dépendances immédiates de cet élément pour le déplacer
+     * lui-même.
+     *
+     * @param deplacement le déplacement réel de cet élément.
+     */
+    @Override
+    public void deplacer(@NotNull final Vector2D deplacement) {
+        if (isDeplaceable()) {
+            dependances.forEach((element) -> {
+                element.deplacer(deplacement);
+            });
+        }
+    }
+
+    /**
+     * Détermine si l'élément peut être déplacé expréssément. Un élément ne peut
+     * pas être déplacé si une de ses dépendances immédiates est liée.
+     *
+     * @return {@code true} si l'élément est déplaceable.
+     */
+    public boolean isDeplaceable() {
+        return dependances.stream().noneMatch((element) -> (element.isLie()));
+    }
+
+    /**
+     * Détermine si l'élément est lié. Les éléments ne sont pas liés par défaut.
+     * Ils peuvent donc être déplacés expréssément.
+     *
+     * @return {@code true} si l'élément est lié.
+     */
+    @Override
+    public boolean isLie() {
+        return false;
     }
 
 }
