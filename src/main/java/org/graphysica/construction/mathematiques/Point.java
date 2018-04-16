@@ -38,7 +38,7 @@ public abstract class Point extends ObjetMathematique {
      * La taille du point dans sa représentation dans un espace.
      */
     protected final Taille taille = Taille.de("point");
-    
+
     {
         formes.add(new org.graphysica.espace2d.forme.Point(
                 positionInterneProperty(), couleurProperty(),

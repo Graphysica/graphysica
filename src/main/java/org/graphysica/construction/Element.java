@@ -28,6 +28,12 @@ import org.graphysica.espace2d.forme.Forme;
 public abstract class Element {
 
     /**
+     * Les dépendances de création de cet élément. Permet d'effacer cet élément
+     * si une de ses dépendances est effacée.
+     */
+    protected final Set<Element> dependances = new HashSet<>();
+
+    /**
      * L'ensemble des formes d'affichage de cet élément.
      */
     protected transient Set<Forme> formes = new HashSet<>();

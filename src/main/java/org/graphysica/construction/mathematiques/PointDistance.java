@@ -81,6 +81,7 @@ public final class PointDistance extends Point {
      * @param distance la distance entre ce point et le point spécifié.
      */
     public PointDistance(@NotNull final Point point, final double distance) {
+        dependances.add(point);
         positionExterne.bind(point.positionInterneProperty());
         setDistance(distance);
         distanceVectorielle = new Vector2D(distance, 0);
@@ -88,7 +89,6 @@ public final class PointDistance extends Point {
         positionExterne.addListener(evenementActualisationPositionExterne);
         this.distance.addListener(evenementActualisationDistance);
     }
-
 
     /**
      * Actualise la position interne de ce point distancé à partir de la
