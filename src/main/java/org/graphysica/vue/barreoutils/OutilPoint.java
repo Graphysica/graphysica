@@ -18,55 +18,37 @@ package org.graphysica.vue.barreoutils;
 
 import com.sun.istack.internal.NotNull;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.construction.Element;
+import org.graphysica.construction.commande.Commande;
+import org.graphysica.construction.commande.CreerElement;
+import org.graphysica.construction.mathematiques.Point;
+import org.graphysica.construction.mathematiques.PointConcret;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.position.Position;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  *
  * @author Victor Babin <vicbab@Graphysica>
  */
-public abstract class Outil {
-
-//    /**
-//     * Liste des espaces concernés.
-//     */
-//    private ObservableList<Espace> espaces;
-    /**
-     * Si a une prochaine étape.
-     */
-    protected boolean aProchaineEtape;
-
-    /**
-     * Exécute les étapes.
-     *
-     * @param position la position initiale
-     * @return l'élément à créer.
-     */
-    public Element executer(Position position) {
-        while (aProchaineEtape) {
-            prochaineEtape(position);
-        }
-        return derniereEtape(position);
+public class OutilPoint extends Outil {
+    
+    public OutilPoint() {
+        this.aProchaineEtape = true;
+    }
+     
+    @Override
+    public void prochaineEtape(Position position) {
+        
     }
 
-    /**
-     * La prochaine étape à exécuter.
-     *
-     * @param position la position initiale
-     */
-    public abstract void prochaineEtape(Position position);
-
-    /**
-     * Dernière étape exécutée.
-     *
-     * @param position la position initiale
-     * @return l'élément à créer
-     */
-    public abstract Element derniereEtape(Position position);
-
-    public boolean hasNextEtape() {
-        return aProchaineEtape;
+    @Override
+    public Element derniereEtape(Position position) {
+        return new PointConcret(new PositionReelle(position.getValeur()));
     }
-
+    
+    
+    
 }

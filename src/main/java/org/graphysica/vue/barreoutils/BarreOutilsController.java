@@ -67,6 +67,8 @@ public class BarreOutilsController implements Initializable {
     private ImageView imgObjets;
     
     private Image icon = null;
+    
+//    private Button currButton;
 
     
 
