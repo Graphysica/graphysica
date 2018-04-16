@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Classes de formes aux coordonnées réelles pouvant être dessinées sur une 
- * toile avec un repère. Ce package encapsule les comportements de dessin des
- * types de formes dans un espace ayant un repère.
+ * Classes de formes pouvant être dessinées sur une toile avec un repère. 
+ * Ce package encapsule les comportements de dessin des types de formes dans un 
+ * espace ayant un repère. Les formes peuvent être dessinées en état de survol
+ * pour signaler à l'utilisateur qu'il peut les sélectionner.
  */
 package org.graphysica.espace2d.forme;
