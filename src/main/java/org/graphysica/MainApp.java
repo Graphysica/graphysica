@@ -23,6 +23,7 @@ import org.graphysica.construction.mathematiques.*;
 import org.graphysica.espace2d.forme.Etiquette;
 import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.espace2d.position.PositionVirtuelle;
+import org.graphysica.vue.barreoutils.BoutonOutil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,12 @@ public class MainApp extends Application {
         vertical = new VBox();
         horizontal = new HBox();
         chronometre = FXMLLoader.load(getClass().getResource("/fxml/Chronometre.fxml"));
-        toolBar = FXMLLoader.load(getClass().getResource("/fxml/BarreOutils.fxml"));
+//        toolBar = FXMLLoader.load(getClass().getResource("/fxml/BarreOutils.fxml"));
+        toolBar = new ToolBar(new BoutonOutil("point", "point"),
+                new BoutonOutil("selection", STYLESHEET_MODENA),
+                new BoutonOutil("segment", STYLESHEET_MODENA),
+                new BoutonOutil("droite", STYLESHEET_MODENA),
+                new BoutonOutil("perpendiculaire", STYLESHEET_MODENA));
         information = FXMLLoader.load(getClass().getResource("/fxml/Information.fxml"));
 
         initialiserDimensions();

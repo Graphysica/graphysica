@@ -19,6 +19,7 @@ package org.graphysica.vue.barreoutils;
 import com.sun.istack.internal.NotNull;
 import javafx.collections.ObservableList;
 import org.graphysica.construction.Element;
+import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.position.Position;
 
@@ -28,14 +29,21 @@ import org.graphysica.espace2d.position.Position;
  */
 public abstract class Outil {
 
-//    /**
-//     * Liste des espaces concernés.
-//     */
-//    private ObservableList<Espace> espaces;
     /**
      * Si a une prochaine étape.
      */
     protected boolean aProchaineEtape;
+
+    /**
+     * Gestionnaire d'outils pour la construction.
+     */
+    protected final GestionnaireOutils gestionnaireOutils;
+    
+    public Outil(boolean aProchaineEtape, 
+           GestionnaireOutils gestionnaireOutils) {
+        this.aProchaineEtape = aProchaineEtape;
+        this.gestionnaireOutils = gestionnaireOutils;
+    }
 
     /**
      * Exécute les étapes.
@@ -43,11 +51,11 @@ public abstract class Outil {
      * @param position la position initiale
      * @return l'élément à créer.
      */
-    public Element executer(Position position) {
+    public void executer() {
         while (aProchaineEtape) {
-            prochaineEtape(position);
+            prochaineEtape();
         }
-        return derniereEtape(position);
+        derniereEtape();
     }
 
     /**
@@ -55,7 +63,7 @@ public abstract class Outil {
      *
      * @param position la position initiale
      */
-    public abstract void prochaineEtape(Position position);
+    public abstract void prochaineEtape();
 
     /**
      * Dernière étape exécutée.
@@ -63,7 +71,7 @@ public abstract class Outil {
      * @param position la position initiale
      * @return l'élément à créer
      */
-    public abstract Element derniereEtape(Position position);
+    public abstract void derniereEtape();
 
     public boolean hasNextEtape() {
         return aProchaineEtape;

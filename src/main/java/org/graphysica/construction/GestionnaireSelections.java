@@ -33,6 +33,7 @@ import javafx.scene.input.MouseEvent;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Grille;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Le gestionnaire de sélections permet à l'utilisateur d'interagir avec la
@@ -222,6 +223,10 @@ public final class GestionnaireSelections {
             }
         }
         elementsSelectionnes.clear();
+    }
+
+    public PositionReelle getPositionReelle() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**

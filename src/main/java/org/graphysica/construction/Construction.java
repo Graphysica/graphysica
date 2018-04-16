@@ -121,5 +121,10 @@ public final class Construction {
     public Collection<Espace> getEspaces() {
         return espaces;
     }
+
+    public GestionnaireSelections getGestionnaireSelections() {
+        return gestionnaireSelections;
+    }
+    
     
 }

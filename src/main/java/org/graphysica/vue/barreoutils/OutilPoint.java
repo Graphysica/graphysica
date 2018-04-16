@@ -21,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.construction.Element;
+import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.commande.Commande;
 import org.graphysica.construction.commande.CreerElement;
 import org.graphysica.construction.mathematiques.Point;
@@ -34,19 +35,25 @@ import org.graphysica.espace2d.position.PositionReelle;
  * @author Victor Babin <vicbab@Graphysica>
  */
 public class OutilPoint extends Outil {
-    
-    public OutilPoint() {
-        this.aProchaineEtape = true;
+
+    public OutilPoint(boolean aProchaineEtape, 
+           GestionnaireOutils gestionnaireOutils) {
+        super(false, gestionnaireOutils);
     }
-     
+    
     @Override
-    public void prochaineEtape(Position position) {
+    public void prochaineEtape() {
         
     }
 
     @Override
-    public Element derniereEtape(Position position) {
-        return new PointConcret(new PositionReelle(position.getValeur()));
+    public void derniereEtape() {
+        PositionReelle position = gestionnaireOutils.getConstruction()
+                .getGestionnaireSelections().getPositionReelle();
+        
+        gestionnaireOutils.getConstruction().executerCommande(
+                new CreerElement(new PointConcret(position), 
+                        gestionnaireOutils.getConstruction()));
     }
     
     

@@ -92,13 +92,20 @@ public class BoutonOutil extends Button {
         super("");
         this.altText = name;
         this.img = chargerImage();
-        ImageView image = new ImageView("/images/icons/" + name + ".png");
+        ImageView image = new ImageView(img);
+        image.setVisible(true);
         image.setPreserveRatio(true);
+        
 //        image.setImage(img);
-        getChildren().add(image);
-        this.setPrefSize(100, 100);
+        this.getChildren().add(image);
+        image.setFitHeight(45);
+        image.setFitWidth(45);
+        this.setPrefSize(45, 45);
+        this.setGraphicTextGap(0);
+        this.setGraphic(image);
     }
 
     
     
 }
+
