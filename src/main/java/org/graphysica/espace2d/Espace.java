@@ -404,12 +404,10 @@ public final class Espace extends ToileRedimensionnable
     }
 
     /**
-     * Défile l'espace selon la variation des positions du curseur.
+     * Défile l'espace selon le déplacement virtuel du curseur.
      */
     private void defiler() {
-        final Vector2D defilement = getPositionCurseur().virtuelle(repere)
-                .subtract(getPositionPrecedenteCurseur().virtuelle(repere));
-        defiler(defilement);
+        defiler(getDeplacementVirtuelCurseur());
     }
 
     /**
@@ -487,8 +485,8 @@ public final class Espace extends ToileRedimensionnable
      *
      * @return la position réelle du curseur.
      */
-    public Vector2D positionReelleCurseur() {
-        return getPositionCurseur().reelle(repere);
+    public PositionReelle getPositionReelleCurseur() {
+        return new PositionReelle(getPositionCurseur().reelle(repere));
     }
 
     /**
@@ -496,8 +494,32 @@ public final class Espace extends ToileRedimensionnable
      *
      * @return la position virtuelle du curseur.
      */
-    public Vector2D positionVirtuelleCurseur() {
-        return getPositionCurseur().virtuelle(repere);
+    public PositionVirtuelle getPositionVirtuelleCurseur() {
+        return new PositionVirtuelle(getPositionCurseur().virtuelle(repere));
+    }
+
+    /**
+     * Récupère le déplacement virtuel du curseur dans l'espace. Ce déplacement
+     * correspond à la distance vectorielle virtuelle de la position précédente
+     * du curseur vers la position actuelle du curseur.
+     *
+     * @return le déplacement virtuel du curseur dans l'espace.
+     */
+    private Vector2D getDeplacementVirtuelCurseur() {
+        return getPositionCurseur().virtuelle(repere)
+                .subtract(getPositionPrecedenteCurseur().virtuelle(repere));
+    }
+
+    /**
+     * Récupère le déplacement réel du curseur dans l'espace. Ce déplacement
+     * correspond à la distance vectorielle réelle de la position précédente du
+     * curseur vers la position actuelle du curseur.
+     *
+     * @return le déplacement réel du curseur dans l'espace.
+     */
+    public Vector2D getDeplacementReelCurseur() {
+        return getPositionCurseur().reelle(repere)
+                .subtract(getPositionPrecedenteCurseur().reelle(repere));
     }
 
 }

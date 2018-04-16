@@ -19,9 +19,9 @@ package org.graphysica.physique;
 import org.graphysica.construction.Element;
 
 /**
- * Un corps est un élément physique dans l,espace.
+ * Un corps est un élément physique dans l'espace.
  *
- * @author Marc-Antoine
+ * @author Marc-Antoine Ouimet
  */
 public abstract class Corps extends Element {
 

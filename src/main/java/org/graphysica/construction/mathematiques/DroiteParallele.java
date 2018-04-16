@@ -74,9 +74,11 @@ public class DroiteParallele extends Ligne {
      */
     public DroiteParallele(@NotNull final Ligne ligne,
             @NotNull final Point point) {
-        positionExterne1.bind(ligne.positionInterne1Property());
-        positionExterne2.bind(ligne.positionInterne2Property());
-        positionInterne1.bind(point.positionInterneProperty());
+        dependances.add(ligne);
+        dependances.add(point);
+        positionExterne1.bindBidirectional(ligne.positionInterne1Property());
+        positionExterne2.bindBidirectional(ligne.positionInterne2Property());
+        positionInterne1.bindBidirectional(point.positionInterneProperty());
     }
 
     {
