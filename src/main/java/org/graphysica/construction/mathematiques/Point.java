@@ -68,7 +68,7 @@ public abstract class Point extends ObjetMathematique {
     public void deplacer(@NotNull final PositionReelle curseur) {
         positionInterne.setValue(curseur);
     }
-    
+
     public final ObjectProperty<PositionReelle> positionInterneProperty() {
         return positionInterne;
     }
