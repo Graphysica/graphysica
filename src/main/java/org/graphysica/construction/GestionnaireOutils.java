@@ -17,9 +17,9 @@
 package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.espace2d.Espace;
@@ -35,7 +35,8 @@ public class GestionnaireOutils {
     /**
      * L'outil actif de ce gestionnaire d'outils.
      */
-    private Outil outilActif;
+    @Nullable
+    private Outil outilActif = null;
 
     /**
      * La construction de ce gestionnaire d'outils.
@@ -50,14 +51,17 @@ public class GestionnaireOutils {
     /**
      * L'événement de gestion de la pression de la souris sur les espaces.
      */
-    private static final GestionPression GESTION_PRESSION
-            = new GestionPression();
+    private final GestionSouris pressionSouris = new GestionSouris();
 
     /**
      * L'événement de gestion du relâchement de la souris sur les espaces.
      */
-    private static final GestionRelachement GESTION_RELACHEMENT
-            = new GestionRelachement();
+    private final GestionSouris relachementSouris = new GestionSouris();
+
+    /**
+     * L'événement de gestion du mouvement de la souris sur les espaces.
+     */
+    private final GestionSouris mouvementSouris = new GestionSouris();
 
     public GestionnaireOutils(@NotNull final Construction construction,
             @NotNull final ObservableList<Espace> espaces) {
@@ -90,8 +94,10 @@ public class GestionnaireOutils {
      * @param espace l'espace sur lequel ajouter les gestions d'outils.
      */
     private void ajouterGestionOutils(@NotNull final Espace espace) {
-        espace.addEventFilter(MouseEvent.MOUSE_PRESSED, GESTION_PRESSION);
-        espace.addEventFilter(MouseEvent.MOUSE_RELEASED, GESTION_RELACHEMENT);
+        espace.addEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
+        espace.addEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
+        espace.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
+
     }
 
     /**
@@ -100,9 +106,10 @@ public class GestionnaireOutils {
      * @param espace l'espace duquel retirer les gestions d'outils.
      */
     private void retirerGestionOutils(@NotNull final Espace espace) {
-        espace.removeEventFilter(MouseEvent.MOUSE_PRESSED, GESTION_PRESSION);
-        espace.removeEventFilter(MouseEvent.MOUSE_RELEASED,
-                GESTION_RELACHEMENT);
+        espace.removeEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
+        espace.removeEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
+        espace.removeEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
+
     }
 
     public Construction getConstruction() {
@@ -128,23 +135,18 @@ public class GestionnaireOutils {
     }
 
     /**
-     * La gestion de pression de la souris.
+     * La gestion de la souris.
      */
-    private static class GestionPression implements EventHandler {
+    private class GestionSouris implements EventHandler<MouseEvent> {
 
         @Override
-        public void handle(@NotNull final Event evenement) {
-        }
-
-    }
-
-    /**
-     * La gestion de relâchement de la souris.
-     */
-    private static class GestionRelachement implements EventHandler {
-
-        @Override
-        public void handle(@NotNull final Event evenement) {
+        public void handle(@NotNull final MouseEvent evenement) {
+            if (outilActif != null) {
+                outilActif.gerer(evenement);
+                if (!outilActif.aProchaineEtape()) {
+                    // Quoi faire si l'outil actif est épuisé? Instantier un nouveau
+                }
+            }
         }
 
     }
