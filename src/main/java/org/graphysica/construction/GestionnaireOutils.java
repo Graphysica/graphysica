@@ -1,6 +1,3 @@
-/**
- * FXML Controller class
- *
 /*
  * Copyright (C) 2018 Graphysica
  *
@@ -17,29 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.dialogue;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+package org.graphysica.construction;
 
 /**
- * FXML Controller class
  *
-
- * @author Victor Babin
-=======
- * @author Victor Babin <vicbab@Graphysica>
  * @author Victor Babin <vicbab@Graphysica>
  */
-public class EditeurLatexController implements Initializable {
+public class GestionnaireOutils {
 
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+    public Construction getConstruction() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

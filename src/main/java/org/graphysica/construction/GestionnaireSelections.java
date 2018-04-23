@@ -296,6 +296,10 @@ public final class GestionnaireSelections {
         elementsSelectionnes.clear();
     }
 
+    public PositionReelle getPositionReelle() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * Récupère la propriété de position actuelle du curseur sur l'espace actif.
      * Si le curseur quitte l'espace actif, cette position sera fixe à la

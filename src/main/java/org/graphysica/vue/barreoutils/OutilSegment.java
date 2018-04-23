@@ -1,6 +1,3 @@
-/**
- * FXML Controller class
- *
 /*
  * Copyright (C) 2018 Graphysica
  *
@@ -17,29 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.dialogue;
+package org.graphysica.vue.barreoutils;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+import org.graphysica.construction.GestionnaireOutils;
 
 /**
- * FXML Controller class
  *
-
- * @author Victor Babin
-=======
- * @author Victor Babin <vicbab@Graphysica>
  * @author Victor Babin <vicbab@Graphysica>
  */
-public class EditeurLatexController implements Initializable {
+public class OutilSegment extends Outil {
 
-    /**
-     * Initializes the controller class.
-     */
+    public OutilSegment(boolean aProchaineEtape, 
+           GestionnaireOutils gestionnaireOutils) {
+        super(true, gestionnaireOutils);
+    }
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+    public void prochaineEtape() {
+        
+    }
+
+    @Override
+    public void derniereEtape() {
+
+    }
 }
