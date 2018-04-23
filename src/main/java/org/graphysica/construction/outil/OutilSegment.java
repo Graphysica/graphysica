@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.barreoutils;
+package org.graphysica.construction.outil;
 
 import org.graphysica.construction.GestionnaireOutils;
 
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public class OutilSegment extends Outil {
 

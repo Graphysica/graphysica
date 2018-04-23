@@ -16,14 +16,139 @@
  */
 package org.graphysica.construction;
 
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+import org.graphysica.espace2d.Espace;
+import org.graphysica.construction.outil.Outil;
+
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
+ * @author Marc-Antoine Ouimet
  */
 public class GestionnaireOutils {
 
-    public Construction getConstruction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * L'outil actif de ce gestionnaire d'outils.
+     */
+    @Nullable
+    private Outil outilActif = null;
+
+    /**
+     * La construction de ce gestionnaire d'outils.
+     */
+    private final Construction construction;
+
+    /**
+     * Le gestionnaire de sélections de la construction.
+     */
+    private final GestionnaireSelections gestionnaireSelections;
+
+    /**
+     * L'événement de gestion de la pression de la souris sur les espaces.
+     */
+    private final GestionSouris pressionSouris = new GestionSouris();
+
+    /**
+     * L'événement de gestion du relâchement de la souris sur les espaces.
+     */
+    private final GestionSouris relachementSouris = new GestionSouris();
+
+    /**
+     * L'événement de gestion du mouvement de la souris sur les espaces.
+     */
+    private final GestionSouris mouvementSouris = new GestionSouris();
+
+    public GestionnaireOutils(@NotNull final Construction construction,
+            @NotNull final ObservableList<Espace> espaces) {
+        this.construction = construction;
+        this.gestionnaireSelections = construction.getGestionnaireSelections();
+        espaces.addListener(changementEspaces);
+        espaces.forEach((espace) -> {
+            ajouterGestionOutils(espace);
+        });
     }
-    
+
+    /**
+     * L'événement d'actualisation de la liste des espaces.
+     */
+    private final ListChangeListener<Espace> changementEspaces
+            = (@NotNull final ListChangeListener.Change<? extends Espace> changements) -> {
+                while (changements.next()) {
+                    changements.getAddedSubList().stream().forEach((espace) -> {
+                        ajouterGestionOutils(espace);
+                    });
+                    changements.getRemoved().stream().forEach((espace) -> {
+                        retirerGestionOutils(espace);
+                    });
+                }
+            };
+
+    /**
+     * Ajoute les gestions d'outils sur un espace défini.
+     *
+     * @param espace l'espace sur lequel ajouter les gestions d'outils.
+     */
+    private void ajouterGestionOutils(@NotNull final Espace espace) {
+        espace.addEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
+        espace.addEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
+        espace.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
+
+    }
+
+    /**
+     * Retire les gestions d'outils sur un espace défini.
+     *
+     * @param espace l'espace duquel retirer les gestions d'outils.
+     */
+    private void retirerGestionOutils(@NotNull final Espace espace) {
+        espace.removeEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
+        espace.removeEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
+        espace.removeEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
+
+    }
+
+    public Construction getConstruction() {
+        return construction;
+    }
+
+    public GestionnaireSelections getGestionnaireSelections() {
+        return gestionnaireSelections;
+    }
+
+    public Outil getOutilActif() {
+        return outilActif;
+    }
+
+    /**
+     * Définit l'outil actif de ce gestionnaire d'outils. Permet à l'utilisateur
+     * de sélectionner un outil parmi ceux de la barre d'outils.
+     *
+     * @param outilActif le nouvel outil actif.
+     */
+    public void setOutilActif(@NotNull final Outil outilActif) {
+        this.outilActif = outilActif;
+    }
+
+    /**
+     * La gestion de la souris.
+     */
+    private class GestionSouris implements EventHandler<MouseEvent> {
+
+        @Override
+        public void handle(@NotNull final MouseEvent evenement) {
+            if (outilActif != null) {
+                outilActif.gerer(evenement);
+                if (!outilActif.aProchaineEtape()) {
+                    // Quoi faire si l'outil actif est épuisé? Instantier un nouveau
+                }
+            }
+        }
+
+    }
+
 }

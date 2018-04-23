@@ -28,9 +28,6 @@ import javafx.fxml.Initializable;
  *
 
  * @author Victor Babin
-=======
- * @author Victor Babin <vicbab@Graphysica>
- * @author Victor Babin <vicbab@Graphysica>
  */
 public class EditeurLatexController implements Initializable {
 

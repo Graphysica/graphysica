@@ -16,6 +16,7 @@
  */
 package org.graphysica.vue.barreoutils;
 
+import org.graphysica.construction.outil.Outil;
 import com.sun.istack.internal.NotNull;
 import java.io.IOException;
 import java.io.InputStream;

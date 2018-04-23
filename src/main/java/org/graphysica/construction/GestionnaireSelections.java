@@ -106,10 +106,9 @@ public final class GestionnaireSelections {
     public GestionnaireSelections(@NotNull final ObservableList<Espace> espaces,
             @NotNull final Set<Element> elements) {
         espaces.addListener(changementEspaces);
-        for (final Espace espace : espaces) {
+        espaces.forEach((espace) -> {
             ajouterGestionsSelection(espace);
-        }
-        this.espaces = espaces;
+        });
         this.elements = elements;
     }
 
