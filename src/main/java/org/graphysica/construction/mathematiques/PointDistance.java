@@ -99,6 +99,21 @@ public final class PointDistance extends Point {
                 distanceVectorielle));
     }
 
+    @Override
+    public void deplacer(@NotNull final Vector2D deplacement) {
+        distanceVectorielle = distanceVectorielle.add(deplacement).normalize()
+                .scalarMultiply(distance.getValue());
+        actualiserPositionInterne();
+    }
+
+    @Override
+    public void deplacer(@NotNull final PositionReelle curseur) {
+        final Vector2D deplacement = getPositionExterne().distance(curseur);
+        distanceVectorielle = deplacement.normalize().scalarMultiply(
+                distance.getValue());
+        actualiserPositionInterne();
+    }
+    
     public DoubleProperty distanceProperty() {
         return distance;
     }

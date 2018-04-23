@@ -35,7 +35,7 @@ interface Deplaceable {
      * @return {@code true} si l'objet est lié.
      */
     boolean isLie();
-    
+
     /**
      * Déplace l'objet selon le déplacement réel spécifié.
      *

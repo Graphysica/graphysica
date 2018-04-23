@@ -51,7 +51,7 @@ public final class Droite extends Ligne {
      * @param repere le repère de l'espace de dessin de la droite.
      */
     @Override
-    protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
+    public void calculerOrigineEtArrivee(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         final Vector2D point1Virtuel = getPosition1().virtuelle(repere);
         final Vector2D point2Virtuel = getPosition2().virtuelle(repere);

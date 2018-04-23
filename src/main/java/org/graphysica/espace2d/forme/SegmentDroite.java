@@ -44,7 +44,7 @@ public class SegmentDroite extends Ligne {
     }
 
     @Override
-    protected void calculerOrigineEtArrivee(@NotNull final Canvas toile,
+    public void calculerOrigineEtArrivee(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         origineTrace = getPosition1();
         arriveeTrace = getPosition2();

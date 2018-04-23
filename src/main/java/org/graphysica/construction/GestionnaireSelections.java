@@ -187,6 +187,26 @@ public final class GestionnaireSelections {
     }
 
     /**
+     * Récupère l'élément correspondant à une forme définie parmi les éléments
+     * du gestionnaire de sélections.
+     *
+     * @param forme la forme dont on cherche l'élément.
+     * @return l'élément associé à la forme ou {@code null} si aucun élément
+     * n'est associé à la forme spécifiée.
+     */
+    @Nullable
+    private Element elementCorrespondant(@NotNull final Forme forme) {
+        for (final Element element : elements) {
+            for (final Forme composantes : element.getFormes()) {
+                if (composantes == forme) {
+                    return element;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Renvoie l'ensemble des éléments sélectionnés à travers les espaces du
      * gestionnaire de sélections.
      *
@@ -379,20 +399,20 @@ public final class GestionnaireSelections {
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
-            final Set<Forme> formesSelectionnees
+            final Set<Forme> formesSurvolees
                     = getEspace().formesSurvolees();
             final Iterator<Forme> iteration
                     = formesEnSurbrillance.iterator();
             while (iteration.hasNext()) {
                 final Forme forme = iteration.next();
-                if (!formesSelectionnees.contains(forme)
+                if (!formesSurvolees.contains(forme)
                         && !elementsSelectionnesComprennentForme(forme)) {
                     forme.setEnSurvol(false);
                     iteration.remove();
                 }
             }
-            formesEnSurbrillance.addAll(formesSelectionnees);
-            formesSelectionnees.forEach((forme) -> {
+            formesEnSurbrillance.addAll(formesSurvolees);
+            formesSurvolees.forEach((forme) -> {
                 forme.setEnSurvol(true);
             });
             for (final Forme forme : formesEnSurbrillance) {
@@ -452,30 +472,8 @@ public final class GestionnaireSelections {
                     elementCorrespondant = elementCorrespondant(
                             formeSelectionnee);
                 }
-                actualiserSelections(elementCorrespondant, 
+                actualiserSelections(elementCorrespondant,
                         evenement.isControlDown());
-            }
-        }
-
-        /**
-         * Actualise les sélections.
-         *
-         * @param elementSurvole l'élément survolé.
-         */
-        private void actualiserSelections(
-                @Nullable final Element elementSurvole, 
-                final boolean controleAppuyee) {
-            if (elementSurvole != null) {
-                if (controleAppuyee) {
-                    if (elementsSelectionnes.contains(elementSurvole)) {
-                        deselectionner(elementSurvole);
-                    } else {
-                        selectionner(elementSurvole);
-                    }
-                } else if (!elementsSelectionnes.contains(elementSurvole)) {
-                    toutDeselectionner();
-                    selectionner(elementSurvole);
-                }
             }
             
         }
@@ -489,29 +487,26 @@ public final class GestionnaireSelections {
     private class GestionDeselection extends Gestion {
 
         /**
-         * Construit une gestion de désélection sur un espace défini.
+         * Actualise les sélections.
          *
-         * @param espace l'espace à gérer.
+         * @param elementSurvole l'élément survolé.
          */
-        public GestionDeselection(@NotNull final Espace espace) {
-            super(espace);
-        }
-
-        @Override
-        public void handle(@NotNull final MouseEvent evenement) {
-            if (evenement.getButton() == MouseButton.PRIMARY) {
-                Element elementCorrespondant = null;
-                final Set<Forme> formesSurvolees
-                        = getEspace().formesSurvolees();
-                if (!formesSurvolees.isEmpty()) {
-                    final Forme formeSelectionnee = formesSurvolees
-                            .iterator().next();
-                    elementCorrespondant = elementCorrespondant(
-                            formeSelectionnee);
-                }
-                if (elementCorrespondant == null) {
+        private void actualiserSelections(
+                @Nullable final Element elementSurvole,
+                final boolean controleAppuyee) {
+            if (elementSurvole != null) {
+                if (controleAppuyee) {
+                    if (elementsSelectionnes.contains(elementSurvole)) {
+                        deselectionner(elementSurvole);
+                    } else {
+                        selectionner(elementSurvole);
+                    }
+                } else if (!elementsSelectionnes.contains(elementSurvole)) {
                     toutDeselectionner();
+                    selectionner(elementSurvole);
                 }
+            } else {
+                toutDeselectionner();
             }
         }
 
