@@ -127,7 +127,7 @@ public abstract class Ligne extends Forme {
      * @param toile la toile sur laquelle dessiner la ligne.
      * @param repere le repère de l'espace.
      */
-    protected abstract void calculerOrigineEtArrivee(
+    public abstract void calculerOrigineEtArrivee(
             @NotNull final Canvas toile, @NotNull final Repere repere);
 
     protected final int getEpaisseur() {

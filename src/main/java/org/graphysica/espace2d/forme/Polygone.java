@@ -62,9 +62,9 @@ public class Polygone extends Aire {
     }
 
     {
-        for (final ObjectProperty<Position> point : points) {
+        points.forEach((point) -> {
             proprietes.add(point);
-        }
+        });
     }
 
     @Override
