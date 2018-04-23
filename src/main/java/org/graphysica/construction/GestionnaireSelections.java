@@ -46,11 +46,6 @@ import org.graphysica.espace2d.position.PositionReelle;
 public final class GestionnaireSelections {
 
     /**
-     * L'ensemble des espaces compris par ce gestionnaire de sélections.
-     */
-    private final ObservableList<Espace> espaces;
-
-    /**
      * L'ensemble des éléments à considérer dans ce gestionnaire de sélections.
      */
     private final Set<Element> elements;
@@ -86,10 +81,9 @@ public final class GestionnaireSelections {
     public GestionnaireSelections(@NotNull final ObservableList<Espace> espaces,
             @NotNull final Set<Element> elements) {
         espaces.addListener(changementEspaces);
-        for (final Espace espace : espaces) {
+        espaces.forEach((espace) -> {
             ajouterGestionsSelection(espace);
-        }
-        this.espaces = espaces;
+        });
         this.elements = elements;
     }
 
