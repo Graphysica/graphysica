@@ -24,6 +24,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.graphysica.construction.commande.Commande;
 import org.graphysica.construction.mathematiques.ObjetMathematique;
+import org.graphysica.construction.outil.OutilPoint;
 import org.graphysica.espace2d.Espace;
 
 /**
@@ -56,9 +57,16 @@ public final class Construction {
      */
     private final GestionnaireSelections gestionnaireSelections 
             = new GestionnaireSelections(espaces, elements);
+    
+    /**
+     * Le gestionnaire des outils de la construction.
+     */
+    private final GestionnaireOutils gestionnaireOutils 
+            = new GestionnaireOutils(this, espaces);
 
     {
         espaces.add(new Espace(500, 500));
+        gestionnaireOutils.setOutilActif(new OutilPoint(gestionnaireOutils));
     }
     
     /**
