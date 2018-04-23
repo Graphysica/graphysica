@@ -25,7 +25,7 @@ import org.graphysica.espace2d.position.Position;
 
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public abstract class Outil {
 

@@ -18,7 +18,7 @@ package org.graphysica.construction;
 
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public class GestionnaireOutils {
 

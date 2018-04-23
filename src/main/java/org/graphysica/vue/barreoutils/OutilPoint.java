@@ -32,7 +32,7 @@ import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public class OutilPoint extends Outil {
 

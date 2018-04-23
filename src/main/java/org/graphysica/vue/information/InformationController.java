@@ -30,9 +30,6 @@ import javafx.scene.control.Tab;
  *
 
  * @author Victor Babin
-=======
- * @author Victor Babin <vicbab@Graphysica>
- * @author Victor Babin <vicbab@Graphysica>
  */
 public class InformationController implements Initializable {
 

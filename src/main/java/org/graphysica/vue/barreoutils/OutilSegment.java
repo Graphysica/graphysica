@@ -20,7 +20,7 @@ import org.graphysica.construction.GestionnaireOutils;
 
 /**
  *
- * @author Victor Babin <vicbab@Graphysica>
+ * @author Victor Babin
  */
 public class OutilSegment extends Outil {
 
