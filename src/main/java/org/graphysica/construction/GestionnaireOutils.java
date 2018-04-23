@@ -23,7 +23,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.espace2d.Espace;
-import org.graphysica.vue.barreoutils.Outil;
+import org.graphysica.construction.outil.Outil;
 
 /**
  *

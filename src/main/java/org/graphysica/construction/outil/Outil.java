@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.barreoutils;
+package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
 import javafx.collections.ObservableList;

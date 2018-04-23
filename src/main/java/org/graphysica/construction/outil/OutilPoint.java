@@ -14,20 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.vue.barreoutils;
+package org.graphysica.construction.outil;
 
-import com.sun.istack.internal.NotNull;
-import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.construction.Element;
 import org.graphysica.construction.GestionnaireOutils;
-import org.graphysica.construction.commande.Commande;
 import org.graphysica.construction.commande.CreerElement;
-import org.graphysica.construction.mathematiques.Point;
 import org.graphysica.construction.mathematiques.PointConcret;
-import org.graphysica.espace2d.Espace;
-import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.position.PositionReelle;
 
 /**
@@ -48,7 +39,7 @@ public class OutilPoint extends Outil {
 
     @Override
     public void derniereEtape() {
-        PositionReelle position = gestionnaireOutils.getConstruction()
+        final PositionReelle position = gestionnaireOutils
                 .getGestionnaireSelections().getPositionReelle();
         
         gestionnaireOutils.getConstruction().executerCommande(
