@@ -85,7 +85,7 @@ public class Etiquette extends Forme {
             TAILLE_CARACTERE_PAR_DEFAUT);
 
     /**
-     * La position réelle d'ancrage de cette étiquette.
+     * La position d'ancrage de cette étiquette.
      */
     private final ObjectProperty<Position> positionAncrage
             = new SimpleObjectProperty<>();
@@ -242,17 +242,20 @@ public class Etiquette extends Forme {
      */
     private boolean curseurSurEtiquette(@NotNull final Position curseur,
             @NotNull final Repere repere) {
-        final Position coinSuperieurGauche = coinSuperieurGauche(repere);
-        final Position coinInferieurDroit = coinInferieurDroit(repere);
+        final Vector2D positionCurseur = curseur.virtuelle(repere);
+        final Vector2D coinSuperieurGauche = coinSuperieurGauche(repere)
+                .virtuelle(repere);
+        final Vector2D coinInferieurDroit = coinInferieurDroit(repere)
+                .virtuelle(repere);
         boolean curseurSurEtiquette = true;
-        curseurSurEtiquette &= curseur.virtuelle(repere).getX()
-                >= coinSuperieurGauche.virtuelle(repere).getX();
-        curseurSurEtiquette &= curseur.virtuelle(repere).getX()
-                <= coinInferieurDroit.virtuelle(repere).getX();
-        curseurSurEtiquette &= curseur.virtuelle(repere).getY()
-                >= coinSuperieurGauche.virtuelle(repere).getY();
-        curseurSurEtiquette &= curseur.virtuelle(repere).getY()
-                <= coinInferieurDroit.virtuelle(repere).getY();
+        curseurSurEtiquette &= positionCurseur.getX()
+                >= coinSuperieurGauche.getX();
+        curseurSurEtiquette &= positionCurseur.getX()
+                <= coinInferieurDroit.getX();
+        curseurSurEtiquette &= positionCurseur.getY()
+                >= coinSuperieurGauche.getY();
+        curseurSurEtiquette &= positionCurseur.getY()
+                <= coinInferieurDroit.getY();
         return curseurSurEtiquette;
     }
 
@@ -275,7 +278,7 @@ public class Etiquette extends Forme {
      */
     private Position coinInferieurDroit(@NotNull final Repere repere) {
         return coinSuperieurGauche(repere).deplacer(
-                new Vector2D(getLargeur(), -getHauteur()), VIRTUELLE,
+                new Vector2D(getLargeur(), getHauteur()), VIRTUELLE,
                 repere);
     }
 

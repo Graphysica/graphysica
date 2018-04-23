@@ -106,14 +106,6 @@ public final class Construction {
         return espace;
     }
     
-    public void annuler() {
-        gestionnaireCommandes.annuler();
-    }
-    
-    public void refaire() {
-        gestionnaireCommandes.refaire();
-    }
-    
     public Espace getEspace() {
         return espaces.get(0);
     }
@@ -122,9 +114,12 @@ public final class Construction {
         return espaces;
     }
 
+    public GestionnaireCommandes getGestionnaireCommandes() {
+        return gestionnaireCommandes;
+    }
+    
     public GestionnaireSelections getGestionnaireSelections() {
         return gestionnaireSelections;
     }
-    
     
 }

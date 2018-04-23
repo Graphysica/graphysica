@@ -14,25 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.construction.mathematiques;
+package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
-import org.graphysica.espace2d.position.PositionReelle;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
- * Un point concret est une position réelle indépendante dans l'espace.
+ * Les objets déplaceables peuvent être déplacés selon un déplacement réel.
+ * Cependant, des objets liés (définis par intersection, par exemple) ne peuvent
+ * pas être expréssément être déplacés.
  *
  * @author Marc-Antoine Ouimet
  */
-public final class PointConcret extends Point {
+interface Deplaceable {
 
     /**
-     * Construit un point mathématique à une position réelle spécifiée.
+     * Détermine si l'objet est lié. S'il est lié, il ne peut pas être déplacé
+     * expréssément.
      *
-     * @param position la position réelle du point.
+     * @return {@code true} si l'objet est lié.
      */
-    public PointConcret(@NotNull final PositionReelle position) {
-        positionInterne.setValue(position);
-    }
+    boolean isLie();
+
+    /**
+     * Déplace l'objet selon le déplacement réel spécifié.
+     *
+     * @param deplacement le déplacement réel à effectuer.
+     */
+    void deplacer(@NotNull final Vector2D deplacement);
 
 }

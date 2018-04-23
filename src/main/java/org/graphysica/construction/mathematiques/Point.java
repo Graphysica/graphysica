@@ -16,8 +16,11 @@
  */
 package org.graphysica.construction.mathematiques;
 
+import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.paint.Color;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Taille;
 import org.graphysica.espace2d.position.PositionReelle;
 
@@ -39,10 +42,31 @@ public abstract class Point extends ObjetMathematique {
      */
     protected final Taille taille = Taille.de("point");
     
+    /**
+     * La couleur par défaut des points.
+     */
+    protected static final Color COULEUR_PAR_DEFAUT = Color.BLUE;
+
     {
         formes.add(new org.graphysica.espace2d.forme.Point(
                 positionInterneProperty(), couleurProperty(),
                 tailleProperty()));
+        couleurProperty().setValue(COULEUR_PAR_DEFAUT);
+    }
+
+    @Override
+    public void deplacer(@NotNull final Vector2D deplacement) {
+        positionInterne.setValue(positionInterne.getValue()
+                .deplacer(deplacement));
+    }
+
+    /**
+     * Déplace le point selon la position réelle du curseur.
+     *
+     * @param curseur la position réelle du curseur.
+     */
+    public void deplacer(@NotNull final PositionReelle curseur) {
+        positionInterne.setValue(curseur);
     }
 
     public final ObjectProperty<PositionReelle> positionInterneProperty() {

@@ -19,7 +19,6 @@ package org.graphysica.construction.mathematiques;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Taille;
 import org.graphysica.espace2d.position.PositionReelle;
 
@@ -46,7 +45,7 @@ public abstract class Ligne extends ObjetMathematique {
      */
     protected final ObjectProperty<PositionReelle> positionInterne2
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
-    
+
     public ObjectProperty<PositionReelle> positionInterne1Property() {
         return positionInterne1;
     }

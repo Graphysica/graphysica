@@ -24,16 +24,20 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Grille;
+import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.position.PositionReelle;
+import org.graphysica.espace2d.position.PositionVirtuelle;
 
 /**
  * Le gestionnaire de sélections permet à l'utilisateur d'interagir avec la
@@ -51,6 +55,11 @@ public final class GestionnaireSelections {
     private final ObservableList<Espace> espaces;
 
     /**
+     * L'espace actuellement contrôlé par l'utilisateur.
+     */
+    private Espace espaceActif;
+
+    /**
      * L'ensemble des éléments à considérer dans ce gestionnaire de sélections.
      */
     private final Set<Element> elements;
@@ -66,6 +75,11 @@ public final class GestionnaireSelections {
     private final Set<Forme> formesEnSurbrillance = new HashSet<>();
 
     /**
+     * L'association des espaces à leur gestion d'entrée de curseur.
+     */
+    private final Map<Espace, GestionEntree> gestionsEntree = new HashMap<>();
+
+    /**
      * L'association des espaces à leur gestion de survol de formes.
      */
     private final Map<Espace, GestionSurvol> gestionsSurvol = new HashMap<>();
@@ -74,6 +88,12 @@ public final class GestionnaireSelections {
      * L'association des espaces à leur gestion de sélection d'éléments.
      */
     private final Map<Espace, GestionSelection> gestionsSelection
+            = new HashMap<>();
+
+    /**
+     * L'association des espaces à leur gestion de désélection d'éléments.
+     */
+    private final Map<Espace, GestionSelection> gestionsDeselection
             = new HashMap<>();
 
     /**
@@ -114,12 +134,19 @@ public final class GestionnaireSelections {
      * @param espace l'espace à gérer.
      */
     private void ajouterGestionsSelection(@NotNull final Espace espace) {
+        final GestionEntree gestionEntree = new GestionEntree(espace);
+        espace.addEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
+        gestionsEntree.put(espace, gestionEntree);
         final GestionSurvol gestionSurvol = new GestionSurvol(espace);
         espace.addEventFilter(MouseEvent.MOUSE_MOVED, gestionSurvol);
         gestionsSurvol.put(espace, gestionSurvol);
         final GestionSelection gestionSelection = new GestionSelection(espace);
-        espace.addEventFilter(MouseEvent.MOUSE_CLICKED, gestionSelection);
+        espace.addEventFilter(MouseEvent.MOUSE_PRESSED, gestionSelection);
         gestionsSelection.put(espace, gestionSelection);
+        final GestionDeselection gestionDeselection = new GestionDeselection(
+                espace);
+        espace.addEventFilter(MouseEvent.MOUSE_CLICKED, gestionDeselection);
+        gestionsDeselection.put(espace, gestionSelection);
     }
 
     /**
@@ -129,10 +156,54 @@ public final class GestionnaireSelections {
      * sélections.
      */
     private void retirerGestionsSelection(@NotNull final Espace espace) {
+        espace.removeEventFilter(MouseEvent.MOUSE_ENTERED,
+                gestionsEntree.remove(espace));
         espace.removeEventFilter(MouseEvent.MOUSE_MOVED,
                 gestionsSurvol.remove(espace));
-        espace.removeEventFilter(MouseEvent.MOUSE_CLICKED,
+        espace.removeEventFilter(MouseEvent.MOUSE_PRESSED,
                 gestionsSelection.remove(espace));
+        espace.removeEventFilter(MouseEvent.MOUSE_CLICKED,
+                gestionsDeselection.remove(espace));
+    }
+
+    /**
+     * Récupère l'élément correspondant à une forme définie parmi les éléments
+     * du gestionnaire de sélections.
+     *
+     * @param forme la forme dont on cherche l'élément.
+     * @return l'élément associé à la forme ou {@code null} si aucun élément
+     * n'est associé à la forme spécifiée.
+     */
+    @Nullable
+    private Element elementCorrespondant(@NotNull final Forme forme) {
+        for (final Element element : elements) {
+            for (final Forme composantes : element.getFormes()) {
+                if (composantes == forme) {
+                    return element;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Récupère l'élément correspondant à une forme définie parmi les éléments
+     * du gestionnaire de sélections.
+     *
+     * @param forme la forme dont on cherche l'élément.
+     * @return l'élément associé à la forme ou {@code null} si aucun élément
+     * n'est associé à la forme spécifiée.
+     */
+    @Nullable
+    private Element elementCorrespondant(@NotNull final Forme forme) {
+        for (final Element element : elements) {
+            for (final Forme composantes : element.getFormes()) {
+                if (composantes == forme) {
+                    return element;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -230,15 +301,96 @@ public final class GestionnaireSelections {
     }
 
     /**
+     * Récupère la propriété de position actuelle du curseur sur l'espace actif.
+     * Si le curseur quitte l'espace actif, cette position sera fixe à la
+     * dernière position enregistrée sur l'espace précédent.
+     *
+     * @return la propriété de position actuelle du curseur parmi les espaces.
+     */
+    public ObjectProperty<Position> positionCurseurProperty() {
+        return espaceActif.positionCurseurProperty();
+    }
+
+    /**
+     * Récupère la position actuelle réelle du curseur sur l'espace actif.
+     *
+     * @return la position actuelle réelle du curseur parmi les espaces.
+     */
+    public PositionReelle positionReelleCurseur() {
+        return espaceActif.getPositionReelleCurseur();
+    }
+
+    /**
+     * Récupère la position actuelle virtuelle du curseur sur l'espace actif.
+     *
+     * @return la position actuelle virtuelle du curseur parmi les espaces.
+     */
+    public PositionVirtuelle positionVirtuelleCurseur() {
+        return espaceActif.getPositionVirtuelleCurseur();
+    }
+
+    /**
+     * Récupère le déplacement réel du curseur sur l'espace actif. Ce
+     * déplacement permet de déplacer des éléments dans un espace.
+     *
+     * @return le déplacement réel du curseur parmi les espaces.
+     */
+    public Vector2D deplacementReelCurseur() {
+        return espaceActif.getDeplacementReelCurseur();
+    }
+
+    /**
+     * Une gestion sur un espace.
+     */
+    private abstract class Gestion implements EventHandler<MouseEvent> {
+
+        /**
+         * L'espace de cette gestion.
+         */
+        private final Espace espace;
+
+        /**
+         * Construit une gestion sur un espace défini.
+         *
+         * @param espace l'espace à gérer.
+         */
+        public Gestion(@NotNull final Espace espace) {
+            this.espace = espace;
+        }
+
+        public Espace getEspace() {
+            return espace;
+        }
+
+    }
+
+    /**
+     * Une gestion d'entrée de curseur sur un espace actualise l'espace actif du
+     * gestionnaire de sélections.
+     */
+    private class GestionEntree extends Gestion {
+
+        /**
+         * Construit une gestion d'entrée sur un espace défini.
+         *
+         * @param espace l'espace à gérer.
+         */
+        public GestionEntree(@NotNull final Espace espace) {
+            super(espace);
+        }
+
+        @Override
+        public void handle(@NotNull final MouseEvent evenement) {
+            espaceActif = getEspace();
+        }
+
+    }
+
+    /**
      * Une gestion de survol s'occupe d'actualiser l'état de survol des formes
      * parmi les espaces de ce gestionnaire de sélections.
      */
-    private class GestionSurvol implements EventHandler<MouseEvent> {
-
-        /**
-         * L'espace de cette gestion de survol.
-         */
-        private final Espace espace;
+    private class GestionSurvol extends Gestion {
 
         /**
          * Construit une gestion de survol de formes sur un espace défini.
@@ -246,30 +398,30 @@ public final class GestionnaireSelections {
          * @param espace l'espace à gérer.
          */
         public GestionSurvol(@NotNull final Espace espace) {
-            this.espace = espace;
+            super(espace);
         }
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
-            final Set<Forme> formesSelectionnees
-                    = espace.formesSurvolees();
+            final Set<Forme> formesSurvolees
+                    = getEspace().formesSurvolees();
             final Iterator<Forme> iteration
                     = formesEnSurbrillance.iterator();
             while (iteration.hasNext()) {
                 final Forme forme = iteration.next();
-                if (!formesSelectionnees.contains(forme)
+                if (!formesSurvolees.contains(forme)
                         && !elementsSelectionnesComprennentForme(forme)) {
                     forme.setEnSurvol(false);
                     iteration.remove();
                 }
             }
-            formesEnSurbrillance.addAll(formesSelectionnees);
-            formesSelectionnees.forEach((forme) -> {
+            formesEnSurbrillance.addAll(formesSurvolees);
+            formesSurvolees.forEach((forme) -> {
                 forme.setEnSurvol(true);
             });
             for (final Forme forme : formesEnSurbrillance) {
                 if (!(forme instanceof Grille)) {
-                    espace.setCursor(Cursor.HAND);
+                    getEspace().setCursor(Cursor.HAND);
                     break;
                 }
             }
@@ -299,14 +451,9 @@ public final class GestionnaireSelections {
 
     /**
      * Une gestion de sélection permet de sélectionner des éléments à partir des
-     * formes dans les espaces.
+     * formes dans un espace.
      */
-    private class GestionSelection implements EventHandler<MouseEvent> {
-
-        /**
-         * L'espace de cette gestion de sélection.
-         */
-        private final Espace espace;
+    private class GestionSelection extends Gestion {
 
         /**
          * Construit une gestion de sélection sur un espace défini.
@@ -314,7 +461,7 @@ public final class GestionnaireSelections {
          * @param espace l'espace à gérer.
          */
         public GestionSelection(@NotNull final Espace espace) {
-            this.espace = espace;
+            super(espace);
         }
 
         @Override
@@ -322,49 +469,49 @@ public final class GestionnaireSelections {
             if (evenement.getButton() == MouseButton.PRIMARY) {
                 Element elementCorrespondant = null;
                 final Set<Forme> formesSurvolees
-                        = espace.formesSurvolees();
+                        = getEspace().formesSurvolees();
                 if (!formesSurvolees.isEmpty()) {
                     final Forme formeSelectionnee = formesSurvolees
                             .iterator().next();
                     elementCorrespondant = elementCorrespondant(
                             formeSelectionnee);
                 }
-                if (evenement.isControlDown()) {
-                    if (elementCorrespondant != null) {
-                        if (elementsSelectionnes.contains(
-                                elementCorrespondant)) {
-                            deselectionner(elementCorrespondant);
-                        } else {
-                            selectionner(elementCorrespondant);
-                        }
-                    }
-                } else {
-                    toutDeselectionner();
-                    if (elementCorrespondant != null) {
-                        selectionner(elementCorrespondant);
-                    }
-                }
+                actualiserSelections(elementCorrespondant,
+                        evenement.isControlDown());
             }
+            
         }
 
+    }
+
+    /**
+     * Une gestion de désélection permet de désélectionner des éléments à partir
+     * des formes dans un espace.
+     */
+    private class GestionDeselection extends Gestion {
+
         /**
-         * Récupère l'élément correspondant à une forme définie parmi les
-         * éléments du gestionnaire de sélections.
+         * Actualise les sélections.
          *
-         * @param forme la forme dont on cherche l'élément.
-         * @return l'élément associé à la forme ou {@code null} si aucun élément
-         * n'est associé à la forme spécifiée.
+         * @param elementSurvole l'élément survolé.
          */
-        @Nullable
-        private Element elementCorrespondant(@NotNull final Forme forme) {
-            for (final Element element : elements) {
-                for (final Forme composantes : element.getFormes()) {
-                    if (composantes == forme) {
-                        return element;
+        private void actualiserSelections(
+                @Nullable final Element elementSurvole,
+                final boolean controleAppuyee) {
+            if (elementSurvole != null) {
+                if (controleAppuyee) {
+                    if (elementsSelectionnes.contains(elementSurvole)) {
+                        deselectionner(elementSurvole);
+                    } else {
+                        selectionner(elementSurvole);
                     }
+                } else if (!elementsSelectionnes.contains(elementSurvole)) {
+                    toutDeselectionner();
+                    selectionner(elementSurvole);
                 }
+            } else {
+                toutDeselectionner();
             }
-            return null;
         }
 
     }
