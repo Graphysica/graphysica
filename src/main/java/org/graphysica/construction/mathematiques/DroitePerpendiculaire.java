@@ -60,12 +60,17 @@ public class DroitePerpendiculaire extends Ligne {
     private final InvalidationListener evenementActualisation
             = (@NotNull final Observable observable) -> {
                 final Vector2D distanceParallele = positionExterne1.getValue()
-                .distance(positionExterne2.getValue());
+                        .distance(positionExterne2.getValue());
                 final Vector2D distancePerpendiculaire = new Vector2D(
                         -distanceParallele.getY(), distanceParallele.getX());
                 positionInterne2.setValue(positionInterne1.getValue().deplacer(
                         distancePerpendiculaire));
             };
+    
+    /**
+     * Le point par lequel traverse cette droite perpendiculaire.
+     */
+    private final Point point;
 
     /**
      * Construit une droite perpendiculaire à une ligne et passant par un point
@@ -76,9 +81,12 @@ public class DroitePerpendiculaire extends Ligne {
      */
     public DroitePerpendiculaire(@NotNull final Ligne ligne,
             @NotNull final Point point) {
-        positionExterne1.bind(ligne.positionInterne1Property());
-        positionExterne2.bind(ligne.positionInterne2Property());
-        positionInterne1.bind(point.positionInterneProperty());
+        dependances.add(ligne);
+        dependances.add(point);
+        this.point = point;
+        positionExterne1.bindBidirectional(ligne.positionInterne1Property());
+        positionExterne2.bindBidirectional(ligne.positionInterne2Property());
+        positionInterne1.bindBidirectional(point.positionInterneProperty());
     }
 
     {
@@ -89,4 +97,9 @@ public class DroitePerpendiculaire extends Ligne {
                 positionInterne1, positionInterne2));
     }
 
+    @Override
+    public void deplacer(@NotNull final Vector2D deplacement) {
+        point.deplacer(deplacement);
+    }
+    
 }

@@ -40,7 +40,7 @@ public class Point extends Forme {
     private static final Color COULEUR_BORDURE = Color.BLACK;
 
     /**
-     * La position réelle du point exprimée en mètres selon la base canonique.
+     * La position du point exprimée en mètres selon la base canonique.
      */
     private final ObjectProperty<Position> position
             = new SimpleObjectProperty<>();
