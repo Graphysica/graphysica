@@ -21,7 +21,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
 import org.graphysica.construction.Element;
-import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Un objet mathématique peut être construit dans le cadre d'une construction.

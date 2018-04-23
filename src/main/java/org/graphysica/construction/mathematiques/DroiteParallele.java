@@ -64,6 +64,11 @@ public class DroiteParallele extends Ligne {
                 positionInterne2.setValue(positionExterne2.getValue().deplacer(
                         distance));
             };
+    
+    /**
+     * Le point par lequel traverse cette droite parallèle.
+     */
+    private final Point point;
 
     /**
      * Construit une droite parallèle à une ligne et passant par un point
@@ -76,6 +81,7 @@ public class DroiteParallele extends Ligne {
             @NotNull final Point point) {
         dependances.add(ligne);
         dependances.add(point);
+        this.point = point;
         positionExterne1.bindBidirectional(ligne.positionInterne1Property());
         positionExterne2.bindBidirectional(ligne.positionInterne2Property());
         positionInterne1.bindBidirectional(point.positionInterneProperty());
@@ -89,4 +95,9 @@ public class DroiteParallele extends Ligne {
                 positionInterne1, positionInterne2));
     }
 
+    @Override
+    public void deplacer(@NotNull final Vector2D deplacement) {
+        point.deplacer(deplacement);
+    }
+    
 }

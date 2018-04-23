@@ -17,7 +17,6 @@
 package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
-import javafx.scene.paint.Color;
 import org.graphysica.espace2d.position.PositionReelle;
 
 /**
@@ -34,7 +33,6 @@ public final class PointConcret extends Point {
      */
     public PointConcret(@NotNull final PositionReelle position) {
         positionInterne.setValue(position);
-        couleurProperty().setValue(Color.BLUE);
     }
 
 }
