@@ -55,11 +55,6 @@ public final class GestionnaireSelections {
     private Espace espaceActif;
 
     /**
-     * L'espace actuellement contrôlé par l'utilisateur.
-     */
-    private Espace espaceActif;
-
-    /**
      * L'ensemble des éléments à considérer dans ce gestionnaire de sélections.
      */
     private final Set<Element> elements;
@@ -142,10 +137,6 @@ public final class GestionnaireSelections {
         final GestionSelection gestionSelection = new GestionSelection(espace);
         espace.addEventFilter(MouseEvent.MOUSE_PRESSED, gestionSelection);
         gestionsSelection.put(espace, gestionSelection);
-        final GestionDeselection gestionDeselection = new GestionDeselection(
-                espace);
-        espace.addEventFilter(MouseEvent.MOUSE_CLICKED, gestionDeselection);
-        gestionsDeselection.put(espace, gestionSelection);
     }
 
     /**
@@ -163,46 +154,6 @@ public final class GestionnaireSelections {
                 gestionsSelection.remove(espace));
         espace.removeEventFilter(MouseEvent.MOUSE_CLICKED,
                 gestionsDeselection.remove(espace));
-    }
-
-    /**
-     * Récupère l'élément correspondant à une forme définie parmi les éléments
-     * du gestionnaire de sélections.
-     *
-     * @param forme la forme dont on cherche l'élément.
-     * @return l'élément associé à la forme ou {@code null} si aucun élément
-     * n'est associé à la forme spécifiée.
-     */
-    @Nullable
-    private Element elementCorrespondant(@NotNull final Forme forme) {
-        for (final Element element : elements) {
-            for (final Forme composantes : element.getFormes()) {
-                if (composantes == forme) {
-                    return element;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Récupère l'élément correspondant à une forme définie parmi les éléments
-     * du gestionnaire de sélections.
-     *
-     * @param forme la forme dont on cherche l'élément.
-     * @return l'élément associé à la forme ou {@code null} si aucun élément
-     * n'est associé à la forme spécifiée.
-     */
-    @Nullable
-    private Element elementCorrespondant(@NotNull final Forme forme) {
-        for (final Element element : elements) {
-            for (final Forme composantes : element.getFormes()) {
-                if (composantes == forme) {
-                    return element;
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -496,19 +447,10 @@ public final class GestionnaireSelections {
             }
         }
 
-    }
-
-    /**
-     * Une gestion de désélection permet de désélectionner des éléments à partir
-     * des formes dans un espace.
-     */
-    private class GestionDeselection extends Gestion {
-
         /**
          * Actualise les sélections.
          *
          * @param elementSurvole l'élément survolé.
-         * @param controleAppuyee si la touche contrôle est appuyée.
          */
         private void actualiserSelections(
                 @Nullable final Element elementSurvole,
