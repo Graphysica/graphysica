@@ -508,6 +508,7 @@ public final class GestionnaireSelections {
          * Actualise les sélections.
          *
          * @param elementSurvole l'élément survolé.
+         * @param controleAppuyee si la touche contrôle est appuyée.
          */
         private void actualiserSelections(
                 @Nullable final Element elementSurvole,
