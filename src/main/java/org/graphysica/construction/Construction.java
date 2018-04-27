@@ -23,7 +23,6 @@ import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.graphysica.construction.commande.Commande;
-import org.graphysica.construction.mathematiques.ObjetMathematique;
 import org.graphysica.construction.outil.OutilCreationPoint;
 import org.graphysica.espace2d.Espace;
 
