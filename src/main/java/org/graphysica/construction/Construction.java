@@ -24,7 +24,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.graphysica.construction.commande.Commande;
 import org.graphysica.construction.mathematiques.ObjetMathematique;
-import org.graphysica.construction.outil.OutilPoint;
+import org.graphysica.construction.outil.OutilCreationPoint;
 import org.graphysica.espace2d.Espace;
 
 /**
@@ -33,19 +33,19 @@ import org.graphysica.espace2d.Espace;
  * @author Marc-Antoine Ouimet
  */
 public final class Construction {
-    
+
     /**
      * Les espaces de la construction.
      */
-    private final ObservableList<Espace> espaces 
+    private final ObservableList<Espace> espaces
             = FXCollections.observableArrayList();
-    
+
     /**
      * Le gestionnaire des commandes de la construction.
      */
     private final GestionnaireCommandes gestionnaireCommandes
             = new GestionnaireCommandes();
-    
+
     /**
      * L'ensemble des éléments de la construction. Comprend les corps physiques
      * et leurs formes d'affichage.
@@ -55,20 +55,20 @@ public final class Construction {
     /**
      * Le gestionnaire des sélections de la construction.
      */
-    private final GestionnaireSelections gestionnaireSelections 
+    private final GestionnaireSelections gestionnaireSelections
             = new GestionnaireSelections(espaces, elements);
-    
+
     /**
      * Le gestionnaire des outils de la construction.
      */
-    private final GestionnaireOutils gestionnaireOutils 
+    private final GestionnaireOutils gestionnaireOutils
             = new GestionnaireOutils(this, espaces);
 
     {
         espaces.add(new Espace(500, 500));
-        gestionnaireOutils.setOutilActif(new OutilPoint(gestionnaireOutils));
+        gestionnaireOutils.setOutilActif(new OutilCreationPoint(gestionnaireOutils));
     }
-    
+
     /**
      * Exécute une commande.
      *
@@ -79,41 +79,35 @@ public final class Construction {
     }
 
     /**
-     * Ajoute un élément à la construction.
+     * Ajoute des éléments à la construction.
      *
-     * @param element l'élément à ajouter.
-     * @return {@code true} si l'ensembles des éléments ne contenait pas déjà
-     * l'élément spécifié.
+     * @param elements les éléments à ajouter.
      */
-    public boolean ajouterElement(@NotNull final Element element) {
-        if (element instanceof ObjetMathematique) {
-            getEspace().getFormes().addAll(
-                    ((ObjetMathematique) element).getFormes());
+    public void ajouter(@NotNull final Element... elements) {
+        for (final Element element : elements) {
+            getEspace().getFormes().addAll(element.getFormes());
+            this.elements.add(element);
         }
-        return elements.add(element);
     }
 
     /**
-     * Retire un élément de la construction.
+     * Retire des éléments de la construction.
      *
-     * @param element l'élément à retirer.
-     * @return {@code true} si l'ensemble des éléments contenait l'élément
-     * spécifié.
+     * @param elements les éléments à retirer.
      */
-    public boolean retirerElement(@NotNull final Element element) {
-        if (element instanceof ObjetMathematique) {
-            getEspace().getFormes().removeAll(
-                    ((ObjetMathematique) element).getFormes());
+    public void retirer(@NotNull final Element... elements) {
+        for (final Element element : elements) {
+            getEspace().getFormes().removeAll(element.getFormes());
+            this.elements.remove(element);
         }
-        return elements.remove(element);
     }
-    
+
     public Espace dupliquerEspace() {
         final Espace espace = new Espace(getEspace());
         espaces.add(espace);
         return espace;
     }
-    
+
     public Espace getEspace() {
         return espaces.get(0);
     }
@@ -125,9 +119,9 @@ public final class Construction {
     public GestionnaireCommandes getGestionnaireCommandes() {
         return gestionnaireCommandes;
     }
-    
+
     public GestionnaireSelections getGestionnaireSelections() {
         return gestionnaireSelections;
     }
-    
+
 }

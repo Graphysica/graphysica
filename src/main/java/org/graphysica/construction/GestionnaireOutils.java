@@ -76,17 +76,17 @@ public class GestionnaireOutils {
     /**
      * L'événement d'actualisation de la liste des espaces.
      */
-    private final ListChangeListener<Espace> changementEspaces
-            = (@NotNull final ListChangeListener.Change<? extends Espace> changements) -> {
-                while (changements.next()) {
-                    changements.getAddedSubList().stream().forEach((espace) -> {
-                        ajouterGestionOutils(espace);
-                    });
-                    changements.getRemoved().stream().forEach((espace) -> {
-                        retirerGestionOutils(espace);
-                    });
-                }
-            };
+    private final ListChangeListener<Espace> changementEspaces = (@NotNull
+            final ListChangeListener.Change<? extends Espace> changements) -> {
+        while (changements.next()) {
+            changements.getAddedSubList().stream().forEach((espace) -> {
+                ajouterGestionOutils(espace);
+            });
+            changements.getRemoved().stream().forEach((espace) -> {
+                retirerGestionOutils(espace);
+            });
+        }
+    };
 
     /**
      * Ajoute les gestions d'outils sur un espace défini.
@@ -109,7 +109,12 @@ public class GestionnaireOutils {
         espace.removeEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
         espace.removeEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
         espace.removeEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
+    }
 
+    public void finOutil() {
+        if (outilActif != null) {
+            setOutilActif(outilActif.dupliquer());
+        }
     }
 
     public Construction getConstruction() {
@@ -143,9 +148,6 @@ public class GestionnaireOutils {
         public void handle(@NotNull final MouseEvent evenement) {
             if (outilActif != null) {
                 outilActif.gerer(evenement);
-                if (!outilActif.aProchaineEtape()) {
-                    // Quoi faire si l'outil actif est épuisé? Instantier un nouveau
-                }
             }
         }
 

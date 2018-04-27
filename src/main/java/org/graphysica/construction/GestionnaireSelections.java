@@ -104,17 +104,17 @@ public final class GestionnaireSelections {
     /**
      * L'événement d'actualisation de la liste des espaces.
      */
-    private final ListChangeListener<Espace> changementEspaces
-            = (@NotNull final ListChangeListener.Change<? extends Espace> changements) -> {
-                while (changements.next()) {
-                    changements.getAddedSubList().stream().forEach((espace) -> {
-                        ajouterGestionsSelection(espace);
-                    });
-                    changements.getRemoved().stream().forEach((espace) -> {
-                        retirerGestionsSelection(espace);
-                    });
-                }
-            };
+    private final ListChangeListener<Espace> changementEspaces = (@NotNull
+            final ListChangeListener.Change<? extends Espace> changements) -> {
+        while (changements.next()) {
+            changements.getAddedSubList().stream().forEach((espace) -> {
+                ajouterGestionsSelection(espace);
+            });
+            changements.getRemoved().stream().forEach((espace) -> {
+                retirerGestionsSelection(espace);
+            });
+        }
+    };
 
     /**
      * Ajoute des modules de gestion de sélection sur un espace défini.
@@ -256,10 +256,6 @@ public final class GestionnaireSelections {
             }
         }
         elementsSelectionnes.clear();
-    }
-
-    public PositionReelle getPositionReelle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -441,7 +437,7 @@ public final class GestionnaireSelections {
                 actualiserSelections(elementCorrespondant,
                         evenement.isControlDown());
             }
-            
+
         }
 
         /**

@@ -258,21 +258,21 @@ public final class Espace extends ToileRedimensionnable
      * ou retire l'événement d'actualisation de l'espace aux formes retirées de
      * la liste.
      */
-    private final ListChangeListener<Forme> changementFormes
-            = (@NotNull final ListChangeListener.Change<? extends Forme> changements) -> {
-                while (changements.next()) {
-                    changements.getAddedSubList().stream().forEach((forme) -> {
-                        forme.getProprietes().stream().forEach((propriete) -> {
-                            propriete.addListener(evenementActualisation);
-                        });
-                    });
-                    changements.getRemoved().stream().forEach((forme) -> {
-                        forme.getProprietes().stream().forEach((propriete) -> {
-                            propriete.removeListener(evenementActualisation);
-                        });
-                    });
-                }
-            };
+    private final ListChangeListener<Forme> changementFormes = (@NotNull
+            final ListChangeListener.Change<? extends Forme> changements) -> {
+        while (changements.next()) {
+            changements.getAddedSubList().stream().forEach((forme) -> {
+                forme.getProprietes().stream().forEach((propriete) -> {
+                    propriete.addListener(evenementActualisation);
+                });
+            });
+            changements.getRemoved().stream().forEach((forme) -> {
+                forme.getProprietes().stream().forEach((propriete) -> {
+                    propriete.removeListener(evenementActualisation);
+                });
+            });
+        }
+    };
 
     /**
      * Dessine une collection de formes sur l'espace.

@@ -21,7 +21,7 @@ import org.graphysica.construction.Construction;
 import org.graphysica.construction.Element;
 
 /**
- * Une commande de création d'élément permet de créer un élément sur une
+ * Une commande de création d'éléments permet de créer des éléments sur une
  * construction. Un élément peut tant bien être un corps physique qu'une forme
  * graphique, et que ça soit pour la prévisualisation ou pour la représentation
  * de l'espace. Un outil créera donc d'abord des éléments de prévisualiation des
@@ -39,35 +39,35 @@ public class CreerElement extends CommandeAnnulable {
     /**
      * L'élément à créer par cette commande.
      */
-    private final Element element;
+    private final Element[] elements;
 
     /**
      * Construit une commande de création d'un élément sur une construction
      * définie.
      *
-     * @param element l'élément à créer.
      * @param construction la construction sur laquelle créer l'élément.
+     * @param elements les éléments à créer.
      */
-    public CreerElement(@NotNull final Element element,
-            @NotNull final Construction construction) {
-        this.element = element;
+    public CreerElement(@NotNull final Construction construction, 
+            @NotNull final Element... elements) {
+        this.elements = elements;
         this.construction = construction;
     }
 
     /**
-     * Ajoute l'élément créé à la construction.
+     * Ajoute les éléments créés à la construction.
      */
     @Override
     public void executer() {
-        construction.ajouterElement(element);
+        construction.ajouter(elements);
     }
 
     /**
-     * Retire l'élément créé de la construction.
+     * Retire les éléments créés de la construction.
      */
     @Override
     public void annuler() {
-        construction.retirerElement(element);
+        construction.retirer(elements);
     }
 
     /**

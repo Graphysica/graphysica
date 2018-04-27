@@ -17,43 +17,40 @@
 package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
-import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.GestionnaireOutils;
+import org.graphysica.espace2d.forme.Forme;
 
 /**
+ * Un outil de création d'élément permet de créer des éléments sur une
+ * construction à partir du gestionnaire d'outils.
  *
- * @author Victor Babin
  * @author Marc-Antoine Ouimet
  */
-public abstract class Outil {
+public abstract class OutilCreationElement extends Outil {
 
     /**
-     * Gestionnaire d'outils pour la construction.
+     * Si cet outil de création d'élément a une prochaine étape.
      */
-    protected final GestionnaireOutils gestionnaireOutils;
+    protected boolean aProchaineEtape = true;
 
     /**
-     * Construit un outil sur un gestionnaire d'outils défini.
+     * La forme de prévisualisation de l'élément à créer.
+     */
+    protected Forme previsualisation;
+
+    /**
+     * Construit un outil de création d'élément au gestionnaire d'outils défini.
      *
-     * @param gestionnaireOutils le gestionnaire d'outils de la construction.
+     * @param gestionnaireOutils le gestionnaire d'outils de cet outil de
+     * création d'élément.
      */
-    public Outil(@NotNull final GestionnaireOutils gestionnaireOutils) {
-        this.gestionnaireOutils = gestionnaireOutils;
+    public OutilCreationElement(
+            @NotNull final GestionnaireOutils gestionnaireOutils) {
+        super(gestionnaireOutils);
     }
 
-    /**
-     * Gère l'événement de la souris dans le contexte de cet outil.
-     *
-     * @param evenement l'événement de la souris.
-     */
-    public abstract void gerer(@NotNull final MouseEvent evenement);
-
-    /**
-     * Duplique cet outil.
-     *
-     * @return l'outil dupliqué.
-     */
-    @NotNull
-    public abstract Outil dupliquer();
+    public boolean aProchaineEtape() {
+        return aProchaineEtape;
+    }
 
 }
