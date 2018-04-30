@@ -16,11 +16,10 @@
  */
 package org.graphysica.espace2d;
 
-import com.sun.istack.internal.NotNull;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Before;
 
 /**
  * Teste les calculs de coordonnées de repère d'espace.
@@ -34,27 +33,28 @@ public class RepereTest {
      */
     private static final double DELTA = 1e-8;
 
-    @NotNull
-    private Vector2D origineVirtuelle;
-    @NotNull
-    private Vector2D echelle;
-    @NotNull
-    private Repere repere;
-
-    @Before
-    public void initialiser() {
-        origineVirtuelle = new Vector2D(500, 500);
-        echelle = new Vector2D(50, 50);
-        repere = new Repere(origineVirtuelle, echelle);
-    }
+    /**
+     * L'origine virtuelle du repère de test.
+     */
+    private static final Vector2D ORIGINE_VIRTUELLE = new Vector2D(500, 500);
+    
+    /**
+     * L'échelle du repère de test.
+     */
+    private static final Vector2D ECHELLE = new Vector2D(50, 50);
+    
+    /**
+     * Le repère de test.
+     */
+    private static final Repere REPERE = new Repere(ORIGINE_VIRTUELLE, ECHELLE);
 
     @Test
     public void testAbscisseVirtuelle() {
-        assertEquals(500 - 2 * 50, repere.abscisseVirtuelle(-2), DELTA);
-        assertEquals(500 - 50, repere.abscisseVirtuelle(-1), DELTA);
-        assertEquals(500, repere.abscisseVirtuelle(0), DELTA);
-        assertEquals(500 + 50, repere.abscisseVirtuelle(1), DELTA);
-        assertEquals(500 + 2 * 50, repere.abscisseVirtuelle(2), DELTA);
+        assertEquals(500 - 2 * 50, REPERE.abscisseVirtuelle(-2), DELTA);
+        assertEquals(500 - 50, REPERE.abscisseVirtuelle(-1), DELTA);
+        assertEquals(500, REPERE.abscisseVirtuelle(0), DELTA);
+        assertEquals(500 + 50, REPERE.abscisseVirtuelle(1), DELTA);
+        assertEquals(500 + 2 * 50, REPERE.abscisseVirtuelle(2), DELTA);
     }
 
     @Test
@@ -66,21 +66,21 @@ public class RepereTest {
             500 + 50,
             500 + 2 * 50
         }, new double[]{
-            repere.abscisseVirtuelle(-2),
-            repere.abscisseVirtuelle(-1),
-            repere.abscisseVirtuelle(0),
-            repere.abscisseVirtuelle(1),
-            repere.abscisseVirtuelle(2)
+            REPERE.abscisseVirtuelle(-2),
+            REPERE.abscisseVirtuelle(-1),
+            REPERE.abscisseVirtuelle(0),
+            REPERE.abscisseVirtuelle(1),
+            REPERE.abscisseVirtuelle(2)
         }, DELTA);
     }
 
     @Test
     public void testOrdonneeVirtuelle() {
-        assertEquals(500 + 2 * 50, repere.ordonneeVirtuelle(-2), DELTA);
-        assertEquals(500 + 50, repere.ordonneeVirtuelle(-1), DELTA);
-        assertEquals(500, repere.ordonneeVirtuelle(0), DELTA);
-        assertEquals(500 - 50, repere.ordonneeVirtuelle(1), DELTA);
-        assertEquals(500 - 2 * 50, repere.ordonneeVirtuelle(2), DELTA);
+        assertEquals(500 + 2 * 50, REPERE.ordonneeVirtuelle(-2), DELTA);
+        assertEquals(500 + 50, REPERE.ordonneeVirtuelle(-1), DELTA);
+        assertEquals(500, REPERE.ordonneeVirtuelle(0), DELTA);
+        assertEquals(500 - 50, REPERE.ordonneeVirtuelle(1), DELTA);
+        assertEquals(500 - 2 * 50, REPERE.ordonneeVirtuelle(2), DELTA);
     }
 
     @Test
@@ -92,51 +92,51 @@ public class RepereTest {
             500 - 50,
             500 - 2 * 50
         }, new double[]{
-            repere.ordonneeVirtuelle(-2),
-            repere.ordonneeVirtuelle(-1),
-            repere.ordonneeVirtuelle(0),
-            repere.ordonneeVirtuelle(1),
-            repere.ordonneeVirtuelle(2)
+            REPERE.ordonneeVirtuelle(-2),
+            REPERE.ordonneeVirtuelle(-1),
+            REPERE.ordonneeVirtuelle(0),
+            REPERE.ordonneeVirtuelle(1),
+            REPERE.ordonneeVirtuelle(2)
         }, DELTA);
     }
 
     @Test
     public void testPositionVirtuelle() {
         assertEquals(new Vector2D(500 - 2 * 50, 500 + 2 * 50),
-                repere.positionVirtuelle(new Vector2D(-2, -2)));
+                REPERE.positionVirtuelle(new Vector2D(-2, -2)));
         assertEquals(new Vector2D(500 - 2 * 50, 500 + 50),
-                repere.positionVirtuelle(new Vector2D(-2, -1)));
+                REPERE.positionVirtuelle(new Vector2D(-2, -1)));
         assertEquals(new Vector2D(500 - 50, 500 + 2 * 50),
-                repere.positionVirtuelle(new Vector2D(-1, -2)));
+                REPERE.positionVirtuelle(new Vector2D(-1, -2)));
         assertEquals(new Vector2D(500 - 50, 500 + 50),
-                repere.positionVirtuelle(new Vector2D(-1, -1)));
+                REPERE.positionVirtuelle(new Vector2D(-1, -1)));
         assertEquals(new Vector2D(500 - 50, 500),
-                repere.positionVirtuelle(new Vector2D(-1, 0)));
+                REPERE.positionVirtuelle(new Vector2D(-1, 0)));
         assertEquals(new Vector2D(500, 500 + 50),
-                repere.positionVirtuelle(new Vector2D(0, -1)));
+                REPERE.positionVirtuelle(new Vector2D(0, -1)));
         assertEquals(new Vector2D(500, 500),
-                repere.positionVirtuelle(new Vector2D(0, 0)));
+                REPERE.positionVirtuelle(new Vector2D(0, 0)));
         assertEquals(new Vector2D(500, 500 - 50),
-                repere.positionVirtuelle(new Vector2D(0, 1)));
+                REPERE.positionVirtuelle(new Vector2D(0, 1)));
         assertEquals(new Vector2D(500 + 50, 500),
-                repere.positionVirtuelle(new Vector2D(1, 0)));
+                REPERE.positionVirtuelle(new Vector2D(1, 0)));
         assertEquals(new Vector2D(500 + 50, 500 - 50),
-                repere.positionVirtuelle(new Vector2D(1, 1)));
+                REPERE.positionVirtuelle(new Vector2D(1, 1)));
         assertEquals(new Vector2D(500 + 50, 500 - 2 * 50),
-                repere.positionVirtuelle(new Vector2D(1, 2)));
+                REPERE.positionVirtuelle(new Vector2D(1, 2)));
         assertEquals(new Vector2D(500 + 2 * 50, 500 - 50),
-                repere.positionVirtuelle(new Vector2D(2, 1)));
+                REPERE.positionVirtuelle(new Vector2D(2, 1)));
         assertEquals(new Vector2D(500 + 2 * 50, 500 - 2 * 50),
-                repere.positionVirtuelle(new Vector2D(2, 2)));
+                REPERE.positionVirtuelle(new Vector2D(2, 2)));
     }
     
     @Test
     public void testAbscisseReelle() {
-        assertEquals(-2, repere.abscisseReelle(500 - 2 * 50), DELTA);
-        assertEquals(-1, repere.abscisseReelle(500 - 50), DELTA);
-        assertEquals(0, repere.abscisseReelle(500), DELTA);
-        assertEquals(1, repere.abscisseReelle(500 + 50), DELTA);
-        assertEquals(2, repere.abscisseReelle(500 + 2 * 50), DELTA);
+        assertEquals(-2, REPERE.abscisseReelle(500 - 2 * 50), DELTA);
+        assertEquals(-1, REPERE.abscisseReelle(500 - 50), DELTA);
+        assertEquals(0, REPERE.abscisseReelle(500), DELTA);
+        assertEquals(1, REPERE.abscisseReelle(500 + 50), DELTA);
+        assertEquals(2, REPERE.abscisseReelle(500 + 2 * 50), DELTA);
     }
     
     @Test
@@ -148,21 +148,21 @@ public class RepereTest {
             1,
             2
         }, new double[]{
-            repere.abscisseReelle(500 - 2 * 50),
-            repere.abscisseReelle(500 - 50),
-            repere.abscisseReelle(500),
-            repere.abscisseReelle(500 + 50),
-            repere.abscisseReelle(500 + 2 * 50)
+            REPERE.abscisseReelle(500 - 2 * 50),
+            REPERE.abscisseReelle(500 - 50),
+            REPERE.abscisseReelle(500),
+            REPERE.abscisseReelle(500 + 50),
+            REPERE.abscisseReelle(500 + 2 * 50)
         }, DELTA);
     }
 
     @Test
     public void testOrdonneeReelle() {
-        assertEquals(-2, repere.ordonneeReelle(500 + 2 * 50), DELTA);
-        assertEquals(-1, repere.ordonneeReelle(500 + 50), DELTA);
-        assertEquals(0, repere.ordonneeReelle(500), DELTA);
-        assertEquals(1, repere.ordonneeReelle(500 - 50), DELTA);
-        assertEquals(2, repere.ordonneeReelle(500 - 2 * 50), DELTA);
+        assertEquals(-2, REPERE.ordonneeReelle(500 + 2 * 50), DELTA);
+        assertEquals(-1, REPERE.ordonneeReelle(500 + 50), DELTA);
+        assertEquals(0, REPERE.ordonneeReelle(500), DELTA);
+        assertEquals(1, REPERE.ordonneeReelle(500 - 50), DELTA);
+        assertEquals(2, REPERE.ordonneeReelle(500 - 2 * 50), DELTA);
     }
 
     @Test
@@ -174,41 +174,41 @@ public class RepereTest {
             1,
             2
         }, new double[]{
-            repere.ordonneeReelle(500 + 2 * 50),
-            repere.ordonneeReelle(500 + 50),
-            repere.ordonneeReelle(500),
-            repere.ordonneeReelle(500 - 50),
-            repere.ordonneeReelle(500 - 2 * 50)
+            REPERE.ordonneeReelle(500 + 2 * 50),
+            REPERE.ordonneeReelle(500 + 50),
+            REPERE.ordonneeReelle(500),
+            REPERE.ordonneeReelle(500 - 50),
+            REPERE.ordonneeReelle(500 - 2 * 50)
         }, DELTA);
     }
 
     @Test
     public void testPositionsReelles() {
-        assertEquals(new Vector2D(-2, -2), repere.positionReelle(
+        assertEquals(new Vector2D(-2, -2), REPERE.positionReelle(
                 new Vector2D(500 - 2 * 50, 500 + 2 * 50)));
-        assertEquals(new Vector2D(-2, -1), repere.positionReelle(
+        assertEquals(new Vector2D(-2, -1), REPERE.positionReelle(
                 new Vector2D(500 - 2 * 50, 500 + 50)));
-        assertEquals(new Vector2D(-1, -2), repere.positionReelle(
+        assertEquals(new Vector2D(-1, -2), REPERE.positionReelle(
                 new Vector2D(500 - 50, 500 + 2 * 50)));
-        assertEquals(new Vector2D(-1, -1), repere.positionReelle(
+        assertEquals(new Vector2D(-1, -1), REPERE.positionReelle(
                 new Vector2D(500 - 50, 500 + 50)));
-        assertEquals(new Vector2D(-1, 0), repere.positionReelle(
+        assertEquals(new Vector2D(-1, 0), REPERE.positionReelle(
                 new Vector2D(500 - 50, 500)));
-        assertEquals(new Vector2D(0, -1), repere.positionReelle(
+        assertEquals(new Vector2D(0, -1), REPERE.positionReelle(
                 new Vector2D(500, 500 + 50)));
-        assertEquals(new Vector2D(0, 0), repere.positionReelle(
+        assertEquals(new Vector2D(0, 0), REPERE.positionReelle(
                 new Vector2D(500, 500)));
-        assertEquals(new Vector2D(0, 1), repere.positionReelle(
+        assertEquals(new Vector2D(0, 1), REPERE.positionReelle(
                 new Vector2D(500, 500 - 50)));
-        assertEquals(new Vector2D(1, 0), repere.positionReelle(
+        assertEquals(new Vector2D(1, 0), REPERE.positionReelle(
                 new Vector2D(500 + 50, 500)));
-        assertEquals(new Vector2D(1, 1), repere.positionReelle(
+        assertEquals(new Vector2D(1, 1), REPERE.positionReelle(
                 new Vector2D(500 + 50, 500 - 50)));
-        assertEquals(new Vector2D(1, 2), repere.positionReelle(
+        assertEquals(new Vector2D(1, 2), REPERE.positionReelle(
                 new Vector2D(500 + 50, 500 - 2 * 50)));
-        assertEquals(new Vector2D(2, 1), repere.positionReelle(
+        assertEquals(new Vector2D(2, 1), REPERE.positionReelle(
                 new Vector2D(500 + 2 * 50, 500 - 50)));
-        assertEquals(new Vector2D(2, 2), repere.positionReelle(
+        assertEquals(new Vector2D(2, 2), REPERE.positionReelle(
                 new Vector2D(500 + 2 * 50, 500 - 2 * 50)));
     }
     

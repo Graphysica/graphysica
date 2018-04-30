@@ -18,6 +18,7 @@ package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,9 +51,9 @@ import org.graphysica.espace2d.position.PositionVirtuelle;
 public final class GestionnaireSelections {
 
     /**
-     * L'ensemble des espaces compris par ce gestionnaire de sélections.
+     * L'espace actuellement contrôlé par l'utilisateur.
      */
-    private final ObservableList<Espace> espaces;
+    private Espace espaceActif;
 
     /**
      * L'espace actuellement contrôlé par l'utilisateur.
@@ -62,7 +63,7 @@ public final class GestionnaireSelections {
     /**
      * L'ensemble des éléments à considérer dans ce gestionnaire de sélections.
      */
-    private final Set<Element> elements;
+    private final Collection<Element> elements;
 
     /**
      * L'ensemble des éléments sélectionnés en ordre de sélection.
@@ -104,7 +105,7 @@ public final class GestionnaireSelections {
      * @param elements les éléments pouvant être sélectionnés.
      */
     public GestionnaireSelections(@NotNull final ObservableList<Espace> espaces,
-            @NotNull final Set<Element> elements) {
+            @NotNull final Collection<Element> elements) {
         espaces.addListener(changementEspaces);
         espaces.forEach((espace) -> {
             ajouterGestionsSelection(espace);
@@ -115,17 +116,17 @@ public final class GestionnaireSelections {
     /**
      * L'événement d'actualisation de la liste des espaces.
      */
-    private final ListChangeListener<Espace> changementEspaces
-            = (@NotNull final ListChangeListener.Change<? extends Espace> changements) -> {
-                while (changements.next()) {
-                    changements.getAddedSubList().stream().forEach((espace) -> {
-                        ajouterGestionsSelection(espace);
-                    });
-                    changements.getRemoved().stream().forEach((espace) -> {
-                        retirerGestionsSelection(espace);
-                    });
-                }
-            };
+    private final ListChangeListener<Espace> changementEspaces = (@NotNull
+            final ListChangeListener.Change<? extends Espace> changements) -> {
+        while (changements.next()) {
+            changements.getAddedSubList().stream().forEach((espace) -> {
+                ajouterGestionsSelection(espace);
+            });
+            changements.getRemoved().stream().forEach((espace) -> {
+                retirerGestionsSelection(espace);
+            });
+        }
+    };
 
     /**
      * Ajoute des modules de gestion de sélection sur un espace défini.
@@ -163,6 +164,26 @@ public final class GestionnaireSelections {
                 gestionsSelection.remove(espace));
         espace.removeEventFilter(MouseEvent.MOUSE_CLICKED,
                 gestionsDeselection.remove(espace));
+    }
+
+    /**
+     * Récupère l'élément correspondant à une forme définie parmi les éléments
+     * du gestionnaire de sélections.
+     *
+     * @param forme la forme dont on cherche l'élément.
+     * @return l'élément associé à la forme ou {@code null} si aucun élément
+     * n'est associé à la forme spécifiée.
+     */
+    @Nullable
+    private Element elementCorrespondant(@NotNull final Forme forme) {
+        for (final Element element : elements) {
+            for (final Forme composantes : element.getFormes()) {
+                if (composantes == forme) {
+                    return element;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -295,10 +316,6 @@ public final class GestionnaireSelections {
         elementsSelectionnes.clear();
     }
 
-    public PositionReelle getPositionReelle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * Récupère la propriété de position actuelle du curseur sur l'espace actif.
      * Si le curseur quitte l'espace actif, cette position sera fixe à la
@@ -306,8 +323,8 @@ public final class GestionnaireSelections {
      *
      * @return la propriété de position actuelle du curseur parmi les espaces.
      */
-    public ObjectProperty<Position> positionCurseurProperty() {
-        return espaceActif.positionCurseurProperty();
+    public ObjectProperty<PositionReelle> positionCurseurProperty() {
+        return espaceActif.positionReelleCurseurProperty();
     }
 
     /**
@@ -512,7 +529,6 @@ public final class GestionnaireSelections {
                 toutDeselectionner();
             }
         }
-
     }
 
 }

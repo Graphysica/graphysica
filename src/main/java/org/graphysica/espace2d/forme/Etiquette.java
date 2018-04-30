@@ -54,11 +54,6 @@ public class Etiquette extends Forme {
     private static final int TAILLE_CARACTERE_PAR_DEFAUT = 12;
 
     /**
-     * La couleur par défaut des étiquettes.
-     */
-    private static final Color COULEUR_PAR_DEFAUT = Color.BLACK;
-
-    /**
      * Le texte de cette étiquette.
      */
     private final StringProperty texte = new SimpleStringProperty();
@@ -123,9 +118,9 @@ public class Etiquette extends Forme {
      * @param texte le texte de l'étiquette.
      * @param positionAncrage la position d'ancrage de l'étiquette.
      */
-    public Etiquette(@NotNull final String texte,
+    public Etiquette(@NotNull final StringProperty texte,
             @NotNull final ObjectProperty<? extends Position> positionAncrage) {
-        setTexte(texte);
+        this.texte.bind(texte);
         this.positionAncrage.bind(positionAncrage);
     }
 
@@ -136,7 +131,7 @@ public class Etiquette extends Forme {
      * @param positionAncrage la position d'ancrage de l'étiquette.
      * @param taille la taille du texte de l'étiquette, exprimée en points.
      */
-    public Etiquette(@NotNull final String texte,
+    public Etiquette(@NotNull final StringProperty texte,
             @NotNull final ObjectProperty<? extends Position> positionAncrage,
             final int taille) {
         this(texte, positionAncrage);

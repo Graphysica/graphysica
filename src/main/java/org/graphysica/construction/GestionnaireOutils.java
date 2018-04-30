@@ -17,7 +17,8 @@
 package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -35,8 +36,8 @@ public class GestionnaireOutils {
     /**
      * L'outil actif de ce gestionnaire d'outils.
      */
-    @Nullable
-    private Outil outilActif = null;
+    private final ObjectProperty<Outil> outilActif
+            = new SimpleObjectProperty<>();
 
     /**
      * La construction de ce gestionnaire d'outils.
@@ -76,17 +77,17 @@ public class GestionnaireOutils {
     /**
      * L'événement d'actualisation de la liste des espaces.
      */
-    private final ListChangeListener<Espace> changementEspaces
-            = (@NotNull final ListChangeListener.Change<? extends Espace> changements) -> {
-                while (changements.next()) {
-                    changements.getAddedSubList().stream().forEach((espace) -> {
-                        ajouterGestionOutils(espace);
-                    });
-                    changements.getRemoved().stream().forEach((espace) -> {
-                        retirerGestionOutils(espace);
-                    });
-                }
-            };
+    private final ListChangeListener<Espace> changementEspaces = (@NotNull
+            final ListChangeListener.Change<? extends Espace> changements) -> {
+        while (changements.next()) {
+            changements.getAddedSubList().stream().forEach((espace) -> {
+                ajouterGestionOutils(espace);
+            });
+            changements.getRemoved().stream().forEach((espace) -> {
+                retirerGestionOutils(espace);
+            });
+        }
+    };
 
     /**
      * Ajoute les gestions d'outils sur un espace défini.
@@ -109,7 +110,15 @@ public class GestionnaireOutils {
         espace.removeEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
         espace.removeEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
         espace.removeEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
+    }
 
+    /**
+     * Met fin à l'utilisation de l'outil actif en le dupliquant.
+     */
+    public void finOutil() {
+        if (aOutilActif()) {
+            setOutilActif(getOutilActif().dupliquer());
+        }
     }
 
     public Construction getConstruction() {
@@ -120,8 +129,17 @@ public class GestionnaireOutils {
         return gestionnaireSelections;
     }
 
+    /**
+     * Détermine si le gestionnaire d'outils a un outil actif.
+     *
+     * @return {@code true} s'il y a un outil actuellement actif.
+     */
+    public boolean aOutilActif() {
+        return getOutilActif() != null;
+    }
+
     public Outil getOutilActif() {
-        return outilActif;
+        return outilActif.getValue();
     }
 
     /**
@@ -131,7 +149,11 @@ public class GestionnaireOutils {
      * @param outilActif le nouvel outil actif.
      */
     public void setOutilActif(@NotNull final Outil outilActif) {
-        this.outilActif = outilActif;
+        this.outilActif.setValue(outilActif);
+    }
+    
+    public ObjectProperty<Outil> outilActifProperty() {
+        return outilActif;
     }
 
     /**
@@ -141,11 +163,8 @@ public class GestionnaireOutils {
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
-            if (outilActif != null) {
-                outilActif.gerer(evenement);
-                if (!outilActif.aProchaineEtape()) {
-                    // Quoi faire si l'outil actif est épuisé? Instantier un nouveau
-                }
+            if (aOutilActif()) {
+                getOutilActif().gerer(evenement);
             }
         }
 

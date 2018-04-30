@@ -62,6 +62,18 @@ public class Point extends Forme {
     }
 
     /**
+     * Construit un point à la propriété de position liée, de couleur et de
+     * taille définies par défaut. Ce constructeur est utilisé pour la
+     * prévisualisation de points.
+     *
+     * @param position la propriété de position du point.
+     */
+    public Point(@NotNull final ObjectProperty<? extends Position> position) {
+        setCouleur(Color.BLUE);
+        positionProperty().bind(position);
+    }
+
+    /**
      * Construit un point aux propriétés liées.
      *
      * @param position la propriété de position du point.

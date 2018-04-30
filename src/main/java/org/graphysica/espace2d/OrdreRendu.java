@@ -29,10 +29,11 @@ import org.graphysica.espace2d.forme.Point;
 /**
  * Un ordre de rendu est un ensemble ordonné des classes de forme à dessiner sur
  * une toile. Les éléments de l'ordre de rendu doivent être des enfants directs
- * de la classe Forme.
+ * de la classe {@code Forme}.
  *
  * @author Marc-Antoine Ouimet
  */
+@SuppressWarnings("unchecked")
 class OrdreRendu extends LinkedHashSet<Class> {
 
     {

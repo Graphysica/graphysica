@@ -29,6 +29,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -132,9 +134,15 @@ public final class Espace extends ToileRedimensionnable
     private Position positionPrecendenteCurseur;
 
     /**
-     * La position actuelle du curseur.
+     * La position virtuelle actuelle du curseur.
      */
-    private final ObjectProperty<Position> positionCurseur
+    private final ObjectProperty<PositionVirtuelle> positionVirtuelleCurseur
+            = new SimpleObjectProperty<>(new PositionVirtuelle(Vector2D.ZERO));
+
+    /**
+     * La position réelle actuelle du curseur.
+     */
+    private final ObjectProperty<PositionReelle> positionReelleCurseur
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
     /**
@@ -186,6 +194,14 @@ public final class Espace extends ToileRedimensionnable
     }
 
     {
+        positionVirtuelleCurseur.addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                positionReelleCurseur.setValue(
+                        new PositionReelle(getPositionVirtuelleCurseur()
+                                .reelle(repere)));
+            }
+        });
         reperage.add(grilleSecondaire);
         reperage.add(grillePrincipale);
         reperage.add(axeVertical);
@@ -258,21 +274,21 @@ public final class Espace extends ToileRedimensionnable
      * ou retire l'événement d'actualisation de l'espace aux formes retirées de
      * la liste.
      */
-    private final ListChangeListener<Forme> changementFormes
-            = (@NotNull final ListChangeListener.Change<? extends Forme> changements) -> {
-                while (changements.next()) {
-                    changements.getAddedSubList().stream().forEach((forme) -> {
-                        forme.getProprietes().stream().forEach((propriete) -> {
-                            propriete.addListener(evenementActualisation);
-                        });
-                    });
-                    changements.getRemoved().stream().forEach((forme) -> {
-                        forme.getProprietes().stream().forEach((propriete) -> {
-                            propriete.removeListener(evenementActualisation);
-                        });
-                    });
-                }
-            };
+    private final ListChangeListener<Forme> changementFormes = (@NotNull
+            final ListChangeListener.Change<? extends Forme> changements) -> {
+        while (changements.next()) {
+            changements.getAddedSubList().stream().forEach((forme) -> {
+                forme.getProprietes().stream().forEach((propriete) -> {
+                    propriete.addListener(evenementActualisation);
+                });
+            });
+            changements.getRemoved().stream().forEach((forme) -> {
+                forme.getProprietes().stream().forEach((propriete) -> {
+                    propriete.removeListener(evenementActualisation);
+                });
+            });
+        }
+    };
 
     /**
      * Dessine une collection de formes sur l'espace.
@@ -363,9 +379,9 @@ public final class Espace extends ToileRedimensionnable
                 });
         final Map<Forme, Double> distances = new HashMap<>();
         formesDistantes.stream().filter((forme) -> (forme.isSelectionne(
-                getPositionCurseur(), repere))).forEach((forme) -> {
+                getPositionVirtuelleCurseur(), repere))).forEach((forme) -> {
             distances.put(forme, forme.distance(
-                    getPositionCurseur(), repere));
+                    getPositionVirtuelleCurseur(), repere));
         });
         return distances;
     }
@@ -380,7 +396,7 @@ public final class Espace extends ToileRedimensionnable
      */
     public void zoomer(final double defilementVertical) {
         if (defilementVertical != 0) {
-            final Vector2D translationOrigine = getPositionCurseur()
+            final Vector2D translationOrigine = getPositionVirtuelleCurseur()
                     .virtuelle(repere).subtract(repere.getOrigineVirtuelle());
             repere.setOrigineVirtuelle(
                     repere.getOrigineVirtuelle().add(translationOrigine));
@@ -422,13 +438,13 @@ public final class Espace extends ToileRedimensionnable
      */
     private void actualiserPositionsCurseur(
             @NotNull final MouseEvent evenement) {
-        final Position positionCaptee
+        final PositionVirtuelle positionCaptee
                 = capterPositionActuelleCurseur(evenement);
-        if (getPositionCurseur() == null) {
-            setPositionCurseur(positionCaptee);
+        if (getPositionVirtuelleCurseur() == null) {
+            setPositionVirtuelleCurseur(positionCaptee);
         }
-        setPositionPrecedenteCurseur(getPositionCurseur());
-        setPositionCurseur(positionCaptee);
+        setPositionPrecedenteCurseur(getPositionVirtuelleCurseur());
+        setPositionVirtuelleCurseur(positionCaptee);
     }
 
     /**
@@ -438,7 +454,7 @@ public final class Espace extends ToileRedimensionnable
      * @param evenement l'événement de la souris.
      * @return la position virtuelle du curseur.
      */
-    private Position capterPositionActuelleCurseur(
+    private PositionVirtuelle capterPositionActuelleCurseur(
             @NotNull final MouseEvent evenement) {
         return new PositionVirtuelle(
                 new Vector2D(evenement.getX(), evenement.getY()));
@@ -462,27 +478,16 @@ public final class Espace extends ToileRedimensionnable
         this.positionPrecendenteCurseur = positionPrecedenteCurseur;
     }
 
-    private Position getPositionCurseur() {
-        return positionCurseur.getValue();
-    }
-
-    private void setPositionCurseur(@NotNull final Position positionCurseur) {
-        this.positionCurseur.setValue(positionCurseur);
-    }
-
     /**
-     * Récupère la propriété de position du curseur dans l'espace. Permet de
-     * lier des positions de forme à la position du curseur pour la
+     * Récupère la propriété de position réelle du curseur dans l'espace. Permet
+     * de lier des positions de forme à la position du curseur pour la
      * prévisualisation ou le déplacement de formes.
-     * <p>
-     * La position du curseur est virtuelle. Par conséquent, il faudra récupérer
-     * la position réelle du curseur pour l'instantiation d'objets à sérialiser
-     * dans la construction.
      *
-     * @return la propriété de position virtuelle du curseur.
+     * @return la propriété de position réelle du curseur.
      */
-    public ObjectProperty<Position> positionCurseurProperty() {
-        return positionCurseur;
+    public ObjectProperty<PositionReelle>
+            positionReelleCurseurProperty() {
+        return positionReelleCurseur;
     }
 
     /**
@@ -491,7 +496,7 @@ public final class Espace extends ToileRedimensionnable
      * @return la position réelle du curseur.
      */
     public PositionReelle getPositionReelleCurseur() {
-        return new PositionReelle(getPositionCurseur().reelle(repere));
+        return new PositionReelle(getPositionVirtuelleCurseur().reelle(repere));
     }
 
     /**
@@ -500,7 +505,12 @@ public final class Espace extends ToileRedimensionnable
      * @return la position virtuelle du curseur.
      */
     public PositionVirtuelle getPositionVirtuelleCurseur() {
-        return new PositionVirtuelle(getPositionCurseur().virtuelle(repere));
+        return positionVirtuelleCurseur.getValue();
+    }
+
+    private void setPositionVirtuelleCurseur(
+            @NotNull final PositionVirtuelle positionVirtuelleCurseur) {
+        this.positionVirtuelleCurseur.setValue(positionVirtuelleCurseur);
     }
 
     /**
@@ -511,7 +521,7 @@ public final class Espace extends ToileRedimensionnable
      * @return le déplacement virtuel du curseur dans l'espace.
      */
     private Vector2D getDeplacementVirtuelCurseur() {
-        return getPositionCurseur().virtuelle(repere)
+        return getPositionVirtuelleCurseur().virtuelle(repere)
                 .subtract(getPositionPrecedenteCurseur().virtuelle(repere));
     }
 
@@ -523,7 +533,7 @@ public final class Espace extends ToileRedimensionnable
      * @return le déplacement réel du curseur dans l'espace.
      */
     public Vector2D getDeplacementReelCurseur() {
-        return getPositionCurseur().reelle(repere)
+        return getPositionVirtuelleCurseur().reelle(repere)
                 .subtract(getPositionPrecedenteCurseur().reelle(repere));
     }
 }

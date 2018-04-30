@@ -15,8 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Classes décrivant un espace en deux dimensions en tant que composante 
- * graphique d'édition. Ce package encapsule les comportements de détection de 
+ * Fournit une composante graphique d'édition d'espace euclidien en deux 
+ * dimensions. Ce package encapsule les comportements de détection de 
  * sélection, de navigation et de représentation d'un plan cartésien.
+ * <img alt="Schéma UML" src="./doc-files/espace2d-uml.png">
+ * L'implémentation d'espace euclidien en deux dimensions assure un comportement
+ * approprié d'actualisation selon les interactions sur les formes qu'il
+ * représente. Elle assure aussi la possibilité d'interaction avec ces formes
+ * en suppléant une méthode de détermination des formes en survol par
+ * l'utilisateur.
  */
 package org.graphysica.espace2d;

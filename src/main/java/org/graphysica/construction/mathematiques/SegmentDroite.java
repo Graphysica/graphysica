@@ -44,7 +44,7 @@ public class SegmentDroite extends Ligne {
     }
 
     {
-        formes.add(new org.graphysica.espace2d.forme.SegmentDroite(
+        ajouterForme(new org.graphysica.espace2d.forme.SegmentDroite(
                 positionInterne1Property(), positionInterne2Property()));
     }
 
