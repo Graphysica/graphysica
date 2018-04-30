@@ -123,4 +123,8 @@ public final class Construction {
         return gestionnaireSelections;
     }
 
+    public GestionnaireOutils getGestionnaireOutils() {
+        return gestionnaireOutils;
+    }
+    
 }
