@@ -51,12 +51,18 @@ public class OutilCreationPoint extends OutilCreationElement {
     @Override
     public void gerer(@NotNull final MouseEvent evenement) {
         if (aProchaineEtape()) {
+            final Construction construction = gestionnaireOutils
+                    .getConstruction();
             if (evenement.isPrimaryButtonDown()
                     && evenement.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 previsualiserPoint();
-            } else if (previsualisation != null
+                construction.getEspace().getFormes().addAll(previsualisations);
+            } else if (!previsualisations.isEmpty()
                     && evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 creerPoint();
+                construction.getEspace().getFormes().removeAll(
+                        previsualisations);
+                gestionnaireOutils.finOutil();
             }
         }
     }
@@ -65,10 +71,8 @@ public class OutilCreationPoint extends OutilCreationElement {
      * Crée une prévisualisation de point à l'emplacement du curseur.
      */
     private void previsualiserPoint() {
-        final Construction construction = gestionnaireOutils.getConstruction();
-        previsualisation = new Point(gestionnaireOutils
-                .getGestionnaireSelections().positionCurseurProperty());
-        construction.getEspace().getFormes().add(previsualisation);
+        previsualisations.add(new Point(gestionnaireOutils
+                .getGestionnaireSelections().positionCurseurProperty()));
     }
 
     /**
@@ -79,10 +83,9 @@ public class OutilCreationPoint extends OutilCreationElement {
         final Construction construction = gestionnaireOutils.getConstruction();
         final PointConcret point = new PointConcret(gestionnaireOutils
                 .getGestionnaireSelections().positionReelleCurseur());
-        construction.getEspace().getFormes().remove(previsualisation);
+        construction.getEspace().getFormes().removeAll(previsualisations);
         gestionnaireOutils.getConstruction().executerCommande(
                 new CreerElement(construction, point));
-        gestionnaireOutils.finOutil();
     }
 
 }

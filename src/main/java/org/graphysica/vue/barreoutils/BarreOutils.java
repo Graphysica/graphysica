@@ -28,6 +28,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.outil.Outil;
+import org.graphysica.construction.outil.OutilCreationDroite;
 import org.graphysica.construction.outil.OutilCreationPoint;
 import org.graphysica.espace2d.forme.Taille;
 import org.slf4j.Logger;
@@ -116,7 +117,7 @@ public final class BarreOutils extends ToolBar {
 
         final MenuButton groupeLignes = new MenuButton();
         final ItemOutil outilDroite = new ItemOutil("droite", "Droite",
-                groupeLignes, new OutilCreationPoint(gestionnaireOutils));
+                groupeLignes, new OutilCreationDroite(gestionnaireOutils));
         groupeLignes.setGraphic(outilDroite.affichageImage());
         groupeLignes.getItems().addAll(outilDroite);
 

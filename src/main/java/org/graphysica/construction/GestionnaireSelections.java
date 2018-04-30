@@ -86,12 +86,6 @@ public final class GestionnaireSelections {
             = new HashMap<>();
 
     /**
-     * L'association des espaces à leur gestion de désélection d'éléments.
-     */
-    private final Map<Espace, GestionSelection> gestionsDeselection
-            = new HashMap<>();
-
-    /**
      * Construit un gestionnaire de sélections sur une liste d'espaces et un
      * ensemble d'éléments qui y sont représentés.
      *
@@ -152,8 +146,6 @@ public final class GestionnaireSelections {
                 gestionsSurvol.remove(espace));
         espace.removeEventFilter(MouseEvent.MOUSE_PRESSED,
                 gestionsSelection.remove(espace));
-        espace.removeEventFilter(MouseEvent.MOUSE_CLICKED,
-                gestionsDeselection.remove(espace));
     }
 
     /**
