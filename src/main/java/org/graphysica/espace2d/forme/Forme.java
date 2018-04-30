@@ -135,6 +135,10 @@ public abstract class Forme implements Dessinable, Survolable, Selectionnable,
     public final void setAffiche(final boolean affichee) {
         this.affiche.setValue(affichee);
     }
+    
+    public final BooleanProperty afficheProperty() {
+        return affiche;
+    }
 
     @Override
     public final boolean isEnSurvol() {

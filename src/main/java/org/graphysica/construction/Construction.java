@@ -17,9 +17,6 @@
 package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.graphysica.construction.commande.Commande;
@@ -47,9 +44,10 @@ public final class Construction {
 
     /**
      * L'ensemble des éléments de la construction. Comprend les corps physiques
-     * et leurs formes d'affichage.
+     * et les objets mathématiques.
      */
-    private final Set<Element> elements = new HashSet<>();
+    private final ObservableList<Element> elements 
+            = FXCollections.observableArrayList();
 
     /**
      * Le gestionnaire des sélections de la construction.
@@ -101,6 +99,11 @@ public final class Construction {
         }
     }
 
+    /**
+     * Duplique le premier espace de cette construction et l'ajoute aux espaces.
+     *
+     * @return l'espace dupliqué.
+     */
     public Espace dupliquerEspace() {
         final Espace espace = new Espace(getEspace());
         espaces.add(espace);
@@ -111,16 +114,24 @@ public final class Construction {
         return espaces.get(0);
     }
 
-    public Collection<Espace> getEspaces() {
+    public ObservableList<Espace> getEspaces() {
         return espaces;
     }
 
+    public ObservableList<Element> getElements() {
+        return elements;
+    }
+    
     public GestionnaireCommandes getGestionnaireCommandes() {
         return gestionnaireCommandes;
     }
 
     public GestionnaireSelections getGestionnaireSelections() {
         return gestionnaireSelections;
+    }
+
+    public GestionnaireOutils getGestionnaireOutils() {
+        return gestionnaireOutils;
     }
 
 }

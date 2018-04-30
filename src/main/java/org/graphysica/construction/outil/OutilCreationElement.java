@@ -17,6 +17,8 @@
 package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.espace2d.forme.Forme;
 
@@ -36,7 +38,7 @@ public abstract class OutilCreationElement extends Outil {
     /**
      * La forme de prévisualisation de l'élément à créer.
      */
-    protected Forme previsualisation;
+    protected Set<Forme> previsualisations = new HashSet<>();
 
     /**
      * Construit un outil de création d'élément au gestionnaire d'outils défini.

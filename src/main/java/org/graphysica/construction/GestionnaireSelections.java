@@ -18,6 +18,7 @@ package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,7 +36,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Grille;
-import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.espace2d.position.PositionVirtuelle;
 
@@ -57,7 +57,7 @@ public final class GestionnaireSelections {
     /**
      * L'ensemble des éléments à considérer dans ce gestionnaire de sélections.
      */
-    private final Set<Element> elements;
+    private final Collection<Element> elements;
 
     /**
      * L'ensemble des éléments sélectionnés en ordre de sélection.
@@ -86,12 +86,6 @@ public final class GestionnaireSelections {
             = new HashMap<>();
 
     /**
-     * L'association des espaces à leur gestion de désélection d'éléments.
-     */
-    private final Map<Espace, GestionSelection> gestionsDeselection
-            = new HashMap<>();
-
-    /**
      * Construit un gestionnaire de sélections sur une liste d'espaces et un
      * ensemble d'éléments qui y sont représentés.
      *
@@ -99,7 +93,7 @@ public final class GestionnaireSelections {
      * @param elements les éléments pouvant être sélectionnés.
      */
     public GestionnaireSelections(@NotNull final ObservableList<Espace> espaces,
-            @NotNull final Set<Element> elements) {
+            @NotNull final Collection<Element> elements) {
         espaces.addListener(changementEspaces);
         espaces.forEach((espace) -> {
             ajouterGestionsSelection(espace);
@@ -152,8 +146,6 @@ public final class GestionnaireSelections {
                 gestionsSurvol.remove(espace));
         espace.removeEventFilter(MouseEvent.MOUSE_PRESSED,
                 gestionsSelection.remove(espace));
-        espace.removeEventFilter(MouseEvent.MOUSE_CLICKED,
-                gestionsDeselection.remove(espace));
     }
 
     /**
@@ -273,8 +265,8 @@ public final class GestionnaireSelections {
      *
      * @return la propriété de position actuelle du curseur parmi les espaces.
      */
-    public ObjectProperty<Position> positionCurseurProperty() {
-        return espaceActif.positionCurseurProperty();
+    public ObjectProperty<PositionReelle> positionCurseurProperty() {
+        return espaceActif.positionReelleCurseurProperty();
     }
 
     /**
