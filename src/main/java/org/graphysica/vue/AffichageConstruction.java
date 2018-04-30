@@ -27,6 +27,7 @@ import javafx.scene.layout.Pane;
 import org.graphysica.construction.Construction;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.vue.barreoutils.BarreOutils;
+import org.graphysica.vue.inspecteur.Inspecteur;
 
 /**
  * Un affichage de construction permet d'afficher et d'interagir avec une
@@ -59,8 +60,12 @@ public class AffichageConstruction extends BorderPane {
     private void assembler() {
         final BarreOutils barreOutils = new BarreOutils(
                 construction.getGestionnaireOutils());
+        final Inspecteur inspecteur = new Inspecteur(construction);
+        final AffichageEspaces affichageEspaces = new AffichageEspaces();
         setTop(barreOutils);
-        setCenter(new AffichageEspaces());
+        final SplitPane centre = new SplitPane(inspecteur, affichageEspaces);
+        centre.setDividerPositions(0.2);
+        setCenter(centre);
     }
 
     /**
@@ -68,6 +73,16 @@ public class AffichageConstruction extends BorderPane {
      * construction.
      */
     private class AffichageEspaces extends SplitPane {
+        
+        /**
+         * La largeur préférée des affichages d'espaces.
+         */
+        private static final double LARGEUR_PREFEREE = 800;
+        
+        /**
+         * La hauteur préférée des affichages d'espaces.
+         */
+        private static final double HAUTEUR_PREFEREE = 600;
 
         /**
          * L'association des espaces à leur panneau parent.
@@ -84,6 +99,8 @@ public class AffichageConstruction extends BorderPane {
             espaces.forEach((espace) -> {
                 ajouter(espace);
             });
+            setPrefWidth(LARGEUR_PREFEREE);
+            setPrefHeight(HAUTEUR_PREFEREE);
         }
 
         /**

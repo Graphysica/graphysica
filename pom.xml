@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>org.graphysica.MainApp</mainClass>
+        <mainClass>org.graphysica.Application</mainClass>
     </properties>
 
     <organization>
@@ -55,7 +55,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>org.graphysica.MainApp</mainClass>
+                            <mainClass>org.graphysica.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

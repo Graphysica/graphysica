@@ -29,6 +29,11 @@ import org.graphysica.construction.Element;
  * @author Marc-Antoine Ouimet
  */
 public class Inspecteur extends TabPane {
+    
+    /**
+     * La largeur préférée des inspecteurs.
+     */
+    private static final double LARGEUR_PREFEREE = 100;
 
     /**
      * La construction inspectée par cet inspecteur.
@@ -60,8 +65,13 @@ public class Inspecteur extends TabPane {
         elements = construction.getElements();
         inspecteurMathematique = new InspecteurMathematique(elements);
         inspecteurPhysique = new InspecteurPhysiques(elements);
-        getTabs().addAll(new Tab("Mathématique", inspecteurMathematique),
-                new Tab("Physique", inspecteurPhysique));
+        final Tab ongletMathematique = new Tab("Mathématique", 
+                inspecteurMathematique);
+        ongletMathematique.setClosable(false);
+        final Tab ongletPhysique = new Tab("Physique", inspecteurPhysique);
+        ongletPhysique.setClosable(false);
+        getTabs().addAll(ongletMathematique, ongletPhysique);
+        setPrefWidth(LARGEUR_PREFEREE);
     }
 
 }
