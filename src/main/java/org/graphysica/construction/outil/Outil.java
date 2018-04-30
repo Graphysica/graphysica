@@ -17,64 +17,43 @@
 package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
-import javafx.collections.ObservableList;
-import org.graphysica.construction.Element;
+import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.GestionnaireOutils;
-import org.graphysica.espace2d.Espace;
-import org.graphysica.espace2d.position.Position;
 
 /**
  *
  * @author Victor Babin
+ * @author Marc-Antoine Ouimet
  */
 public abstract class Outil {
-
-    /**
-     * Si a une prochaine étape.
-     */
-    protected boolean aProchaineEtape;
 
     /**
      * Gestionnaire d'outils pour la construction.
      */
     protected final GestionnaireOutils gestionnaireOutils;
-    
-    public Outil(boolean aProchaineEtape, 
-           GestionnaireOutils gestionnaireOutils) {
-        this.aProchaineEtape = aProchaineEtape;
+
+    /**
+     * Construit un outil sur un gestionnaire d'outils défini.
+     *
+     * @param gestionnaireOutils le gestionnaire d'outils de la construction.
+     */
+    public Outil(@NotNull final GestionnaireOutils gestionnaireOutils) {
         this.gestionnaireOutils = gestionnaireOutils;
     }
 
     /**
-     * Exécute les étapes.
+     * Gère l'événement de la souris dans le contexte de cet outil.
      *
-     * @param position la position initiale
-     * @return l'élément à créer.
+     * @param evenement l'événement de la souris.
      */
-    public void executer() {
-        while (aProchaineEtape) {
-            prochaineEtape();
-        }
-        derniereEtape();
-    }
+    public abstract void gerer(@NotNull final MouseEvent evenement);
 
     /**
-     * La prochaine étape à exécuter.
+     * Duplique cet outil.
      *
-     * @param position la position initiale
+     * @return l'outil dupliqué.
      */
-    public abstract void prochaineEtape();
-
-    /**
-     * Dernière étape exécutée.
-     *
-     * @param position la position initiale
-     * @return l'élément à créer
-     */
-    public abstract void derniereEtape();
-
-    public boolean hasNextEtape() {
-        return aProchaineEtape;
-    }
+    @NotNull
+    public abstract Outil dupliquer();
 
 }
