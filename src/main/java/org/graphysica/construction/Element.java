@@ -19,6 +19,10 @@ package org.graphysica.construction;
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Forme;
 
@@ -28,6 +32,11 @@ import org.graphysica.espace2d.forme.Forme;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Element implements Deplaceable {
+    
+    /**
+     * La propriété d'affichage de cet élément à l'écran.
+     */
+    private final BooleanProperty affiche = new SimpleBooleanProperty(true);
 
     /**
      * Les dépendances de création de cet élément. Permet d'effacer cet élément
@@ -38,7 +47,7 @@ public abstract class Element implements Deplaceable {
     /**
      * L'ensemble des formes d'affichage de cet élément.
      */
-    protected transient Set<Forme> formes = new HashSet<>();
+    private final transient Set<Forme> formes = new HashSet<>();
 
     /**
      * Le nombre d'éléments qui ont été construits.
@@ -52,6 +61,17 @@ public abstract class Element implements Deplaceable {
 
     {
         id = ++ELEMENTS;
+    }
+
+    /**
+     * Ajoute une forme d'affichage de cet élément et lie sa propriété
+     * d'affichage à celle de cet élément.
+     *
+     * @param forme la forme d'affichage de cet élément.
+     */
+    public void ajouterForme(@NotNull final Forme forme) {
+        forme.afficheProperty().bind(affiche);
+        formes.add(forme);
     }
 
     public Set<Forme> getFormes() {
@@ -96,6 +116,10 @@ public abstract class Element implements Deplaceable {
     @Override
     public boolean isLie() {
         return false;
+    }
+
+    public final BooleanProperty afficheProperty() {
+        return affiche;
     }
 
 }
