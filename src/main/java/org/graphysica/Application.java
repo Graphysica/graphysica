@@ -16,7 +16,7 @@ public class Application extends javafx.application.Application {
         construction.dupliquerEspace();
         construction.dupliquerEspace();
         final Scene scene = new Scene(new AffichageConstruction(construction));
-        scene.getStylesheets().add("/styles/Styles.css");
+        scene.getStylesheets().add("/styles/styles.css");
         stage.setTitle("Graphysica");
         stage.setScene(scene);
         stage.show();
