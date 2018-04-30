@@ -59,7 +59,7 @@ public final class BarreOutils extends ToolBar {
      * La dimension des icônes carrées de cette barre d'outils, exprimée en
      * pixels.
      */
-    private static final int DIMENSION = 48;
+    private static final int DIMENSION = 32;
 
     /**
      * Le gestionnaire d'outils que contrôle cette barre d'outils.
