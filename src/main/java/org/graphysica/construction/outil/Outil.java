@@ -17,43 +17,64 @@
 package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
-import javafx.scene.input.MouseEvent;
+import javafx.collections.ObservableList;
+import org.graphysica.construction.Element;
 import org.graphysica.construction.GestionnaireOutils;
+import org.graphysica.espace2d.Espace;
+import org.graphysica.espace2d.position.Position;
 
 /**
  *
  * @author Victor Babin
- * @author Marc-Antoine Ouimet
  */
 public abstract class Outil {
+
+    /**
+     * Si a une prochaine étape.
+     */
+    protected boolean aProchaineEtape;
 
     /**
      * Gestionnaire d'outils pour la construction.
      */
     protected final GestionnaireOutils gestionnaireOutils;
-
-    /**
-     * Construit un outil sur un gestionnaire d'outils défini.
-     *
-     * @param gestionnaireOutils le gestionnaire d'outils de la construction.
-     */
-    public Outil(@NotNull final GestionnaireOutils gestionnaireOutils) {
+    
+    public Outil(boolean aProchaineEtape, 
+           GestionnaireOutils gestionnaireOutils) {
+        this.aProchaineEtape = aProchaineEtape;
         this.gestionnaireOutils = gestionnaireOutils;
     }
 
     /**
-     * Gère l'événement de la souris dans le contexte de cet outil.
+     * Exécute les étapes.
      *
-     * @param evenement l'événement de la souris.
+     * @param position la position initiale
+     * @return l'élément à créer.
      */
-    public abstract void gerer(@NotNull final MouseEvent evenement);
+    public void executer() {
+        while (aProchaineEtape) {
+            prochaineEtape();
+        }
+        derniereEtape();
+    }
 
     /**
-     * Duplique cet outil.
+     * La prochaine étape à exécuter.
      *
-     * @return l'outil dupliqué.
+     * @param position la position initiale
      */
-    @NotNull
-    public abstract Outil dupliquer();
+    public abstract void prochaineEtape();
+
+    /**
+     * Dernière étape exécutée.
+     *
+     * @param position la position initiale
+     * @return l'élément à créer
+     */
+    public abstract void derniereEtape();
+
+    public boolean hasNextEtape() {
+        return aProchaineEtape;
+    }
 
 }
