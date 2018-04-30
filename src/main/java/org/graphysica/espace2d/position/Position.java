@@ -16,14 +16,12 @@
  */
 package org.graphysica.espace2d.position;
 
-import com.google.gson.annotations.JsonAdapter;
 import com.sun.istack.internal.NotNull;
 import java.io.Serializable;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 import static org.graphysica.espace2d.position.Type.REELLE;
 import static org.graphysica.espace2d.position.Type.VIRTUELLE;
-import org.graphysica.gson.PositionJsonAdaptateur;
 
 /**
  * Une position est un emplacement immuable dans un espace. Une position permet
@@ -39,7 +37,6 @@ import org.graphysica.gson.PositionJsonAdaptateur;
  *
  * @author Marc-Antoine Ouimet
  */
-@JsonAdapter(PositionJsonAdaptateur.class)
 public abstract class Position implements Serializable {
 
     /**

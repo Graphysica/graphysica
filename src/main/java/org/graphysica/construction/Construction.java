@@ -17,8 +17,6 @@
 package org.graphysica.construction;
 
 import com.sun.istack.internal.NotNull;
-import java.util.HashSet;
-import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.graphysica.construction.commande.Commande;
@@ -46,9 +44,10 @@ public final class Construction {
 
     /**
      * L'ensemble des éléments de la construction. Comprend les corps physiques
-     * et leurs formes d'affichage.
+     * et les objets mathématiques.
      */
-    private final Set<Element> elements = new HashSet<>();
+    private final ObservableList<Element> elements 
+            = FXCollections.observableArrayList();
 
     /**
      * Le gestionnaire des sélections de la construction.
@@ -119,6 +118,10 @@ public final class Construction {
         return espaces;
     }
 
+    public ObservableList<Element> getElements() {
+        return elements;
+    }
+    
     public GestionnaireCommandes getGestionnaireCommandes() {
         return gestionnaireCommandes;
     }
