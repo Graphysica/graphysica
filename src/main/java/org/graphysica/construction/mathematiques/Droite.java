@@ -41,7 +41,7 @@ public class Droite extends Ligne {
     }
 
     {
-        formes.add(new org.graphysica.espace2d.forme.Droite(
+        ajouterForme(new org.graphysica.espace2d.forme.Droite(
                 positionInterne1, positionInterne2));
     }
 

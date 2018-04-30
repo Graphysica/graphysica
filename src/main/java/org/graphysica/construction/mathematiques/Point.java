@@ -48,7 +48,7 @@ public abstract class Point extends ObjetMathematique {
     protected static final Color COULEUR_PAR_DEFAUT = Color.BLUE;
 
     {
-        formes.add(new org.graphysica.espace2d.forme.Point(
+        ajouterForme(new org.graphysica.espace2d.forme.Point(
                 positionInterneProperty(), couleurProperty(),
                 tailleProperty()));
         couleurProperty().setValue(COULEUR_PAR_DEFAUT);
