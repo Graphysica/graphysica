@@ -273,8 +273,8 @@ public final class GestionnaireSelections {
      *
      * @return la propriété de position actuelle du curseur parmi les espaces.
      */
-    public ObjectProperty<Position> positionCurseurProperty() {
-        return espaceActif.positionCurseurProperty();
+    public ObjectProperty<PositionReelle> positionCurseurProperty() {
+        return espaceActif.positionReelleCurseurProperty();
     }
 
     /**
