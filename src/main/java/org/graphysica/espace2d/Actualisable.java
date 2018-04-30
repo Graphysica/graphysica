@@ -17,7 +17,7 @@
 package org.graphysica.espace2d;
 
 /**
- * Les classes implémentant cette interface peuvent être actualisées.
+ * Les objets de classes implémentant cette interface peuvent être actualisés.
  *
  * @author Marc-Antoine Ouimet
  */

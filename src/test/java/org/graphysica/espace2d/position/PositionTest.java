@@ -16,15 +16,7 @@
  */
 package org.graphysica.espace2d.position;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
 import com.sun.istack.internal.NotNull;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Repere;
 import static org.graphysica.espace2d.position.Type.REELLE;
@@ -44,27 +36,6 @@ public class PositionTest {
      * L'incertitude sur les comparaison de valeurs <code>double</code>.
      */
     private static final double DELTA = 1e-8;
-
-    /**
-     * Le chemin du fichier des positions sérialisées.
-     */
-    private static final String CHEMIN_FICHIER_POSITIONS
-            = "/serialisation/positions.json";
-
-    /**
-     * L'ensemble des positions sérialisées au chemin
-     * {@code CHEMIN_FICHIER_POSITIONS}.
-     */
-    private static final Position[] POSITIONS = {
-        new PositionReelle(Vector2D.ZERO),
-        new PositionReelle(new Vector2D(1, 1)),
-        new PositionReelle(new Vector2D(-1, 1)),
-        new PositionReelle(new Vector2D(1, -1)),
-        new PositionReelle(new Vector2D(-2, -3)),
-        new PositionReelle(new Vector2D(2, 3)),
-        new PositionReelle(new Vector2D(-10, 20)),
-        new PositionReelle(new Vector2D(10, -20))
-    };
 
     /**
      * Le repère d'espace de déplacement des {@code POSITIONS_DEPLACEES}.
@@ -119,44 +90,6 @@ public class PositionTest {
         new PositionReelle(new Vector2D(2, 2)), new Vector2D(50, -50),
         VIRTUELLE)
     };
-
-    /**
-     * Génère le fichier des positions sérialisées.
-     *
-     * @throws IOException s'il y a une erreur de I/O.
-     */
-    private static void genererFichierTests() throws IOException {
-        final URL chemin = PositionTest.class.getResource(
-                CHEMIN_FICHIER_POSITIONS);
-        final Gson gson = new GsonBuilder().create();
-        try (final FileWriter ecriture = new FileWriter(
-                new File(chemin.getPath()))) {
-            ecriture.write(gson.toJson(POSITIONS));
-        }
-    }
-
-    /**
-     * Teste la sérialisation des {@code POSITIONS} et leur désérialisation.
-     *
-     * @throws IOException s'il y a une erreur de I/O indépendante du test.
-     */
-    @Test
-    public void testSerialisation() throws IOException {
-        genererFichierTests();
-        final Gson gson = new GsonBuilder().create();
-        try (JsonReader lecture = new JsonReader(new InputStreamReader(
-                PositionTest.class.getResourceAsStream(
-                        CHEMIN_FICHIER_POSITIONS)))) {
-            final Position[] positions = gson.fromJson(lecture,
-                    Position[].class);
-            for (int i = 0; i < positions.length; i++) {
-                assertTrue(positions[i].getValeur().equals(
-                        POSITIONS[i].getValeur()));
-                assertTrue(positions[i].getType().equals(
-                        POSITIONS[i].getType()));
-            }
-        }
-    }
 
     /**
      * Teste les valeurs d'emplacement de positions déplacées par un vecteur
