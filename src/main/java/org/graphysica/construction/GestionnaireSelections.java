@@ -29,13 +29,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
-import org.graphysica.espace2d.forme.Grille;
 import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.espace2d.position.PositionVirtuelle;
 
@@ -176,6 +174,21 @@ public final class GestionnaireSelections {
      */
     public Set<Element> getElementsSelectionnes() {
         return elementsSelectionnes;
+    }
+
+    /**
+     * Récupère l'ensemble des éléments survolés sur l'espace actif en ordre de
+     * distance.
+     *
+     * @return l'ensemble des éléments survolés sur l'espace actif.
+     */
+    public Set<Element> getElementsSurvoles() {
+        final Set<Element> elementsSurvoles = new LinkedHashSet<>();
+        final Set<Forme> formesSurvolees = espaceActif.formesSurvolees();
+        for (final Forme forme : formesSurvolees) {
+            elementsSurvoles.add(elementCorrespondant(forme));
+        }
+        return elementsSurvoles;
     }
 
     /**
@@ -339,6 +352,7 @@ public final class GestionnaireSelections {
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
+            getEspace().actualiser();
             espaceActif = getEspace();
         }
 
@@ -377,12 +391,6 @@ public final class GestionnaireSelections {
             formesSurvolees.forEach((forme) -> {
                 forme.setEnSurvol(true);
             });
-            for (final Forme forme : formesEnSurbrillance) {
-                if (!(forme instanceof Grille)) {
-                    getEspace().setCursor(Cursor.HAND);
-                    break;
-                }
-            }
         }
 
         /**

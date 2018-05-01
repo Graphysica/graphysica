@@ -536,4 +536,5 @@ public final class Espace extends ToileRedimensionnable
         return getPositionVirtuelleCurseur().reelle(repere)
                 .subtract(getPositionPrecedenteCurseur().reelle(repere));
     }
+
 }
