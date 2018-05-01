@@ -81,9 +81,18 @@ public abstract class Ligne extends Forme {
     }
 
     @Override
-    public void dessinerNormal(@NotNull final Canvas toile,
+    public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         calculerOrigineEtArrivee(toile, repere);
+        if (isEnSurvol()) {
+            dessinerSurvol(toile, repere);
+        }
+        dessinerNormal(toile, repere);
+    }
+
+    @Override
+    public void dessinerNormal(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
         dessinerLigne(toile, origineTrace.virtuelle(repere),
                 arriveeTrace.virtuelle(repere), getCouleur(), getEpaisseur());
     }
@@ -91,7 +100,6 @@ public abstract class Ligne extends Forme {
     @Override
     public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        calculerOrigineEtArrivee(toile, repere);
         dessinerLigne(toile, origineTrace.virtuelle(repere),
                 arriveeTrace.virtuelle(repere),
                 getCouleur().deriveColor(1, 1, 1, 0.3),

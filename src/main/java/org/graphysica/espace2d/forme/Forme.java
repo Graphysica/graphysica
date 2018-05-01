@@ -88,7 +88,7 @@ public abstract class Forme implements Dessinable, Survolable, Selectionnable,
     }
 
     @Override
-    public final void dessiner(@NotNull final Canvas toile,
+    public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         if (isEnSurvol()) {
             dessinerSurvol(toile, repere);
