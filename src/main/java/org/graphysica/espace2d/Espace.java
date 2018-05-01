@@ -335,7 +335,7 @@ public final class Espace extends ToileRedimensionnable
      *
      * @return les formes survolées en ordre croissant de distance.
      */
-    public Set<Forme> formesSurvolees() {
+    public LinkedHashSet<Forme> formesSurvolees() {
         // Ajouter les formes dans l'ordre inverse
         final List<Forme> formesSurvolees = new ArrayList<>();
         final Map<Forme, Double> distances = distancesFormes();

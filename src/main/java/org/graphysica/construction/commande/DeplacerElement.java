@@ -20,7 +20,6 @@ import com.sun.istack.internal.NotNull;
 import java.util.Set;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.construction.Element;
-import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Une commande de déplacement d'éléments permet de déplacer et d'annuler le
@@ -36,52 +35,43 @@ public class DeplacerElement extends CommandeAnnulable {
      * d'éléments.
      */
     private final Set<Element> elements;
-
+    
     /**
-     * La position initiale du déplacement des éléments.
+     * Le décplacement réel des éléments.
      */
-    private final PositionReelle initiale;
+    private final Vector2D deplacement;
 
     /**
-     * La position finale du déplacement des éléments.
-     */
-    private final PositionReelle finale;
-
-    /**
-     * Construit une commande de déplacement d'éléments d'une position initiale
-     * à une position finale.
+     * Construit une commande de déplacement d'éléments.
      *
      * @param elements les éléments à déplacer.
-     * @param initiale la position initiale du déplacement.
-     * @param finale la position finale du déplacement.
+     * @param deplacement le déplacement réel des éléments.
      */
     public DeplacerElement(@NotNull final Set<Element> elements,
-            @NotNull final PositionReelle initiale,
-            @NotNull final PositionReelle finale) {
+            @NotNull final Vector2D deplacement) {
         this.elements = elements;
-        this.initiale = initiale;
-        this.finale = finale;
+        this.deplacement = deplacement;
     }
 
     /**
      * Déplace l'ensemble des éléments selon un déplacement réel spécifié.
      *
-     * @param deplacementReel le déplacement des éléments.
+     * @param deplacement le déplacement réel des éléments.
      */
-    private void deplacer(@NotNull final Vector2D deplacementReel) {
+    private void deplacer(@NotNull final Vector2D deplacement) {
         for (final Element element : elements) {
-            element.deplacer(deplacementReel);
+            element.deplacer(deplacement);
         }
     }
 
     @Override
     public void executer() {
-        deplacer(initiale.distance(finale));
+        deplacer(deplacement);
     }
 
     @Override
     public void annuler() {
-        deplacer(finale.distance(initiale));
+        deplacer(deplacement.negate());
     }
 
     @Override

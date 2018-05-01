@@ -17,6 +17,7 @@
 package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.Element;
@@ -64,13 +65,14 @@ public class OutilDeplacementElement extends Outil {
     public void gerer(@NotNull final MouseEvent evenement) {
         final GestionnaireSelections gestionnaireSelections
                 = gestionnaireOutils.getGestionnaireSelections();
-        if (!gestionnaireSelections.getElementsSelectionnes().isEmpty()) {
-            if (evenement.getEventType() == MouseEvent.MOUSE_PRESSED
-                    && evenement.isPrimaryButtonDown()) {
-                initiale = gestionnaireSelections.positionReelleCurseur();
-                elements = gestionnaireSelections
-                        .getElementsSelectionnes();
-            } else if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED
+        if (evenement.getEventType() == MouseEvent.MOUSE_PRESSED
+                && evenement.isPrimaryButtonDown()
+                && !gestionnaireSelections.survolEstVide()) {
+            initiale = gestionnaireSelections.positionReelleCurseur();
+            elements = new HashSet<>(gestionnaireSelections
+                    .getElementsSelectionnes());
+        } else if (!gestionnaireSelections.selectionEstVide()) {
+            if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED
                     && evenement.isPrimaryButtonDown()) {
                 for (final Element element : elements) {
                     element.deplacer(gestionnaireSelections
@@ -79,11 +81,10 @@ public class OutilDeplacementElement extends Outil {
             } else if (evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 finale = gestionnaireSelections.positionReelleCurseur();
                 gestionnaireOutils.getConstruction().getGestionnaireCommandes()
-                        .ajouter(new DeplacerElement(elements, initiale,
-                                finale));
+                        .ajouter(new DeplacerElement(elements,
+                                initiale.distance(finale)));
                 gestionnaireOutils.finOutil();
             }
-
         }
     }
 

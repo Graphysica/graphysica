@@ -29,6 +29,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -60,7 +61,8 @@ public final class GestionnaireSelections {
     /**
      * L'ensemble des éléments sélectionnés en ordre de sélection.
      */
-    private final Set<Element> elementsSelectionnes = new LinkedHashSet<>();
+    private final LinkedHashSet<Element> elementsSelectionnes 
+            = new LinkedHashSet<>();
 
     /**
      * L'ensemble des formes présentement en surbrillance.
@@ -157,8 +159,8 @@ public final class GestionnaireSelections {
     @Nullable
     private Element elementCorrespondant(@NotNull final Forme forme) {
         for (final Element element : elements) {
-            for (final Forme composantes : element.getFormes()) {
-                if (composantes == forme) {
+            for (final Forme composante : element.getFormes()) {
+                if (composante == forme) {
                     return element;
                 }
             }
@@ -172,23 +174,8 @@ public final class GestionnaireSelections {
      *
      * @return l'ensemble des éléments sélectionnés.
      */
-    public Set<Element> getElementsSelectionnes() {
+    public LinkedHashSet<Element> getElementsSelectionnes() {
         return elementsSelectionnes;
-    }
-
-    /**
-     * Récupère l'ensemble des éléments survolés sur l'espace actif en ordre de
-     * distance.
-     *
-     * @return l'ensemble des éléments survolés sur l'espace actif.
-     */
-    public Set<Element> getElementsSurvoles() {
-        final Set<Element> elementsSurvoles = new LinkedHashSet<>();
-        final Set<Forme> formesSurvolees = espaceActif.formesSurvolees();
-        for (final Forme forme : formesSurvolees) {
-            elementsSurvoles.add(elementCorrespondant(forme));
-        }
-        return elementsSurvoles;
     }
 
     /**
@@ -198,6 +185,31 @@ public final class GestionnaireSelections {
      */
     public boolean selectionEstVide() {
         return elementsSelectionnes.isEmpty();
+    }
+
+    /**
+     * Récupère l'ensemble des éléments survolés sur l'espace actif en ordre de
+     * distance.
+     *
+     * @return l'ensemble des éléments survolés sur l'espace actif.
+     */
+    public LinkedHashSet<Element> getElementsSurvoles() {
+        final LinkedHashSet<Element> elementsSurvoles = new LinkedHashSet<>();
+        final LinkedHashSet<Forme> formesSurvolees 
+                = espaceActif.formesSurvolees();
+        for (final Forme forme : formesSurvolees) {
+            elementsSurvoles.add(elementCorrespondant(forme));
+        }
+        return elementsSurvoles;
+    }
+    
+    /**
+     * Détermine si le survol est vide.
+     *
+     * @return {@code true} si aucun élément n'est survolé.
+     */
+    public boolean survolEstVide() {
+        return getElementsSurvoles().isEmpty();
     }
 
     /**
@@ -377,6 +389,11 @@ public final class GestionnaireSelections {
         public void handle(@NotNull final MouseEvent evenement) {
             final Set<Forme> formesSurvolees
                     = getEspace().formesSurvolees();
+            if (!formesSurvolees.isEmpty()) {
+                getEspace().setCursor(Cursor.HAND);
+            } else {
+                getEspace().setCursor(Cursor.DEFAULT);
+            }
             final Iterator<Forme> iteration
                     = formesEnSurbrillance.iterator();
             while (iteration.hasNext()) {
