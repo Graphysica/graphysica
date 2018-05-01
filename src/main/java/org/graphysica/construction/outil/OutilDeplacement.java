@@ -24,11 +24,20 @@ import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.GestionnaireSelections;
 
 /**
+ * Un outil de déplacement permet de déplacer des éléments sélectionnés dans
+ * l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
 public class OutilDeplacement extends Outil {
 
+    /**
+     * Construit un outil de déplacement d'éléments au gestionnaire d'outils
+     * défini.
+     *
+     * @param gestionnaireOutils le gestionnaire d'outils de cet outil de
+     * déplacement d'éléments.
+     */
     public OutilDeplacement(
             @NotNull final GestionnaireOutils gestionnaireOutils) {
         super(gestionnaireOutils);
@@ -36,7 +45,7 @@ public class OutilDeplacement extends Outil {
 
     @Override
     public void gerer(@NotNull final MouseEvent evenement) {
-        if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED 
+        if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED
                 && evenement.isPrimaryButtonDown()) {
             final GestionnaireSelections gestionnaireSelections
                     = gestionnaireOutils.getGestionnaireSelections();
