@@ -36,7 +36,8 @@ public class OutilDeplacement extends Outil {
 
     @Override
     public void gerer(@NotNull final MouseEvent evenement) {
-        if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+        if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED 
+                && evenement.isPrimaryButtonDown()) {
             final GestionnaireSelections gestionnaireSelections
                     = gestionnaireOutils.getGestionnaireSelections();
             final Set<Element> elementsSelectionnes = gestionnaireSelections
