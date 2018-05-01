@@ -30,7 +30,7 @@ import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.outil.Outil;
 import org.graphysica.construction.outil.OutilCreationDroite;
 import org.graphysica.construction.outil.OutilCreationPoint;
-import org.graphysica.construction.outil.OutilDeplacement;
+import org.graphysica.construction.outil.OutilDeplacementElement;
 import org.graphysica.espace2d.forme.Taille;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +75,7 @@ public final class BarreOutils extends ToolBar {
      */
     public BarreOutils(@NotNull final GestionnaireOutils gestionnaireOutils) {
         this.gestionnaireOutils = gestionnaireOutils;
-        gestionnaireOutils.setOutilActif(new OutilDeplacement(
+        gestionnaireOutils.setOutilActif(new OutilDeplacementElement(
                 gestionnaireOutils));
         assembler();
     }
@@ -105,7 +105,8 @@ public final class BarreOutils extends ToolBar {
     private void assembler() {
         final MenuButton groupeSelection = new MenuButton();
         final ItemOutil outilDeplacement = new ItemOutil("deplacer", "Déplacer",
-                groupeSelection, new OutilDeplacement(gestionnaireOutils));
+                groupeSelection, 
+                new OutilDeplacementElement(gestionnaireOutils));
         groupeSelection.setGraphic(outilDeplacement.affichageImage());
         groupeSelection.getItems().addAll(outilDeplacement);
 
