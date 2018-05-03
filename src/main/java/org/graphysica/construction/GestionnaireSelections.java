@@ -451,7 +451,7 @@ public final class GestionnaireSelections {
         public void handle(@NotNull final MouseEvent evenement) {
             if (evenement.getButton() == MouseButton.PRIMARY) {
                 Element elementCorrespondant = null;
-                final Set<Forme> formesSurvolees
+                final LinkedHashSet<Forme> formesSurvolees
                         = getEspace().formesSurvolees();
                 if (!formesSurvolees.isEmpty()) {
                     final Forme formeSelectionnee = formesSurvolees

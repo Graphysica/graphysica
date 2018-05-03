@@ -43,7 +43,8 @@ public class Polygone extends Aire {
      * L'ensemble ordonné des points de coordonnées réelles délimitant ce
      * polygone.
      */
-    private final Set<ObjectProperty<Position>> points = new LinkedHashSet<>();
+    private final LinkedHashSet<ObjectProperty<Position>> points
+            = new LinkedHashSet<>();
 
     /**
      * Construit un polygone aux points non-définis.
@@ -100,8 +101,9 @@ public class Polygone extends Aire {
 
     /**
      * Récupère l'ensemble des abscisses des points dans leur séquence.
+     *
      * @param points les points dont on veut les abscisses.
-     * 
+     *
      * @return les abscisses de points.
      */
     private static double[] abscisses(@NotNull final Vector2D... points) {
@@ -116,8 +118,9 @@ public class Polygone extends Aire {
 
     /**
      * Récupère l'ensemble des ordonnées des points dans leur séquence.
+     *
      * @param points les points dont on veut les ordonnées.
-     * 
+     *
      * @return les ordonnées de points.
      */
     private static double[] ordonnees(@NotNull final Vector2D... points) {
