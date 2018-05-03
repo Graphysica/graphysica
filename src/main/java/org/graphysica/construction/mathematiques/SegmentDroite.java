@@ -17,7 +17,6 @@
 package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 /**
  * Un segment de droite est un espace linéaire défini entre deux points.

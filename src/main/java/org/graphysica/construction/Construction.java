@@ -20,7 +20,6 @@ import com.sun.istack.internal.NotNull;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.graphysica.construction.commande.Commande;
-import org.graphysica.construction.outil.OutilCreationPoint;
 import org.graphysica.espace2d.Espace;
 
 /**
@@ -63,7 +62,6 @@ public final class Construction {
 
     {
         espaces.add(new Espace(500, 500));
-        gestionnaireOutils.setOutilActif(new OutilCreationPoint(gestionnaireOutils));
     }
 
     /**

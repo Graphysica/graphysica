@@ -19,6 +19,7 @@ package org.graphysica.espace2d.forme;
 import javafx.scene.paint.Color;
 
 /**
+ * Une aire représente une région de l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
@@ -29,5 +30,5 @@ public abstract class Aire extends Forme {
      */
     protected static final Color COULEUR_PAR_DEFAUT = new Color(0.72, 0.52,
             0.04, 0.4);
-    
+
 }
