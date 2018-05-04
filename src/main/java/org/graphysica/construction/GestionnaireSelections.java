@@ -35,7 +35,6 @@ import javafx.scene.input.MouseEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
-import org.graphysica.espace2d.forme.Grille;
 import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.espace2d.position.PositionVirtuelle;
 
@@ -62,7 +61,8 @@ public final class GestionnaireSelections {
     /**
      * L'ensemble des éléments sélectionnés en ordre de sélection.
      */
-    private final Set<Element> elementsSelectionnes = new LinkedHashSet<>();
+    private final LinkedHashSet<Element> elementsSelectionnes 
+            = new LinkedHashSet<>();
 
     /**
      * L'ensemble des formes présentement en surbrillance.
@@ -159,8 +159,8 @@ public final class GestionnaireSelections {
     @Nullable
     private Element elementCorrespondant(@NotNull final Forme forme) {
         for (final Element element : elements) {
-            for (final Forme composantes : element.getFormes()) {
-                if (composantes == forme) {
+            for (final Forme composante : element.getFormes()) {
+                if (composante == forme) {
                     return element;
                 }
             }
@@ -174,7 +174,7 @@ public final class GestionnaireSelections {
      *
      * @return l'ensemble des éléments sélectionnés.
      */
-    public Set<Element> getElementsSelectionnes() {
+    public LinkedHashSet<Element> getElementsSelectionnes() {
         return elementsSelectionnes;
     }
 
@@ -185,6 +185,31 @@ public final class GestionnaireSelections {
      */
     public boolean selectionEstVide() {
         return elementsSelectionnes.isEmpty();
+    }
+
+    /**
+     * Récupère l'ensemble des éléments survolés sur l'espace actif en ordre de
+     * distance.
+     *
+     * @return l'ensemble des éléments survolés sur l'espace actif.
+     */
+    public LinkedHashSet<Element> getElementsSurvoles() {
+        final LinkedHashSet<Element> elementsSurvoles = new LinkedHashSet<>();
+        final LinkedHashSet<Forme> formesSurvolees 
+                = espaceActif.formesSurvolees();
+        for (final Forme forme : formesSurvolees) {
+            elementsSurvoles.add(elementCorrespondant(forme));
+        }
+        return elementsSurvoles;
+    }
+    
+    /**
+     * Détermine si le survol est vide.
+     *
+     * @return {@code true} si aucun élément n'est survolé.
+     */
+    public boolean survolEstVide() {
+        return getElementsSurvoles().isEmpty();
     }
 
     /**
@@ -339,6 +364,7 @@ public final class GestionnaireSelections {
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
+            getEspace().actualiser();
             espaceActif = getEspace();
         }
 
@@ -363,6 +389,11 @@ public final class GestionnaireSelections {
         public void handle(@NotNull final MouseEvent evenement) {
             final Set<Forme> formesSurvolees
                     = getEspace().formesSurvolees();
+            if (!formesSurvolees.isEmpty()) {
+                getEspace().setCursor(Cursor.HAND);
+            } else {
+                getEspace().setCursor(Cursor.DEFAULT);
+            }
             final Iterator<Forme> iteration
                     = formesEnSurbrillance.iterator();
             while (iteration.hasNext()) {
@@ -377,12 +408,6 @@ public final class GestionnaireSelections {
             formesSurvolees.forEach((forme) -> {
                 forme.setEnSurvol(true);
             });
-            for (final Forme forme : formesEnSurbrillance) {
-                if (!(forme instanceof Grille)) {
-                    getEspace().setCursor(Cursor.HAND);
-                    break;
-                }
-            }
         }
 
         /**
@@ -426,7 +451,7 @@ public final class GestionnaireSelections {
         public void handle(@NotNull final MouseEvent evenement) {
             if (evenement.getButton() == MouseButton.PRIMARY) {
                 Element elementCorrespondant = null;
-                final Set<Forme> formesSurvolees
+                final LinkedHashSet<Forme> formesSurvolees
                         = getEspace().formesSurvolees();
                 if (!formesSurvolees.isEmpty()) {
                     final Forme formeSelectionnee = formesSurvolees

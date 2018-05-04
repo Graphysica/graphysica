@@ -59,8 +59,8 @@ interface Survolable extends Dessinable {
     /**
      * Modifie l'état de survol de l'objet.
      *
-     * @param enSurbrillance le nouvel état de survol de l'objet.
+     * @param enSurvol le nouvel état de survol de l'objet.
      */
-    void setEnSurvol(final boolean enSurbrillance);
+    void setEnSurvol(final boolean enSurvol);
 
 }

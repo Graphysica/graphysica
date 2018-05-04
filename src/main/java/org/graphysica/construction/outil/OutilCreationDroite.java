@@ -111,9 +111,9 @@ public class OutilCreationDroite extends OutilCreationElement {
      * @return le point déterminé par l'utilisateur.
      */
     private Point determinerPoint() {
-        final Set<Element> elementsSelectionnes = gestionnaireOutils
-                .getGestionnaireSelections().getElementsSelectionnes();
-        for (final Element element : elementsSelectionnes) {
+        final Set<Element> elementsSurvoles = gestionnaireOutils
+                .getGestionnaireSelections().getElementsSurvoles();
+        for (final Element element : elementsSurvoles) {
             if (element instanceof Point && element != point1) {
                 return (Point) element;
             }

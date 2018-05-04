@@ -47,7 +47,7 @@ Graphysica est un logiciel libre; vous pouvez le redistribuer ou le modifier en 
 GNU General Public License telle que publiée par la Free Software Foundation.
 
 Graphysica est distribué librement, mais AUCUNE GARANTIE N'EST ÉMISE QUANT À SON FONCTIONNEMENT.
-Consultez la [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) ou le fichier [LICENSE.md](https://github.com/Graphysica/graphysica/blob/master/LICENSE) pour plus de détails.
+Consultez la [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) ou le fichier [LICENSE](https://github.com/Graphysica/graphysica/blob/master/LICENSE) pour plus de détails.
 
 ![license](https://www.gnu.org/graphics/gplv3-127x51.png)
 

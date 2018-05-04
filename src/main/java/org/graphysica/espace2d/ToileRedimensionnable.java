@@ -66,12 +66,12 @@ abstract class ToileRedimensionnable extends Canvas
     }
 
     @Override
-    public double prefHeight(final double largeur) {
+    public double prefHeight(final double hauteur) {
         return getHeight();
     }
 
     @Override
-    public double prefWidth(final double hauteur) {
+    public double prefWidth(final double largeur) {
         return getWidth();
     }
 

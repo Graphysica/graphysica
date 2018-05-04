@@ -36,7 +36,7 @@ public abstract class OutilCreationElement extends Outil {
     protected boolean aProchaineEtape = true;
 
     /**
-     * La forme de prévisualisation de l'élément à créer.
+     * L'ensemble des formes de prévisualisation de l'élément à créer.
      */
     protected Set<Forme> previsualisations = new HashSet<>();
 

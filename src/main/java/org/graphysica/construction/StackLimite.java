@@ -22,41 +22,57 @@ import java.util.Stack;
 /**
  * Un stack limité est un stack dont la capacité est fixe.
  * <p>
- * D'après 
+ * D'après
  * https://stackoverflow.com/questions/7727919/creating-a-fixed-size-stack.
  *
  * @author Marc-Antoine Ouimet
  * @param <E> le type d'éléments du stack.
  */
 public final class StackLimite<E> extends Stack<E> {
-    
+
     /**
      * La capacité par défaut d'un stack limité.
      */
     private static final int CAPACITE_PAR_DEFAUT = 100;
-    
+
     /**
      * La capacité de ce stack limité.
      */
     private int capacite = CAPACITE_PAR_DEFAUT;
 
+    /**
+     * Construit un stack limité de capacité spécifiée par défaut.
+     */
     public StackLimite() {
     }
 
+    /**
+     * Construit un stack limité de capacité spécifiée.
+     *
+     * @param capacite la capacité de ce stack.
+     */
     public StackLimite(final int capacite) {
         setCapacite(capacite);
     }
-    
+
+    /**
+     * Ajoute un élément au stack et retire les premiers éléments du stack
+     * jusqu'à ce que sa capacité soit respectée.
+     *
+     * @param element l'élément à ajouter au stack.
+     * @return l'élément ajouté.
+     */
     @Override
     public E push(@NotNull final E element) {
-        while(size() >= capacite) {
+        while (size() >= capacite) {
             remove(0);
         }
         return super.push(element);
     }
-    
+
     /**
-     * Défini la capacité de ce stack limité.
+     * Définit la capacité de ce stack limité.
+     *
      * @param capacite la nouvelle capacité du stack.
      */
     public final void setCapacite(final int capacite) {
@@ -66,5 +82,5 @@ public final class StackLimite<E> extends Stack<E> {
             this.capacite = capacite;
         }
     }
-    
+
 }

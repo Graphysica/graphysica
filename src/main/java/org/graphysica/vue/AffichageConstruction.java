@@ -22,6 +22,8 @@ import java.util.Map;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SplitPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import org.graphysica.construction.Construction;
@@ -51,6 +53,7 @@ public class AffichageConstruction extends BorderPane {
      */
     public AffichageConstruction(@NotNull final Construction construction) {
         this.construction = construction;
+        ajouterEvenementsGestionCommandes();
         assembler();
     }
 
@@ -69,16 +72,32 @@ public class AffichageConstruction extends BorderPane {
     }
 
     /**
+     * Ajoute les événemnets de gestion de commandes, à savoir les actions
+     * d'annulation et de réexécution de la commande.
+     */
+    private void ajouterEvenementsGestionCommandes() {
+        addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent evenement) -> {
+            if (evenement.isControlDown()) {
+                if (evenement.getCode() == KeyCode.Z) {
+                    construction.getGestionnaireCommandes().annuler();
+                } else if (evenement.getCode() == KeyCode.Y) {
+                    construction.getGestionnaireCommandes().refaire();
+                }
+            }
+        });
+    }
+
+    /**
      * Un affichage d'espaces permet d'afficher des espaces liés d'une
      * construction.
      */
     private class AffichageEspaces extends SplitPane {
-        
+
         /**
          * La largeur préférée des affichages d'espaces.
          */
         private static final double LARGEUR_PREFEREE = 800;
-        
+
         /**
          * La hauteur préférée des affichages d'espaces.
          */

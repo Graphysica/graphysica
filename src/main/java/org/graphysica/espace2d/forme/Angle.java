@@ -37,7 +37,7 @@ import org.graphysica.espace2d.Repere;
  * @author Marc-Antoine Ouimet
  */
 @SuppressWarnings("unchecked")
-public class Angle extends Forme {
+public final class Angle extends Forme {
 
     /**
      * La couleur par défaut d'un angle.

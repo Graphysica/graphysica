@@ -27,11 +27,14 @@ import org.graphysica.espace2d.Espace;
 import org.graphysica.construction.outil.Outil;
 
 /**
+ * Un gestionnaire d'outil gère les événements de la souris sur les espaces dans
+ * un contexte d'outil actif spécifié. Les outils ont accès aux événements de
+ * pression, de relâchement et de déplacement de la souris.
  *
  * @author Victor Babin
  * @author Marc-Antoine Ouimet
  */
-public class GestionnaireOutils {
+public final class GestionnaireOutils {
 
     /**
      * L'outil actif de ce gestionnaire d'outils.
@@ -64,6 +67,13 @@ public class GestionnaireOutils {
      */
     private final GestionSouris mouvementSouris = new GestionSouris();
 
+    /**
+     * Construit un gestionnaire d'outils sur une construction et un ensemble
+     * d'espaces définis.
+     *
+     * @param construction la construction gérée.
+     * @param espaces les espaces gérés.
+     */
     public GestionnaireOutils(@NotNull final Construction construction,
             @NotNull final ObservableList<Espace> espaces) {
         this.construction = construction;
@@ -151,7 +161,7 @@ public class GestionnaireOutils {
     public void setOutilActif(@NotNull final Outil outilActif) {
         this.outilActif.setValue(outilActif);
     }
-    
+
     public ObjectProperty<Outil> outilActifProperty() {
         return outilActif;
     }

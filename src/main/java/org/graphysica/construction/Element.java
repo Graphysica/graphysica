@@ -19,10 +19,9 @@ package org.graphysica.construction;
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Forme;
 
@@ -32,7 +31,7 @@ import org.graphysica.espace2d.forme.Forme;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Element implements Deplaceable {
-    
+
     /**
      * La propriété d'affichage de cet élément à l'écran.
      */
@@ -52,15 +51,15 @@ public abstract class Element implements Deplaceable {
     /**
      * Le nombre d'éléments qui ont été construits.
      */
-    private static long ELEMENTS = 0;
+    private static AtomicInteger ELEMENTS = new AtomicInteger(0);
 
     /**
      * Le numéro d'identification de l'élément.
      */
-    private final long id;
+    private final int id;
 
     {
-        id = ++ELEMENTS;
+        id = ELEMENTS.getAndIncrement() + 1;
     }
 
     /**

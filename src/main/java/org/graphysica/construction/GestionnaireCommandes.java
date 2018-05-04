@@ -39,12 +39,29 @@ public class GestionnaireCommandes {
      */
     private final Stack<CommandeAnnulable> commandesAnnulees = new Stack<>();
 
-    public void executer(@NotNull final Commande commande) {
-        commande.executer();
+    /**
+     * Ajoute une commande exécutée au gestionnaire de commandes. Efface
+     * l'historique des commandes annulées et ajoute la commande spécifiée si
+     * elle est annulable.
+     *
+     * @param commande la commande exécutée.
+     */
+    public void ajouter(@NotNull final Commande commande) {
         commandesAnnulees.clear();
         if (commande instanceof CommandeAnnulable) {
             commandes.push((CommandeAnnulable) commande);
         }
+    }
+
+    /**
+     * Exécute une commande spécifiée et l'ajoute au gestionnaire.
+     *
+     * @param commande la commande à exécuter.
+     * @see GestionnaireCommandes#ajouter(org.graphysica.construction.commande.Commande) 
+     */
+    public void executer(@NotNull final Commande commande) {
+        commande.executer();
+        ajouter(commande);
     }
 
     /**

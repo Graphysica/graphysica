@@ -21,6 +21,8 @@ import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.GestionnaireOutils;
 
 /**
+ * Un outil est un module encapsulé qui gère des événements de la souris sur les
+ * espaces gérés par un gestionnaire d'outils.
  *
  * @author Victor Babin
  * @author Marc-Antoine Ouimet
