@@ -28,7 +28,7 @@ import org.graphysica.construction.GestionnaireOutils;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Outil {
-    
+
     /**
      * Le gestionnaire d'outils de la construction.
      */
@@ -49,6 +49,21 @@ public abstract class Outil {
      * @param evenement l'événement de la souris.
      */
     public abstract void gerer(@NotNull final MouseEvent evenement);
+
+    /**
+     * Détermine si l'outil est présentement en cours d'utilisation. Un outil
+     * ayant accompli sa fonction ne doit plus être en cours d'utilisation.
+     * Lorsque l'outil est en cours d'utilisation, il peut être interrompu.
+     *
+     * @return {@code true} si l'outil est en cours d'utilisation.
+     */
+    public abstract boolean isEnCours();
+
+    /**
+     * Interrompt l'outil. Annule la prévisualisation d'éléments ou l'action de
+     * l'outil, le cas échéant.
+     */
+    public abstract void interrompre();
 
     /**
      * Duplique cet outil.

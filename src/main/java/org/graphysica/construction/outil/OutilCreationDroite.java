@@ -32,6 +32,7 @@ import org.graphysica.espace2d.forme.Forme;
  * Un outil de création de droite permet de créer une droite.
  *
  * @author Marc-Antoine Ouimet
+ * @author Victor Babin
  */
 public class OutilCreationDroite extends OutilCreationElement {
 
@@ -65,14 +66,17 @@ public class OutilCreationDroite extends OutilCreationElement {
     public void gerer(@NotNull final MouseEvent evenement) {
         if (aProchaineEtape()) {
             if (point1 == null) {
-                if (evenement.getButton() == MouseButton.PRIMARY && evenement.getEventType() == MouseEvent.MOUSE_PRESSED) {
+                if (evenement.getButton() == MouseButton.PRIMARY
+                        && evenement.getEventType()
+                        == MouseEvent.MOUSE_PRESSED) {
                     point1 = determinerPoint();
                 }
             } else {
                 if (point2 == null) {
                     previsualiserPoint2();
                     previsualiserDroite();
-                } else if (evenement.getButton() == MouseButton.PRIMARY && evenement.getEventType()
+                } else if (evenement.getButton() == MouseButton.PRIMARY
+                        && evenement.getEventType()
                         == MouseEvent.MOUSE_RELEASED) {
                     aProchaineEtape = false;
                     point2 = determinerPoint();
@@ -151,6 +155,19 @@ public class OutilCreationDroite extends OutilCreationElement {
         gestionnaireOutils.getElements().add(droite);
         gestionnaireOutils.getGestionnaireCommandes().ajouter(
                 new CreerElement(gestionnaireOutils.getElements(), droite));
+    }
+
+    @Override
+    public void interrompre() {
+        if (point2 != null) {
+            point2.positionInterneProperty().unbind();
+            gestionnaireOutils.getElements().removeAll(droite, point2);
+        }
+    }
+
+    @Override
+    public boolean isEnCours() {
+        return point1 != null && aProchaineEtape;
     }
 
 }
