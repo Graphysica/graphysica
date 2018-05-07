@@ -80,7 +80,6 @@ public class OutilCreationDroite extends OutilCreationElement {
                         == MouseEvent.MOUSE_RELEASED) {
                     aProchaineEtape = false;
                     point2 = determinerPoint();
-                    gestionnaireOutils.getElements().add(point2);
                     creerDroite();
                     gestionnaireOutils.finOutil();
                 }

@@ -83,7 +83,7 @@ public final class Espace extends ToileRedimensionnable
     /**
      * L'ensemble ordonné observable des formes dessinées dans l'espace.
      */
-    private final ObservableList<Forme> formes 
+    private final ObservableList<Forme> formes
             = FXCollections.observableArrayList();
 
     /**

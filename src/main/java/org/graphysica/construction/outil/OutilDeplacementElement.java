@@ -85,8 +85,7 @@ public class OutilDeplacementElement extends Outil {
         if (isEnCours()) {
             if (evenement.isMiddleButtonDown()) {
                 finDeplacement();
-            } else if (evenement.getButton() == MouseButton.PRIMARY
-                    && evenement.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+            } else if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 entame = true;
                 deplacer();
             }
