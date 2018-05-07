@@ -18,11 +18,10 @@ package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
 import javafx.scene.input.MouseEvent;
-import org.graphysica.construction.Construction;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.commande.CreerElement;
 import org.graphysica.construction.mathematiques.PointConcret;
-import org.graphysica.espace2d.forme.Point;
+import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Un outil de création de point permet de créer un point étiquetté.
@@ -31,6 +30,11 @@ import org.graphysica.espace2d.forme.Point;
  * @author Marc-Antoine Ouimet
  */
 public class OutilCreationPoint extends OutilCreationElement {
+
+    /**
+     * Le point créé par cet outil de création de point.
+     */
+    private PointConcret point;
 
     /**
      * Construit un outil de création de point au gestionnaire d'outils défini.
@@ -51,17 +55,12 @@ public class OutilCreationPoint extends OutilCreationElement {
     @Override
     public void gerer(@NotNull final MouseEvent evenement) {
         if (aProchaineEtape()) {
-            final Construction construction = gestionnaireOutils
-                    .getConstruction();
             if (evenement.isPrimaryButtonDown()
                     && evenement.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 previsualiserPoint();
-                construction.getEspace().getFormes().addAll(previsualisations);
-            } else if (!previsualisations.isEmpty()
+            } else if (point != null
                     && evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 creerPoint();
-                construction.getEspace().getFormes().removeAll(
-                        previsualisations);
                 gestionnaireOutils.finOutil();
             }
         }
@@ -71,8 +70,12 @@ public class OutilCreationPoint extends OutilCreationElement {
      * Crée une prévisualisation de point à l'emplacement du curseur.
      */
     private void previsualiserPoint() {
-        previsualisations.add(new Point(gestionnaireOutils
-                .getGestionnaireSelections().positionCurseurProperty()));
+        point = new PointConcret(gestionnaireOutils
+                .getGestionnaireSelections().positionCurseurProperty());
+        gestionnaireOutils.getElements().add(point);
+        for (final Forme forme : point.getFormes()) {
+            forme.setEnPrevisualisation(true);
+        }
     }
 
     /**
@@ -80,12 +83,12 @@ public class OutilCreationPoint extends OutilCreationElement {
      * cet outil.
      */
     private void creerPoint() {
-        final Construction construction = gestionnaireOutils.getConstruction();
-        final PointConcret point = new PointConcret(gestionnaireOutils
-                .getGestionnaireSelections().positionReelleCurseur());
-        construction.getEspace().getFormes().removeAll(previsualisations);
-        gestionnaireOutils.getConstruction().executerCommande(
-                new CreerElement(construction, point));
+        point.positionInterneProperty().unbind();
+        for (final Forme forme : point.getFormes()) {
+            forme.setEnPrevisualisation(false);
+        }
+        gestionnaireOutils.getGestionnaireCommandes().ajouter(
+                new CreerElement(gestionnaireOutils.getElements(), point));
     }
 
 }

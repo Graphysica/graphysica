@@ -43,7 +43,6 @@ import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.AxeHorizontal;
 import org.graphysica.espace2d.forme.AxeVertical;
-import org.graphysica.espace2d.forme.Droite;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.espace2d.position.PositionVirtuelle;
@@ -84,7 +83,8 @@ public final class Espace extends ToileRedimensionnable
     /**
      * L'ensemble ordonné observable des formes dessinées dans l'espace.
      */
-    private final ObservableList<Forme> formes;
+    private final ObservableList<Forme> formes 
+            = FXCollections.observableArrayList();
 
     /**
      * L'ordre de rendu des formes dams l'espace.
@@ -146,41 +146,19 @@ public final class Espace extends ToileRedimensionnable
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
     /**
-     * Construit un espace dont les dimensions virtuelles et les formes intiales
-     * à afficher sont définies. L'espace a son propre repère lié à son
-     * événement d'actualisation. La liste des formes est liées à l'événement
-     * d'actualisation de l'espace lorsque des formes y sont ajoutées ou
-     * retirées.
-     *
-     * @param largeur la largeur de l'espace exprimée en pixels.
-     * @param hauteur la hauteur de l'espace exprimée en pixels.
-     * @param formes l'ensemble des formes de l'espace.
-     */
-    private Espace(final double largeur, final double hauteur,
-            @NotNull final ObservableList<Forme> formes) {
-        super(largeur, hauteur);
-        repere = new Repere(largeur, hauteur);
-        repere.echelleProperty().addListener(evenementActualisation);
-        repere.origineVirtuelleProperty().addListener(evenementActualisation);
-        formes.addListener(changementFormes);
-        formes.addListener(evenementActualisation);
-        formes.stream().forEach((forme) -> {
-            forme.getProprietes().stream().forEach((propriete) -> {
-                propriete.addListener(evenementActualisation);
-            });
-        });
-        this.formes = formes;
-        definirInteractionCurseur();
-    }
-
-    /**
      * Construit un espace dont les dimensions virtuelles sont définies.
      *
      * @param largeur la largeur de l'espace exprimée en pixels.
      * @param hauteur la hauteur de l'espace exprimée en pixels.
      */
     public Espace(final double largeur, final double hauteur) {
-        this(largeur, hauteur, FXCollections.observableArrayList());
+        super(largeur, hauteur);
+        repere = new Repere(largeur, hauteur);
+        repere.echelleProperty().addListener(evenementActualisation);
+        repere.origineVirtuelleProperty().addListener(evenementActualisation);
+        formes.addListener(changementFormes);
+        formes.addListener(evenementActualisation);
+        definirInteractionCurseur();
     }
 
     /**
@@ -190,7 +168,7 @@ public final class Espace extends ToileRedimensionnable
      * @param espace l'espace à dupliquer.
      */
     public Espace(@NotNull final Espace espace) {
-        this(espace.getWidth(), espace.getHeight(), espace.formes);
+        this(espace.getWidth(), espace.getHeight());
     }
 
     {
@@ -373,10 +351,6 @@ public final class Espace extends ToileRedimensionnable
         final LinkedHashSet<Forme> formesDistantes
                 = new LinkedHashSet<>(reperage);
         formesDistantes.addAll(formes);
-        formesDistantes.stream().filter((forme) -> (forme instanceof Droite))
-                .forEach((forme) -> {
-                    ((Droite) forme).calculerOrigineEtArrivee(this, repere);
-                });
         final Map<Forme, Double> distances = new HashMap<>();
         formesDistantes.stream().filter((forme) -> (forme.isSelectionne(
                 getPositionVirtuelleCurseur(), repere))).forEach((forme) -> {

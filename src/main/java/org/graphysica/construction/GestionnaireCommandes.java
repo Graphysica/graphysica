@@ -40,6 +40,12 @@ public class GestionnaireCommandes {
     private final Stack<CommandeAnnulable> commandesAnnulees = new Stack<>();
 
     /**
+     * Construit un gestionnaire de commandes.
+     */
+    GestionnaireCommandes() {
+    }
+    
+    /**
      * Ajoute une commande exécutée au gestionnaire de commandes. Efface
      * l'historique des commandes annulées et ajoute la commande spécifiée si
      * elle est annulable.

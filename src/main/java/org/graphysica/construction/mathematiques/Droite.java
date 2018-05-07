@@ -17,6 +17,9 @@
 package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashSet;
+import java.util.Set;
+import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Une droite est un espace linéaire qui bissecte un espace 2D. Une droite peut
@@ -40,9 +43,15 @@ public class Droite extends Ligne {
         positionInterne2.bindBidirectional(point2.positionInterneProperty());
     }
 
-    {
-        ajouterForme(new org.graphysica.espace2d.forme.Droite(
-                positionInterne1, positionInterne2));
+    @Override
+    public Set<Forme> creerFormes() {
+        final Set<Forme> formes = new HashSet<>();
+        final org.graphysica.espace2d.forme.Droite forme
+                = new org.graphysica.espace2d.forme.Droite(positionInterne1, 
+                        positionInterne2);
+        formes.add(forme);
+        ajouterForme(forme);
+        return formes;
     }
 
 }

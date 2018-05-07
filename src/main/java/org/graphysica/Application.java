@@ -13,8 +13,7 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(@NotNull final Stage stage) throws Exception {
-        construction.dupliquerEspace();
-        construction.dupliquerEspace();
+        construction.getGestionnaireEspaces().dupliquerEspace();
         final Scene scene = new Scene(new AffichageConstruction(construction));
         scene.getStylesheets().add("/styles/styles.css");
         stage.setTitle("Graphysica");

@@ -17,6 +17,7 @@
 package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.ObjectProperty;
 import org.graphysica.espace2d.position.PositionReelle;
 
 /**
@@ -31,8 +32,9 @@ public final class PointConcret extends Point {
      *
      * @param position la position réelle du point.
      */
-    public PointConcret(@NotNull final PositionReelle position) {
-        positionInterne.setValue(position);
+    public PointConcret(
+            @NotNull final ObjectProperty<PositionReelle> position) {
+        positionInterneProperty().bind(position);
     }
 
 }
