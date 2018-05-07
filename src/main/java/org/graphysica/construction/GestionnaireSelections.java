@@ -364,7 +364,7 @@ public final class GestionnaireSelections {
             if (!formesSurvolees.isEmpty()) {
                 getEspace().setCursor(Cursor.HAND);
             } else {
-                getEspace().setCursor(Cursor.DEFAULT);
+                getEspace().setCursor(Cursor.CROSSHAIR);
             }
             final Iterator<Forme> iteration
                     = formesEnSurbrillance.iterator();
