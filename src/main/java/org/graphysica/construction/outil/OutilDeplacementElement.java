@@ -19,6 +19,7 @@ package org.graphysica.construction.outil;
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.Element;
 import org.graphysica.construction.GestionnaireOutils;
@@ -65,7 +66,7 @@ public class OutilDeplacementElement extends Outil {
     public void gerer(@NotNull final MouseEvent evenement) {
         final GestionnaireSelections gestionnaireSelections
                 = gestionnaireOutils.getGestionnaireSelections();
-        if (evenement.getEventType() == MouseEvent.MOUSE_PRESSED
+        if (evenement.getButton() == MouseButton.PRIMARY && evenement.getEventType() == MouseEvent.MOUSE_PRESSED
                 && evenement.isPrimaryButtonDown()
                 && !gestionnaireSelections.survolEstVide()) {
             initiale = gestionnaireSelections.positionReelleCurseur();
@@ -78,7 +79,7 @@ public class OutilDeplacementElement extends Outil {
                     element.deplacer(gestionnaireSelections
                             .deplacementReelCurseur());
                 }
-            } else if (evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
+            } else if (evenement.getButton() == MouseButton.PRIMARY && evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 finale = gestionnaireSelections.positionReelleCurseur();
                 gestionnaireOutils.getGestionnaireCommandes()
                         .ajouter(new DeplacerElement(elements,

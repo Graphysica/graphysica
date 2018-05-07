@@ -18,6 +18,7 @@ package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
 import java.util.Set;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.Element;
 import org.graphysica.construction.GestionnaireOutils;
@@ -64,15 +65,14 @@ public class OutilCreationDroite extends OutilCreationElement {
     public void gerer(@NotNull final MouseEvent evenement) {
         if (aProchaineEtape()) {
             if (point1 == null) {
-                if (evenement.getEventType() == MouseEvent.MOUSE_PRESSED
-                        && evenement.isPrimaryButtonDown()) {
+                if (evenement.getButton() == MouseButton.PRIMARY && evenement.getEventType() == MouseEvent.MOUSE_PRESSED) {
                     point1 = determinerPoint();
                 }
             } else {
                 if (point2 == null) {
                     previsualiserPoint2();
                     previsualiserDroite();
-                } else if (evenement.getEventType()
+                } else if (evenement.getButton() == MouseButton.PRIMARY && evenement.getEventType()
                         == MouseEvent.MOUSE_RELEASED) {
                     aProchaineEtape = false;
                     point2 = determinerPoint();
