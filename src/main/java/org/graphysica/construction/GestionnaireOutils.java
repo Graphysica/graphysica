@@ -37,20 +37,27 @@ import org.graphysica.construction.outil.Outil;
 public final class GestionnaireOutils {
 
     /**
+     * Le gestionnaire de commandes de la construction gérée par ce gestionnaire
+     * d'outils.
+     */
+    private final GestionnaireCommandes gestionnaireCommandes;
+
+    /**
+     * Le gestionnaire de sélections de la construction gérée par ce
+     * gestionnaire d'outils.
+     */
+    private final GestionnaireSelections gestionnaireSelections;
+
+    /**
+     * Les éléments gérés par ce gestionnaire d'outils.
+     */
+    private final ObservableList<Element> elements;
+
+    /**
      * L'outil actif de ce gestionnaire d'outils.
      */
     private final ObjectProperty<Outil> outilActif
             = new SimpleObjectProperty<>();
-
-    /**
-     * La construction de ce gestionnaire d'outils.
-     */
-    private final Construction construction;
-
-    /**
-     * Le gestionnaire de sélections de la construction.
-     */
-    private final GestionnaireSelections gestionnaireSelections;
 
     /**
      * L'événement de gestion de la pression de la souris sur les espaces.
@@ -68,19 +75,26 @@ public final class GestionnaireOutils {
     private final GestionSouris mouvementSouris = new GestionSouris();
 
     /**
-     * Construit un gestionnaire d'outils sur une construction et un ensemble
-     * d'espaces définis.
+     * Construit un gestionnaire d'outils aux composantes définies.
      *
-     * @param construction la construction gérée.
-     * @param espaces les espaces gérés.
+     * @param gestionnaireCommandes le gestionnaire des commandes sur la
+     * construction.
+     * @param gestionnaireSelections le gestionnaire des sélections sur les
+     * espaces de la construction.
+     * @param espaces les espaces d'édition de la construction.
+     * @param elements les éléments de la construcion.
      */
-    public GestionnaireOutils(@NotNull final Construction construction,
-            @NotNull final ObservableList<Espace> espaces) {
-        this.construction = construction;
-        this.gestionnaireSelections = construction.getGestionnaireSelections();
+    GestionnaireOutils(
+            @NotNull final GestionnaireCommandes gestionnaireCommandes,
+            @NotNull final GestionnaireSelections gestionnaireSelections,
+            @NotNull final ObservableList<Espace> espaces,
+            @NotNull final ObservableList<Element> elements) {
+        this.gestionnaireCommandes = gestionnaireCommandes;
+        this.gestionnaireSelections = gestionnaireSelections;
+        this.elements = elements;
         espaces.addListener(changementEspaces);
         espaces.forEach((espace) -> {
-            ajouterGestionOutils(espace);
+            ajouterGestionsOutils(espace);
         });
     }
 
@@ -91,10 +105,10 @@ public final class GestionnaireOutils {
             final ListChangeListener.Change<? extends Espace> changements) -> {
         while (changements.next()) {
             changements.getAddedSubList().stream().forEach((espace) -> {
-                ajouterGestionOutils(espace);
+                ajouterGestionsOutils(espace);
             });
             changements.getRemoved().stream().forEach((espace) -> {
-                retirerGestionOutils(espace);
+                retirerGestionsOutils(espace);
             });
         }
     };
@@ -104,7 +118,7 @@ public final class GestionnaireOutils {
      *
      * @param espace l'espace sur lequel ajouter les gestions d'outils.
      */
-    private void ajouterGestionOutils(@NotNull final Espace espace) {
+    private void ajouterGestionsOutils(@NotNull final Espace espace) {
         espace.addEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
         espace.addEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
         espace.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
@@ -116,7 +130,7 @@ public final class GestionnaireOutils {
      *
      * @param espace l'espace duquel retirer les gestions d'outils.
      */
-    private void retirerGestionOutils(@NotNull final Espace espace) {
+    private void retirerGestionsOutils(@NotNull final Espace espace) {
         espace.removeEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
         espace.removeEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
         espace.removeEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
@@ -129,14 +143,6 @@ public final class GestionnaireOutils {
         if (aOutilActif()) {
             setOutilActif(getOutilActif().dupliquer());
         }
-    }
-
-    public Construction getConstruction() {
-        return construction;
-    }
-
-    public GestionnaireSelections getGestionnaireSelections() {
-        return gestionnaireSelections;
     }
 
     /**
@@ -164,6 +170,18 @@ public final class GestionnaireOutils {
 
     public ObjectProperty<Outil> outilActifProperty() {
         return outilActif;
+    }
+
+    public GestionnaireSelections getGestionnaireSelections() {
+        return gestionnaireSelections;
+    }
+
+    public GestionnaireCommandes getGestionnaireCommandes() {
+        return gestionnaireCommandes;
+    }
+
+    public ObservableList<Element> getElements() {
+        return elements;
     }
 
     /**

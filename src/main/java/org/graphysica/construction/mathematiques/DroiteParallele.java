@@ -17,11 +17,14 @@
 package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.position.PositionReelle;
 
 /**
@@ -64,7 +67,7 @@ public class DroiteParallele extends Ligne {
                 positionInterne2.setValue(positionExterne2.getValue().deplacer(
                         distance));
             };
-    
+
     /**
      * Le point par lequel traverse cette droite parallèle.
      */
@@ -91,13 +94,22 @@ public class DroiteParallele extends Ligne {
         positionExterne1.addListener(evenementActualisation);
         positionExterne2.addListener(evenementActualisation);
         positionInterne1.addListener(evenementActualisation);
-        ajouterForme(new org.graphysica.espace2d.forme.Droite(
-                positionInterne1, positionInterne2));
     }
 
     @Override
     public void deplacer(@NotNull final Vector2D deplacement) {
         point.deplacer(deplacement);
     }
-    
+
+    @Override
+    public Set<Forme> creerFormes() {
+        final Set<Forme> formes = new HashSet<>();
+        final org.graphysica.espace2d.forme.Droite forme
+                = new org.graphysica.espace2d.forme.Droite(positionInterne1,
+                        positionInterne2);
+        formes.add(forme);
+        ajouterForme(forme);
+        return formes;
+    }
+
 }

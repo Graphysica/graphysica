@@ -47,11 +47,11 @@ import org.graphysica.espace2d.position.PositionVirtuelle;
  * @author Marc-Antoine Ouimet
  */
 public final class GestionnaireSelections {
-
+    
     /**
-     * L'espace actuellement contrôlé par l'utilisateur.
+     * Le gestionnaire d'espaces de ce gestionnaire de sélections.
      */
-    private Espace espaceActif;
+    private final GestionnaireEspaces gestionnaireEspaces;
 
     /**
      * L'ensemble des éléments à considérer dans ce gestionnaire de sélections.
@@ -70,11 +70,6 @@ public final class GestionnaireSelections {
     private final Set<Forme> formesEnSurbrillance = new HashSet<>();
 
     /**
-     * L'association des espaces à leur gestion d'entrée de curseur.
-     */
-    private final Map<Espace, GestionEntree> gestionsEntree = new HashMap<>();
-
-    /**
      * L'association des espaces à leur gestion de survol de formes.
      */
     private final Map<Espace, GestionSurvol> gestionsSurvol = new HashMap<>();
@@ -89,11 +84,15 @@ public final class GestionnaireSelections {
      * Construit un gestionnaire de sélections sur une liste d'espaces et un
      * ensemble d'éléments qui y sont représentés.
      *
+     * @param gestionnaireEspaces le gestionnaire des espaces.
      * @param espaces les espaces à gérer.
      * @param elements les éléments pouvant être sélectionnés.
      */
-    public GestionnaireSelections(@NotNull final ObservableList<Espace> espaces,
+    GestionnaireSelections(
+            @NotNull final GestionnaireEspaces gestionnaireEspaces, 
+            @NotNull final ObservableList<Espace> espaces,
             @NotNull final Collection<Element> elements) {
+        this.gestionnaireEspaces = gestionnaireEspaces;
         espaces.addListener(changementEspaces);
         espaces.forEach((espace) -> {
             ajouterGestionsSelection(espace);
@@ -122,9 +121,6 @@ public final class GestionnaireSelections {
      * @param espace l'espace à gérer.
      */
     private void ajouterGestionsSelection(@NotNull final Espace espace) {
-        final GestionEntree gestionEntree = new GestionEntree(espace);
-        espace.addEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
-        gestionsEntree.put(espace, gestionEntree);
         final GestionSurvol gestionSurvol = new GestionSurvol(espace);
         espace.addEventFilter(MouseEvent.MOUSE_MOVED, gestionSurvol);
         gestionsSurvol.put(espace, gestionSurvol);
@@ -140,8 +136,6 @@ public final class GestionnaireSelections {
      * sélections.
      */
     private void retirerGestionsSelection(@NotNull final Espace espace) {
-        espace.removeEventFilter(MouseEvent.MOUSE_ENTERED,
-                gestionsEntree.remove(espace));
         espace.removeEventFilter(MouseEvent.MOUSE_MOVED,
                 gestionsSurvol.remove(espace));
         espace.removeEventFilter(MouseEvent.MOUSE_PRESSED,
@@ -196,7 +190,7 @@ public final class GestionnaireSelections {
     public LinkedHashSet<Element> getElementsSurvoles() {
         final LinkedHashSet<Element> elementsSurvoles = new LinkedHashSet<>();
         final LinkedHashSet<Forme> formesSurvolees 
-                = espaceActif.formesSurvolees();
+                = gestionnaireEspaces.espaceActif().formesSurvolees();
         for (final Forme forme : formesSurvolees) {
             elementsSurvoles.add(elementCorrespondant(forme));
         }
@@ -291,7 +285,8 @@ public final class GestionnaireSelections {
      * @return la propriété de position actuelle du curseur parmi les espaces.
      */
     public ObjectProperty<PositionReelle> positionCurseurProperty() {
-        return espaceActif.positionReelleCurseurProperty();
+        return gestionnaireEspaces.espaceActif()
+                .positionReelleCurseurProperty();
     }
 
     /**
@@ -300,7 +295,7 @@ public final class GestionnaireSelections {
      * @return la position actuelle réelle du curseur parmi les espaces.
      */
     public PositionReelle positionReelleCurseur() {
-        return espaceActif.getPositionReelleCurseur();
+        return gestionnaireEspaces.espaceActif().getPositionReelleCurseur();
     }
 
     /**
@@ -309,7 +304,7 @@ public final class GestionnaireSelections {
      * @return la position actuelle virtuelle du curseur parmi les espaces.
      */
     public PositionVirtuelle positionVirtuelleCurseur() {
-        return espaceActif.getPositionVirtuelleCurseur();
+        return gestionnaireEspaces.espaceActif().getPositionVirtuelleCurseur();
     }
 
     /**
@@ -319,7 +314,7 @@ public final class GestionnaireSelections {
      * @return le déplacement réel du curseur parmi les espaces.
      */
     public Vector2D deplacementReelCurseur() {
-        return espaceActif.getDeplacementReelCurseur();
+        return gestionnaireEspaces.espaceActif().getDeplacementReelCurseur();
     }
 
     /**
@@ -343,29 +338,6 @@ public final class GestionnaireSelections {
 
         public Espace getEspace() {
             return espace;
-        }
-
-    }
-
-    /**
-     * Une gestion d'entrée de curseur sur un espace actualise l'espace actif du
-     * gestionnaire de sélections.
-     */
-    private class GestionEntree extends Gestion {
-
-        /**
-         * Construit une gestion d'entrée sur un espace défini.
-         *
-         * @param espace l'espace à gérer.
-         */
-        public GestionEntree(@NotNull final Espace espace) {
-            super(espace);
-        }
-
-        @Override
-        public void handle(@NotNull final MouseEvent evenement) {
-            getEspace().actualiser();
-            espaceActif = getEspace();
         }
 
     }

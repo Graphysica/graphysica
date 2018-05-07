@@ -19,13 +19,13 @@ package org.graphysica.construction.outil;
 import com.sun.istack.internal.NotNull;
 import java.util.Set;
 import javafx.scene.input.MouseEvent;
-import org.graphysica.construction.Construction;
 import org.graphysica.construction.Element;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.commande.CreerElement;
 import org.graphysica.construction.mathematiques.Droite;
 import org.graphysica.construction.mathematiques.Point;
 import org.graphysica.construction.mathematiques.PointConcret;
+import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Un outil de création de droite permet de créer une droite.
@@ -43,6 +43,11 @@ public class OutilCreationDroite extends OutilCreationElement {
      * Le deuxième point de création de la droite.
      */
     private Point point2;
+
+    /**
+     * La droite créée par cet outil de création de droite.
+     */
+    private Droite droite;
 
     /**
      * Construit un outil de création de droite au gestionnaire d'outils défini.
@@ -64,20 +69,15 @@ public class OutilCreationDroite extends OutilCreationElement {
                     point1 = determinerPoint();
                 }
             } else {
-                final Construction construction
-                        = gestionnaireOutils.getConstruction();
-                if (previsualisations.isEmpty()) {
+                if (point2 == null) {
                     previsualiserPoint2();
                     previsualiserDroite();
-                    construction.getEspace().getFormes()
-                            .addAll(previsualisations);
                 } else if (evenement.getEventType()
                         == MouseEvent.MOUSE_RELEASED) {
                     aProchaineEtape = false;
                     point2 = determinerPoint();
+                    gestionnaireOutils.getElements().add(point2);
                     creerDroite();
-                    construction.getEspace().getFormes()
-                            .removeAll(previsualisations);
                     gestionnaireOutils.finOutil();
                 }
             }
@@ -95,11 +95,12 @@ public class OutilCreationDroite extends OutilCreationElement {
      * @return le point créé.
      */
     private Point creerPoint() {
-        final Construction construction = gestionnaireOutils.getConstruction();
         final PointConcret point = new PointConcret(gestionnaireOutils
-                .getGestionnaireSelections().positionReelleCurseur());
-        gestionnaireOutils.getConstruction().executerCommande(
-                new CreerElement(construction, point));
+                .getGestionnaireSelections().positionCurseurProperty());
+        point.positionInterneProperty().unbind();
+        gestionnaireOutils.getElements().add(point);
+        gestionnaireOutils.getGestionnaireCommandes().ajouter(
+                new CreerElement(gestionnaireOutils.getElements(), point));
         return point;
     }
 
@@ -125,31 +126,31 @@ public class OutilCreationDroite extends OutilCreationElement {
      * Prévisualise le deuxième point de création de la droite.
      */
     private void previsualiserPoint2() {
-        previsualisations.add(
-                new org.graphysica.espace2d.forme.Point(gestionnaireOutils
-                        .getGestionnaireSelections()
-                        .positionCurseurProperty()));
+        point2 = new PointConcret(gestionnaireOutils
+                .getGestionnaireSelections().positionCurseurProperty());
     }
 
     /**
      * Prévisualise la droite à créer.
      */
     private void previsualiserDroite() {
-        previsualisations.add(new org.graphysica.espace2d.forme.Droite(
-                point1.positionInterneProperty(),
-                gestionnaireOutils.getGestionnaireSelections()
-                        .positionCurseurProperty()));
+        droite = new Droite(point1, point2);
+        gestionnaireOutils.getElements().add(droite);
+        for (final Forme forme : droite.getFormes()) {
+            forme.setEnPrevisualisation(true);
+        }
     }
 
     /**
      * Crée la droite passant par les points {@code point1} et {@code point2}.
      */
     private void creerDroite() {
-        final Construction construction = gestionnaireOutils.getConstruction();
-        final Droite droite = new Droite(point1, point2);
-        construction.getEspace().getFormes().removeAll(previsualisations);
-        gestionnaireOutils.getConstruction().executerCommande(
-                new CreerElement(construction, droite));
+        gestionnaireOutils.getElements().remove(droite);
+        point2.positionInterneProperty().unbind();
+        droite = new Droite(point1, point2);
+        gestionnaireOutils.getElements().add(droite);
+        gestionnaireOutils.getGestionnaireCommandes().ajouter(
+                new CreerElement(gestionnaireOutils.getElements(), droite));
     }
 
 }

@@ -28,9 +28,9 @@ import org.graphysica.construction.GestionnaireOutils;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Outil {
-
+    
     /**
-     * Gestionnaire d'outils pour la construction.
+     * Le gestionnaire d'outils de la construction.
      */
     protected final GestionnaireOutils gestionnaireOutils;
 

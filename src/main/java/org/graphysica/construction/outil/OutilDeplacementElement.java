@@ -80,7 +80,7 @@ public class OutilDeplacementElement extends Outil {
                 }
             } else if (evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 finale = gestionnaireSelections.positionReelleCurseur();
-                gestionnaireOutils.getConstruction().getGestionnaireCommandes()
+                gestionnaireOutils.getGestionnaireCommandes()
                         .ajouter(new DeplacerElement(elements,
                                 initiale.distance(finale)));
                 gestionnaireOutils.finOutil();

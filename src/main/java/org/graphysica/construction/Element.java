@@ -51,7 +51,7 @@ public abstract class Element implements Deplaceable {
     /**
      * Le nombre d'éléments qui ont été construits.
      */
-    private static AtomicInteger ELEMENTS = new AtomicInteger(0);
+    private static final AtomicInteger ELEMENTS = new AtomicInteger(0);
 
     /**
      * Le numéro d'identification de l'élément.
@@ -61,6 +61,14 @@ public abstract class Element implements Deplaceable {
     {
         id = ELEMENTS.getAndIncrement() + 1;
     }
+
+    /**
+     * Crée les formes d'affichage de cet élément pour un espace et les ajoute
+     * aux formes représentant cet élément parmi tous les espaces.
+     *
+     * @return l'ensemble des formes représentant cet élément dans un espace.
+     */
+    public abstract Set<Forme> creerFormes();
 
     /**
      * Ajoute une forme d'affichage de cet élément et lie sa propriété

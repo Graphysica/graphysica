@@ -17,10 +17,7 @@
 package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
-import java.util.HashSet;
-import java.util.Set;
 import org.graphysica.construction.GestionnaireOutils;
-import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Un outil de création d'élément permet de créer des éléments sur une
@@ -34,11 +31,6 @@ public abstract class OutilCreationElement extends Outil {
      * Si cet outil de création d'élément a une prochaine étape.
      */
     protected boolean aProchaineEtape = true;
-
-    /**
-     * L'ensemble des formes de prévisualisation de l'élément à créer.
-     */
-    protected Set<Forme> previsualisations = new HashSet<>();
 
     /**
      * Construit un outil de création d'élément au gestionnaire d'outils défini.

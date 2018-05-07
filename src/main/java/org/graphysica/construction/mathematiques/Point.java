@@ -17,10 +17,13 @@
 package org.graphysica.construction.mathematiques;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Taille;
 import org.graphysica.espace2d.position.PositionReelle;
 
@@ -41,17 +44,26 @@ public abstract class Point extends ObjetMathematique {
      * La taille du point dans sa représentation dans un espace.
      */
     protected final Taille taille = Taille.de("point");
-    
+
     /**
      * La couleur par défaut des points.
      */
     protected static final Color COULEUR_PAR_DEFAUT = Color.BLUE;
 
     {
-        ajouterForme(new org.graphysica.espace2d.forme.Point(
-                positionInterneProperty(), couleurProperty(),
-                tailleProperty()));
         couleurProperty().setValue(COULEUR_PAR_DEFAUT);
+    }
+
+    @Override
+    public Set<Forme> creerFormes() {
+        final Set<Forme> formes = new HashSet<>();
+        final org.graphysica.espace2d.forme.Point forme
+                = new org.graphysica.espace2d.forme.Point(
+                        positionInterneProperty(), couleurProperty(),
+                        tailleProperty());
+        formes.add(forme);
+        ajouterForme(forme);
+        return formes;
     }
 
     @Override
