@@ -19,6 +19,7 @@ package org.graphysica.construction;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -95,6 +96,12 @@ public final class GestionnaireOutils {
         espaces.addListener(changementEspaces);
         espaces.forEach((espace) -> {
             ajouterGestionsOutils(espace);
+        });
+        outilActif.addListener((ObservableValue<? extends Outil> changement, 
+                final Outil ancienOutil, final Outil nouvelOutil) -> {
+            if (ancienOutil != null && ancienOutil.isEnCours()) {
+                ancienOutil.interrompre();
+            }
         });
     }
 

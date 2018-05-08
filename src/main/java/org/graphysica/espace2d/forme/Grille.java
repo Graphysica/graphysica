@@ -91,22 +91,24 @@ public final class Grille extends Forme {
     }
 
     @Override
-    public void dessinerNormal(@NotNull final Canvas toile,
+    public void dessiner(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
         calculerGraduations(toile, repere);
+        super.dessiner(toile, repere);
+    }
+    
+    @Override
+    public void dessinerNormal(@NotNull final Canvas toile,
+            @NotNull final Repere repere) {
         dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
                 getCouleur(), 1);
-        if (isEnSurvol()) {
-            dessinerSurvol(toile, repere);
-        }
     }
 
     @Override
     public void dessinerSurvol(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        calculerGraduations(toile, repere);
         dessinerGrille(toile, graduationsHorizontales, graduationsVerticales,
-                getCouleur().deriveColor(1, 1, 1, 0.2), 2);
+                getCouleur().deriveColor(1, 1, 1, 0.1), 2);
     }
 
     /**

@@ -90,6 +90,24 @@ public abstract class Element implements Deplaceable {
     }
 
     /**
+     * Ajoute une dépendance à cet élément.
+     *
+     * @param dependance la dépendance à ajouter.
+     */
+    public void ajouter(@NotNull final Element dependance) {
+        dependances.add(dependance);
+    }
+
+    /**
+     * Retire une dépendance de cet élément.
+     *
+     * @param dependance la dépendance à retirer.
+     */
+    public void retirer(@NotNull final Element dependance) {
+        dependances.remove(dependance);
+    }
+
+    /**
      * Déplace les dépendances immédiates de cet élément pour le déplacer
      * lui-même.
      *

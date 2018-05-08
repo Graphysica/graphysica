@@ -51,7 +51,7 @@ abstract class ToileRedimensionnable extends Canvas
      * @param hauteur la hauteur initiale de la toile.
      */
     public ToileRedimensionnable(final double largeur, final double hauteur) {
-        super(hauteur, hauteur);
+        super(largeur, hauteur);
     }
 
     {

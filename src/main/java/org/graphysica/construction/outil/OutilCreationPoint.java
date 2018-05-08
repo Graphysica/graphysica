@@ -17,6 +17,7 @@
 package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.commande.CreerElement;
@@ -55,12 +56,14 @@ public class OutilCreationPoint extends OutilCreationElement {
     @Override
     public void gerer(@NotNull final MouseEvent evenement) {
         if (aProchaineEtape()) {
-            if (evenement.isPrimaryButtonDown()
+            if (evenement.getButton() == MouseButton.PRIMARY
                     && evenement.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 previsualiserPoint();
-            } else if (point != null
+            } else if (evenement.getButton() == MouseButton.PRIMARY 
+                    && point != null
                     && evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 creerPoint();
+                aProchaineEtape = false;
                 gestionnaireOutils.finOutil();
             }
         }
@@ -89,6 +92,18 @@ public class OutilCreationPoint extends OutilCreationElement {
         }
         gestionnaireOutils.getGestionnaireCommandes().ajouter(
                 new CreerElement(gestionnaireOutils.getElements(), point));
+    }
+
+    @Override
+    public void interrompre() {
+        if (point != null) {
+            gestionnaireOutils.getElements().remove(point);
+        }
+    }
+
+    @Override
+    public boolean isEnCours() {
+        return aProchaineEtape;
     }
 
 }

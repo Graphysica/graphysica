@@ -19,7 +19,9 @@ package org.graphysica.construction.outil;
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.construction.Element;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.GestionnaireSelections;
@@ -31,6 +33,7 @@ import org.graphysica.espace2d.position.PositionReelle;
  * l'espace.
  *
  * @author Marc-Antoine Ouimet
+ * @author Victor Babin
  */
 public class OutilDeplacementElement extends Outil {
 
@@ -48,6 +51,11 @@ public class OutilDeplacementElement extends Outil {
      * La position finale du déplacement des éléments.
      */
     private PositionReelle finale;
+    
+    /**
+     * Si le déplacement est entamé.
+     */
+    private boolean entame = false;
 
     /**
      * Construit un outil de déplacement d'éléments au gestionnaire d'outils
@@ -66,31 +74,86 @@ public class OutilDeplacementElement extends Outil {
         final GestionnaireSelections gestionnaireSelections
                 = gestionnaireOutils.getGestionnaireSelections();
         if (evenement.getEventType() == MouseEvent.MOUSE_PRESSED
-                && evenement.isPrimaryButtonDown()
-                && !gestionnaireSelections.survolEstVide()) {
-            initiale = gestionnaireSelections.positionReelleCurseur();
+                && evenement.getButton() == MouseButton.PRIMARY) {
+            // Copier les éléments sélectionnés
             elements = new HashSet<>(gestionnaireSelections
                     .getElementsSelectionnes());
-        } else if (!gestionnaireSelections.selectionEstVide()) {
-            if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED
-                    && evenement.isPrimaryButtonDown()) {
-                for (final Element element : elements) {
-                    element.deplacer(gestionnaireSelections
-                            .deplacementReelCurseur());
-                }
-            } else if (evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
-                finale = gestionnaireSelections.positionReelleCurseur();
-                gestionnaireOutils.getGestionnaireCommandes()
-                        .ajouter(new DeplacerElement(elements,
-                                initiale.distance(finale)));
-                gestionnaireOutils.finOutil();
+            if (!elements.isEmpty()) {
+                initiale = capterPosition();
             }
         }
+        if (isEnCours()) {
+            if (evenement.isMiddleButtonDown()) {
+                finDeplacement();
+            } else if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                entame = true;
+                deplacer();
+            }
+        }
+        if (entame && evenement.getEventType() == MouseEvent.MOUSE_RELEASED
+                && evenement.getButton() == MouseButton.PRIMARY) {
+            finDeplacement();
+            gestionnaireOutils.finOutil();
+        }
+    }
+
+    /**
+     * Déplace les éléments selon le déplacement du curseur.
+     */
+    private void deplacer() {
+        final Vector2D deplacement = gestionnaireOutils
+                .getGestionnaireSelections().deplacementReelCurseur();
+        deplacer(deplacement);
+    }
+
+    /**
+     * Déplace les éléments selon un déplacement réel spécifié.
+     *
+     * @param deplacementReel le déplacement à effectuer.
+     */
+    private void deplacer(@NotNull final Vector2D deplacementReel) {
+        elements.forEach((element) -> {
+            element.deplacer(deplacementReel);
+        });
+    }
+
+    /**
+     * Capte la position réelle du curseur à son emplacement actuel.
+     *
+     * @return la position réelle du curseur.
+     */
+    private PositionReelle capterPosition() {
+        return gestionnaireOutils.getGestionnaireSelections()
+                .positionReelleCurseur();
+    }
+
+    /**
+     * Met fin au déplacement.
+     */
+    private void finDeplacement() {
+        if (finale == null) {
+            finale = gestionnaireOutils.getGestionnaireSelections()
+                    .positionReelleCurseur();
+            gestionnaireOutils.getGestionnaireCommandes()
+                    .ajouter(new DeplacerElement(elements,
+                            initiale.distance(finale)));
+        }
+    }
+
+    @Override
+    public void interrompre() {
+        finale = capterPosition();
+        deplacer(finale.distance(initiale));
     }
 
     @Override
     public Outil dupliquer() {
         return new OutilDeplacementElement(gestionnaireOutils);
+    }
+
+    @Override
+    public boolean isEnCours() {
+        return initiale != null && finale == null;
     }
 
 }
