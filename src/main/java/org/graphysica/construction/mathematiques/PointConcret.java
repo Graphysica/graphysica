@@ -28,6 +28,15 @@ import org.graphysica.espace2d.position.PositionReelle;
 public final class PointConcret extends Point {
 
     /**
+     * Construit un point concret à une position réelle spécifiée.
+     *
+     * @param position la position réelle du point.
+     */
+    public PointConcret(@NotNull final PositionReelle position) {
+        positionInterneProperty().setValue(position);
+    }
+
+    /**
      * Construit un point mathématique à une position réelle spécifiée.
      *
      * @param position la position réelle du point.

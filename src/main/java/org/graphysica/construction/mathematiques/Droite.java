@@ -19,7 +19,9 @@ package org.graphysica.construction.mathematiques;
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import javafx.beans.property.ObjectProperty;
 import org.graphysica.espace2d.forme.Forme;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Une droite est un espace linéaire qui bissecte un espace 2D. Une droite peut
@@ -43,11 +45,24 @@ public class Droite extends Ligne {
         positionInterne2.bindBidirectional(point2.positionInterneProperty());
     }
 
+    /**
+     * Construit une droite passant par un point et une position spécifiée.
+     *
+     * @param point1 le premier point compris dans cette droite.
+     * @param position2 la deuxième position comprise dans cette droite.
+     */
+    public Droite(@NotNull final Point point1,
+            @NotNull final ObjectProperty<PositionReelle> position2) {
+        dependances.add(point1);
+        positionInterne1.bindBidirectional(point1.positionInterneProperty());
+        positionInterne2.bindBidirectional(position2);
+    }
+    
     @Override
     public Set<Forme> creerFormes() {
         final Set<Forme> formes = new HashSet<>();
         final org.graphysica.espace2d.forme.Droite forme
-                = new org.graphysica.espace2d.forme.Droite(positionInterne1, 
+                = new org.graphysica.espace2d.forme.Droite(positionInterne1,
                         positionInterne2);
         formes.add(forme);
         ajouterForme(forme);

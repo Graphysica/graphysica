@@ -26,7 +26,6 @@ import org.graphysica.construction.commande.CreerElement;
 import org.graphysica.construction.mathematiques.Droite;
 import org.graphysica.construction.mathematiques.Point;
 import org.graphysica.construction.mathematiques.PointConcret;
-import org.graphysica.espace2d.forme.Forme;
 
 /**
  * Un outil de création de droite permet de créer une droite.
@@ -52,6 +51,11 @@ public class OutilCreationDroite extends OutilCreationElement {
     private Droite droite;
 
     /**
+     * Si la droite est en prévisualisation.
+     */
+    private boolean enPrevisualisation = false;
+
+    /**
      * Construit un outil de création de droite au gestionnaire d'outils défini.
      *
      * @param gestionnaireOutils le gestionnaire d'outils de cet outil de
@@ -71,18 +75,15 @@ public class OutilCreationDroite extends OutilCreationElement {
                         == MouseEvent.MOUSE_PRESSED) {
                     point1 = determinerPoint();
                 }
-            } else {
-                if (point2 == null) {
-                    previsualiserPoint2();
-                    previsualiserDroite();
-                } else if (evenement.getButton() == MouseButton.PRIMARY
-                        && evenement.getEventType()
-                        == MouseEvent.MOUSE_RELEASED) {
-                    aProchaineEtape = false;
-                    point2 = determinerPoint();
-                    creerDroite();
-                    gestionnaireOutils.finOutil();
-                }
+            } else if (!enPrevisualisation) {
+                previsualiserDroite();
+            } else if (evenement.getButton() == MouseButton.PRIMARY
+                    && evenement.getEventType()
+                    == MouseEvent.MOUSE_RELEASED) {
+                aProchaineEtape = false;
+                point2 = determinerPoint();
+                creerDroite();
+                gestionnaireOutils.finOutil();
             }
         }
     }
@@ -99,8 +100,7 @@ public class OutilCreationDroite extends OutilCreationElement {
      */
     private Point creerPoint() {
         final PointConcret point = new PointConcret(gestionnaireOutils
-                .getGestionnaireSelections().positionCurseurProperty());
-        point.positionInterneProperty().unbind();
+                .getGestionnaireSelections().positionReelleCurseur());
         gestionnaireOutils.getElements().add(point);
         gestionnaireOutils.getGestionnaireCommandes().ajouter(
                 new CreerElement(gestionnaireOutils.getElements(), point));
@@ -126,42 +126,38 @@ public class OutilCreationDroite extends OutilCreationElement {
     }
 
     /**
-     * Prévisualise le deuxième point de création de la droite.
-     */
-    private void previsualiserPoint2() {
-        point2 = new PointConcret(gestionnaireOutils
-                .getGestionnaireSelections().positionCurseurProperty());
-    }
-
-    /**
      * Prévisualise la droite à créer.
      */
     private void previsualiserDroite() {
-        droite = new Droite(point1, point2);
+        droite = new Droite(point1, gestionnaireOutils
+                .getGestionnaireSelections().positionCurseurProperty());
         gestionnaireOutils.getElements().add(droite);
-        for (final Forme forme : droite.getFormes()) {
+        enPrevisualisation = true;
+        droite.getFormes().stream().forEach((forme) -> {
             forme.setEnPrevisualisation(true);
-        }
+        });
     }
 
     /**
      * Crée la droite passant par les points {@code point1} et {@code point2}.
      */
     private void creerDroite() {
-        gestionnaireOutils.getElements().remove(droite);
-        point2.positionInterneProperty().unbind();
-        droite = new Droite(point1, point2);
-        gestionnaireOutils.getElements().add(droite);
+        droite.positionInterne2Property().unbindBidirectional(
+                gestionnaireOutils.getGestionnaireSelections()
+                .positionCurseurProperty());
+        droite.positionInterne2Property().bindBidirectional(
+                point2.positionInterneProperty());
+        droite.ajouter(point2);
         gestionnaireOutils.getGestionnaireCommandes().ajouter(
                 new CreerElement(gestionnaireOutils.getElements(), droite));
     }
 
     @Override
     public void interrompre() {
-        if (point2 != null) {
-            point2.positionInterneProperty().unbind();
-            gestionnaireOutils.getElements().removeAll(droite, point2);
-        }
+        droite.positionInterne2Property().unbindBidirectional(
+                gestionnaireOutils.getGestionnaireSelections()
+                .positionCurseurProperty());
+        gestionnaireOutils.getElements().removeAll(droite, point2);
     }
 
     @Override

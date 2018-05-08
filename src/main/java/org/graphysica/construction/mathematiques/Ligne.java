@@ -32,7 +32,7 @@ public abstract class Ligne extends ObjetMathematique {
     /**
      * L'épaisseur de la ligne dans sa représentation dans un espace.
      */
-    private final Taille epaisseur = Taille.de("point");
+    private final Taille epaisseur = Taille.de("ligne");
 
     /**
      * La première position interne de la ligne.
