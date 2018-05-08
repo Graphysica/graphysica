@@ -32,8 +32,8 @@ class GroupeSelection extends Groupe {
     }
 
     {
-        final Item outilDeplacement = new Item(gestionnaireOutils, "deplacer",
-                "Déplacer", new OutilDeplacementElement(gestionnaireOutils));
+        final Item outilDeplacement = new Item("deplacer", "Déplacer", 
+                new OutilDeplacementElement(gestionnaireOutils));
         getItems().addAll(outilDeplacement);
         definirDernierOutil(outilDeplacement);
         setGraphic(outilDeplacement.affichageImage());

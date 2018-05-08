@@ -32,8 +32,8 @@ class GroupePrimitif extends Groupe {
     }
 
     {
-        final Item outilPoint = new Item(gestionnaireOutils, "point",
-                "Point", new OutilCreationPoint(gestionnaireOutils));
+        final Item outilPoint = new Item("point", "Point", 
+                new OutilCreationPoint(gestionnaireOutils));
         getItems().addAll(outilPoint);
         definirDernierOutil(outilPoint);
         setGraphic(outilPoint.affichageImage());

@@ -32,8 +32,8 @@ class GroupeLignes extends Groupe {
     }
 
     {
-        final Item outilDroite = new Item(gestionnaireOutils, "droite",
-                "Droite", new OutilCreationDroite(gestionnaireOutils));
+        final Item outilDroite = new Item("droite", "Droite", 
+                new OutilCreationDroite(gestionnaireOutils));
         getItems().addAll(outilDroite);
         definirDernierOutil(outilDroite);
         setGraphic(outilDroite.affichageImage());

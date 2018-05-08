@@ -152,7 +152,6 @@ public class GestionnaireEspaces {
      */
     private final ListChangeListener<Element> changementElements = (@NotNull
             final ListChangeListener.Change<? extends Element> changements) -> {
-        System.out.println(changements.getList().size());
         while (changements.next()) {
             changements.getAddedSubList().stream().forEach((element) -> {
                 ajouterElement(element);

@@ -23,7 +23,6 @@ import java.util.Properties;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.outil.Outil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Marc-Antoine Ouimet
  */
-class Item extends MenuItem {
+final class Item extends MenuItem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Item.class);
 
@@ -55,11 +54,6 @@ class Item extends MenuItem {
     private static final int DIMENSION = 32;
     
     /**
-     * Le gestionnaire d'outils sur lequel cet item d'outil interagit.
-     */
-    private final GestionnaireOutils gestionnaireOutils;
-
-    /**
      * L'icône de cet item d'outil.
      */
     private final Image image;
@@ -73,18 +67,13 @@ class Item extends MenuItem {
     /**
      * Construit un item d'outils aux attributs définis.
      *
-     * @param gestionnaireOutils le gestionnaire d'outils sur lequel cet item
-     * d'outil interagit.
      * @param propriete la propriété d'icône de cet item d'outil.
      * @param nom le nom d'affichage de cet item d'outil.
      * @param outil l'outil généré par cet item d'outil.
      */
-    public Item(
-            @NotNull final GestionnaireOutils gestionnaireOutils,
-            @NotNull final String propriete,
+    public Item(@NotNull final String propriete,
             @NotNull final String nom, @NotNull final Outil outil) {
         super(nom);
-        this.gestionnaireOutils = gestionnaireOutils;
         this.outil = outil;
         final String nomFichierImage = PROPRIETES.getProperty(propriete);
         image = new Image("/images/icons/" + nomFichierImage + ".png");
