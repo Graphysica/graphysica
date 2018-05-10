@@ -46,7 +46,17 @@ public final class Repere {
             = new SimpleObjectProperty<>(Vector2D.ZERO);
 
     /**
-     * L'échelle de l'espace exprimée en pixels par mètre.
+     * L'échelle minimale d'un repère d'espace, exprimée en pixels par mètre.
+     */
+    private static final Vector2D ECHELLE_MINIMALE = new Vector2D(1e-21, 1e-12);
+
+    /**
+     * L'échelle maximale d'un repère d'espace, exprimée en pixels par mètre.
+     */
+    private static final Vector2D ECHELLE_MAXIMALE = new Vector2D(1e21, 1e21);
+
+    /**
+     * L'échelle d'un repère d'espace, exprimée en pixels par mètre.
      */
     private final ObjectProperty<Vector2D> echelle
             = new SimpleObjectProperty<>(new Vector2D(100, 100));
@@ -376,12 +386,21 @@ public final class Repere {
     }
 
     /**
-     * Modifie la valeur d'échelle de ce repère.
+     * Modifie la valeur d'échelle de ce repère. Contraint l'échelle entre
+     * {@code ECHELLE_MINIMALE} et {@code ECHELLE_MAXIMALE}.
      *
      * @param echelle l'échelle de ce repère, exprimée en pixels par mètre.
      */
     public void setEchelle(@NotNull final Vector2D echelle) {
-        this.echelle.setValue(echelle);
+        if (echelle.getX() > ECHELLE_MAXIMALE.getX()
+                || echelle.getY() > ECHELLE_MAXIMALE.getY()) {
+            this.echelle.setValue(ECHELLE_MAXIMALE);
+        } else if (echelle.getX() < ECHELLE_MINIMALE.getX()
+                || echelle.getY() < ECHELLE_MINIMALE.getY()) {
+            this.echelle.setValue(ECHELLE_MINIMALE);
+        } else {
+            this.echelle.setValue(echelle);
+        }
     }
 
     public ObjectProperty<Vector2D> echelleProperty() {

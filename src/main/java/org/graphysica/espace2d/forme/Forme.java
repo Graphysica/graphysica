@@ -19,9 +19,9 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
-import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
@@ -44,7 +44,7 @@ public abstract class Forme implements Dessinable, Survolable, Selectionnable,
      * alors la forme doit être redessinée pour l'ensemble des espaces qui
      * l'affichent.
      */
-    protected final Set<Observable> proprietes = new HashSet<>();
+    protected final Set<Property> proprietes = new HashSet<>();
 
     /**
      * La couleur d'affichage de la forme.
@@ -110,7 +110,7 @@ public abstract class Forme implements Dessinable, Survolable, Selectionnable,
         return distance(curseur, repere) <= DISTANCE_SELECTION;
     }
 
-    public Set<Observable> getProprietes() {
+    public Set<Property> getProprietes() {
         return proprietes;
     }
 

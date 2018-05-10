@@ -17,6 +17,7 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import javafx.scene.canvas.Canvas;
@@ -54,7 +55,7 @@ public class AxeHorizontal extends Axe {
                 .graduationsVerticales(toile.getWidth(), getEspacement());
         final double[] abscissesReelles = repere.abscissesReelles(
                 graduationsVerticales);
-        actualiserEtiquettes(abscissesReelles, formatValeurs(repere));
+        actualiserEtiquettes(repere, abscissesReelles, formatValeurs(repere));
         final double positionReelleAxe = positionReelleAxe(toile, repere);
         setOrigine(new PositionReelle(
                 new Vector2D(repere.abscisseReelle(0), positionReelleAxe)));
@@ -68,6 +69,28 @@ public class AxeHorizontal extends Axe {
         etiquettes.values().forEach((etiquette) -> {
             etiquette.dessiner(toile, repere);
         });
+    }
+
+    @Override
+    protected double[] valeursSansZero(@NotNull final Repere repere, 
+            @NotNull final double[] valeurs) {
+        final double zero = repere.abscisseReelle(repere.abscisseVirtuelle(0));
+        for (int i = 0; i < valeurs.length; i++) {
+            if (Math.abs(zero - valeurs[i]) <= 1e-9) {
+                final double[] valeursFiltrees = new double[valeurs.length - 1];
+                if (i != 0) {
+                    System.arraycopy(valeurs, 0, 
+                            valeursFiltrees, 0, i);
+                    System.arraycopy(valeurs, i + 1, 
+                            valeursFiltrees, i, valeurs.length - 1 - i);
+                } else {
+                    System.arraycopy(valeurs, 1, 
+                            valeursFiltrees, i, valeurs.length - 1 - i);
+                }
+                return valeursFiltrees;
+            }
+        }
+        return valeurs;
     }
 
     @Override
@@ -94,7 +117,7 @@ public class AxeHorizontal extends Axe {
     protected double espacementMinimalReel(@NotNull final Repere repere) {
         return getEspacement() / repere.getEchelle().getX();
     }
-
+    
     /**
      * Actualise la position des étiquettes de cet axe.
      *

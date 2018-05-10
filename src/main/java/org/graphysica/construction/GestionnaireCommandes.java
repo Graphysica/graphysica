@@ -16,6 +16,7 @@
  */
 package org.graphysica.construction;
 
+import org.graphysica.util.StackLimite;
 import com.sun.istack.internal.NotNull;
 import java.util.Stack;
 import org.graphysica.construction.commande.Commande;

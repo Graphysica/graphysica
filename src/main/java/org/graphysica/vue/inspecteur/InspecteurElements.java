@@ -17,7 +17,7 @@
 package org.graphysica.vue.inspecteur;
 
 import com.sun.istack.internal.NotNull;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.scene.layout.VBox;
 import org.graphysica.construction.Element;
 
@@ -32,7 +32,7 @@ abstract class InspecteurElements extends VBox {
     /**
      * L'ensemble des éléments de la construction.
      */
-    protected final ObservableList<Element> elements;
+    protected final ObservableSet<Element> elements;
 
     /**
      * Construit un inspecteur d'éléments sur un ensemble défini d'éléments de
@@ -40,7 +40,7 @@ abstract class InspecteurElements extends VBox {
      *
      * @param elements les éléments à inspecter dans la construction.
      */
-    public InspecteurElements(@NotNull final ObservableList<Element> elements) {
+    public InspecteurElements(@NotNull final ObservableSet<Element> elements) {
         this.elements = elements;
     }
 
