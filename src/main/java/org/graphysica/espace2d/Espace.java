@@ -34,8 +34,7 @@ import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -46,6 +45,7 @@ import org.graphysica.espace2d.forme.AxeVertical;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.espace2d.position.PositionVirtuelle;
+import org.graphysica.util.SetChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,8 +83,8 @@ public final class Espace extends ToileRedimensionnable
     /**
      * L'ensemble ordonné observable des formes dessinées dans l'espace.
      */
-    private final ObservableList<Forme> formes
-            = FXCollections.observableArrayList();
+    private final ObservableSet<Forme> formes
+            = FXCollections.observableSet(new LinkedHashSet<>());
 
     /**
      * L'ordre de rendu des formes dams l'espace.
@@ -154,10 +154,10 @@ public final class Espace extends ToileRedimensionnable
     public Espace(final double largeur, final double hauteur) {
         super(largeur, hauteur);
         repere = new Repere(largeur, hauteur);
+        formes.addListener(new FormesListener());
+        formes.addListener(evenementActualisation);
         repere.echelleProperty().addListener(evenementActualisation);
         repere.origineVirtuelleProperty().addListener(evenementActualisation);
-        formes.addListener(changementFormes);
-        formes.addListener(evenementActualisation);
         definirInteractionCurseur();
     }
 
@@ -245,28 +245,6 @@ public final class Espace extends ToileRedimensionnable
         dessinerFormes(reperage);
         dessinerFormes(formes);
     }
-
-    /**
-     * L'événement d'actualisation de la liste des formes de l'espace. Lie
-     * l'événement d'actualisation de l'espace aux formes ajoutées à la liste,
-     * ou retire l'événement d'actualisation de l'espace aux formes retirées de
-     * la liste.
-     */
-    private final ListChangeListener<Forme> changementFormes = (@NotNull
-            final ListChangeListener.Change<? extends Forme> changements) -> {
-        while (changements.next()) {
-            changements.getAddedSubList().stream().forEach((forme) -> {
-                forme.getProprietes().stream().forEach((propriete) -> {
-                    propriete.addListener(evenementActualisation);
-                });
-            });
-            changements.getRemoved().stream().forEach((forme) -> {
-                forme.getProprietes().stream().forEach((propriete) -> {
-                    propriete.removeListener(evenementActualisation);
-                });
-            });
-        }
-    };
 
     /**
      * Dessine une collection de formes sur l'espace.
@@ -509,6 +487,30 @@ public final class Espace extends ToileRedimensionnable
     public Vector2D getDeplacementReelCurseur() {
         return getPositionVirtuelleCurseur().reelle(repere)
                 .subtract(getPositionPrecedenteCurseur().reelle(repere));
+    }
+
+    /**
+     * L'événement d'actualisation de l'ensemble des formes de l'espace. Lie
+     * l'événement d'actualisation de l'espace aux formes ajoutées à la liste,
+     * ou retire l'événement d'actualisation de l'espace aux formes retirées de
+     * la liste.
+     */
+    private class FormesListener extends SetChangeListener<Forme> {
+        
+        @Override
+        public void onAdd(@NotNull final Forme forme) {
+            forme.getProprietes().stream().forEach((propriete) -> {
+                propriete.addListener(evenementActualisation);
+            });
+        }
+
+        @Override
+        public void onRemove(@NotNull final Forme forme) {
+            forme.getProprietes().stream().forEach((propriete) -> {
+                propriete.removeListener(evenementActualisation);
+            });
+        }
+
     }
 
 }

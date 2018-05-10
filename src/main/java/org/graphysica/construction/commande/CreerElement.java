@@ -17,7 +17,9 @@
 package org.graphysica.construction.commande;
 
 import com.sun.istack.internal.NotNull;
-import javafx.collections.ObservableList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.graphysica.construction.Element;
 
 /**
@@ -34,12 +36,12 @@ public class CreerElement extends CommandeAnnulable {
     /**
      * L'ensemble des éléments de la construction.
      */
-    private final ObservableList<Element> construction;
+    private final Set<Element> elementsConstruction;
 
     /**
      * Les éléments à créer par cette commande.
      */
-    private final Element[] elements;
+    private final Set<Element> elements;
 
     /**
      * Construit une commande de création d'éléments sur un ensemble d'éléments
@@ -49,10 +51,10 @@ public class CreerElement extends CommandeAnnulable {
      * les éléments.
      * @param elements les éléments à créer.
      */
-    public CreerElement(@NotNull final ObservableList<Element> construction,
+    public CreerElement(@NotNull final Set<Element> construction,
             @NotNull final Element... elements) {
-        this.elements = elements;
-        this.construction = construction;
+        this.elements = new HashSet<>(Arrays.asList(elements));
+        this.elementsConstruction = construction;
     }
 
     /**
@@ -60,7 +62,7 @@ public class CreerElement extends CommandeAnnulable {
      */
     @Override
     public void executer() {
-        construction.addAll(elements);
+        elementsConstruction.addAll(elements);
     }
 
     /**
@@ -68,7 +70,7 @@ public class CreerElement extends CommandeAnnulable {
      */
     @Override
     public void annuler() {
-        construction.removeAll(elements);
+        elementsConstruction.removeAll(elements);
     }
 
     /**

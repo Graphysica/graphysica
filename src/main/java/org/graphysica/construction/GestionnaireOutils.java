@@ -20,12 +20,12 @@ import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.construction.outil.Outil;
+import org.graphysica.util.SetChangeListener;
 
 /**
  * Un gestionnaire d'outil gère les événements de la souris sur les espaces dans
@@ -52,7 +52,7 @@ public final class GestionnaireOutils {
     /**
      * Les éléments gérés par ce gestionnaire d'outils.
      */
-    private final ObservableList<Element> elements;
+    private final ObservableSet<Element> elements;
 
     /**
      * L'outil actif de ce gestionnaire d'outils.
@@ -88,59 +88,18 @@ public final class GestionnaireOutils {
     GestionnaireOutils(
             @NotNull final GestionnaireCommandes gestionnaireCommandes,
             @NotNull final GestionnaireSelections gestionnaireSelections,
-            @NotNull final ObservableList<Espace> espaces,
-            @NotNull final ObservableList<Element> elements) {
+            @NotNull final ObservableSet<Espace> espaces,
+            @NotNull final ObservableSet<Element> elements) {
+        espaces.addListener(new EspacesListener(espaces));
         this.gestionnaireCommandes = gestionnaireCommandes;
         this.gestionnaireSelections = gestionnaireSelections;
         this.elements = elements;
-        espaces.addListener(changementEspaces);
-        espaces.forEach((espace) -> {
-            ajouterGestionsOutils(espace);
-        });
-        outilActif.addListener((ObservableValue<? extends Outil> changement, 
+        outilActif.addListener((ObservableValue<? extends Outil> changement,
                 final Outil ancienOutil, final Outil nouvelOutil) -> {
             if (ancienOutil != null && ancienOutil.isEnCours()) {
                 ancienOutil.interrompre();
             }
         });
-    }
-
-    /**
-     * L'événement d'actualisation de la liste des espaces.
-     */
-    private final ListChangeListener<Espace> changementEspaces = (@NotNull
-            final ListChangeListener.Change<? extends Espace> changements) -> {
-        while (changements.next()) {
-            changements.getAddedSubList().stream().forEach((espace) -> {
-                ajouterGestionsOutils(espace);
-            });
-            changements.getRemoved().stream().forEach((espace) -> {
-                retirerGestionsOutils(espace);
-            });
-        }
-    };
-
-    /**
-     * Ajoute les gestions d'outils sur un espace défini.
-     *
-     * @param espace l'espace sur lequel ajouter les gestions d'outils.
-     */
-    private void ajouterGestionsOutils(@NotNull final Espace espace) {
-        espace.addEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
-        espace.addEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
-        espace.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
-
-    }
-
-    /**
-     * Retire les gestions d'outils sur un espace défini.
-     *
-     * @param espace l'espace duquel retirer les gestions d'outils.
-     */
-    private void retirerGestionsOutils(@NotNull final Espace espace) {
-        espace.removeEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
-        espace.removeEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
-        espace.removeEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
     }
 
     /**
@@ -187,7 +146,7 @@ public final class GestionnaireOutils {
         return gestionnaireCommandes;
     }
 
-    public ObservableList<Element> getElements() {
+    public ObservableSet<Element> getElements() {
         return elements;
     }
 
@@ -201,6 +160,36 @@ public final class GestionnaireOutils {
             if (aOutilActif()) {
                 getOutilActif().gerer(evenement);
             }
+        }
+
+    }
+
+    /**
+     * L'événement d'actualisation de l'ensemble des espaces. Ajoute et retire
+     * les gestions de souris le cas échéant.
+     */
+    private class EspacesListener extends SetChangeListener<Espace> {
+
+        /**
+         * {@inheritDoc}
+         */
+        public EspacesListener(@NotNull final ObservableSet<Espace> elements) {
+            super(elements);
+        }
+
+        @Override
+        public void onAdd(@NotNull final Espace espace) {
+            espace.addEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
+            espace.addEventFilter(MouseEvent.MOUSE_RELEASED, relachementSouris);
+            espace.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
+        }
+
+        @Override
+        public void onRemove(@NotNull final Espace espace) {
+            espace.removeEventFilter(MouseEvent.MOUSE_PRESSED, pressionSouris);
+            espace.removeEventFilter(MouseEvent.MOUSE_RELEASED,
+                    relachementSouris);
+            espace.removeEventFilter(MouseEvent.MOUSE_DRAGGED, mouvementSouris);
         }
 
     }

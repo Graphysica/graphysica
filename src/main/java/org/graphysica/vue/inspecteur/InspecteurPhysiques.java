@@ -17,11 +17,12 @@
 package org.graphysica.vue.inspecteur;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashSet;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import org.graphysica.construction.Element;
 import org.graphysica.physique.Corps;
+import org.graphysica.util.SetChangeListener;
 
 /**
  * Un inspecteur de physique permet d'éditer les détails des corps physiques de
@@ -34,8 +35,8 @@ class InspecteurPhysiques extends InspecteurElements {
     /**
      * L'ensemble des corps physiques parmi les éléments de la construction.
      */
-    private final ObservableList<Corps> corpsPhysiques
-            = FXCollections.observableArrayList();
+    private final ObservableSet<Corps> corpsPhysiques
+            = FXCollections.observableSet(new HashSet<>());
 
     /**
      * Construit un inspecteur de physique sur un ensemble d'éléments de la
@@ -43,33 +44,38 @@ class InspecteurPhysiques extends InspecteurElements {
      *
      * @param elements les éléments à inspecter de la construction.
      */
-    public InspecteurPhysiques(ObservableList<Element> elements) {
+    public InspecteurPhysiques(@NotNull final ObservableSet<Element> elements) {
         super(elements);
-        elements.addListener(changementElements);
-        for (final Element element : elements) {
-            if (element instanceof Corps) {
-                corpsPhysiques.add((Corps) element);
-            }
-        }
+        elements.addListener(new ElementsListener(elements));
     }
 
     /**
      * L'événement de changement des éléments de la construction.
      */
-    private final ListChangeListener<Element> changementElements = (@NotNull
-            final ListChangeListener.Change<? extends Element> changements) -> {
-        while (changements.next()) {
-            changements.getAddedSubList().stream().forEach((element) -> {
-                if (element instanceof Corps) {
-                    corpsPhysiques.add((Corps) element);
-                }
-            });
-            changements.getRemoved().stream().forEach((element) -> {
-                if (element instanceof Corps) {
-                    corpsPhysiques.remove((Corps) element);
-                }
-            });
+    private class ElementsListener extends SetChangeListener<Element> {
+        
+        /**
+         * {@inheritDoc}
+         */
+        public ElementsListener(
+                @NotNull final ObservableSet<Element> elements) {
+            super(elements);
         }
-    };
+
+        @Override
+        public void onAdd(@NotNull final Element element) {
+            if (element instanceof Corps) {
+                corpsPhysiques.add((Corps) element);
+            }
+        }
+
+        @Override
+        public void onRemove(@NotNull final Element element) {
+            if (element instanceof Corps) {
+                corpsPhysiques.remove((Corps) element);
+            }
+        }
+        
+    }
 
 }

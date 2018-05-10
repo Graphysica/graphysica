@@ -19,8 +19,8 @@ package org.graphysica.vue;
 import com.sun.istack.internal.NotNull;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -113,7 +113,7 @@ public class AffichageConstruction extends BorderPane {
          * de construction.
          */
         public AffichageEspaces() {
-            final ObservableList<Espace> espaces = construction.getEspaces();
+            final ObservableSet<Espace> espaces = construction.getEspaces();
             espaces.addListener(changementEspaces);
             espaces.forEach((espace) -> {
                 ajouter(espace);
@@ -123,19 +123,16 @@ public class AffichageConstruction extends BorderPane {
         }
 
         /**
-         * L'événement de modification de la liste des espaces de la
+         * L'événement de modification de l'ensemble des espaces de la
          * construction. Permet d'ajouter à l'affichage des espaces un nouveau
          * panneau lié aux dimensions de l'espace dupliqué.
          */
-        private final ListChangeListener<Espace> changementEspaces = (@NotNull
-                final ListChangeListener.Change<? extends Espace> changements) -> {
-            while (changements.next()) {
-                changements.getAddedSubList().stream().forEach((espace) -> {
-                    ajouter(espace);
-                });
-                changements.getRemoved().stream().forEach((espace) -> {
-                    retirer(espace);
-                });
+        private final SetChangeListener<Espace> changementEspaces = (@NotNull
+                final SetChangeListener.Change<? extends Espace> changement) -> {
+            if (changement.wasAdded()) {
+                ajouter(changement.getElementAdded());
+            } else if (changement.wasRemoved()) {
+                retirer(changement.getElementRemoved());
             }
         };
 

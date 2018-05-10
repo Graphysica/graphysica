@@ -26,8 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import javafx.beans.property.ObjectProperty;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
@@ -37,6 +36,7 @@ import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.espace2d.position.PositionVirtuelle;
+import org.graphysica.util.SetChangeListener;
 
 /**
  * Le gestionnaire de sélections permet à l'utilisateur d'interagir avec la
@@ -47,7 +47,7 @@ import org.graphysica.espace2d.position.PositionVirtuelle;
  * @author Marc-Antoine Ouimet
  */
 public final class GestionnaireSelections {
-    
+
     /**
      * Le gestionnaire d'espaces de ce gestionnaire de sélections.
      */
@@ -61,7 +61,7 @@ public final class GestionnaireSelections {
     /**
      * L'ensemble des éléments sélectionnés en ordre de sélection.
      */
-    private final LinkedHashSet<Element> elementsSelectionnes 
+    private final LinkedHashSet<Element> elementsSelectionnes
             = new LinkedHashSet<>();
 
     /**
@@ -89,57 +89,12 @@ public final class GestionnaireSelections {
      * @param elements les éléments pouvant être sélectionnés.
      */
     GestionnaireSelections(
-            @NotNull final GestionnaireEspaces gestionnaireEspaces, 
-            @NotNull final ObservableList<Espace> espaces,
+            @NotNull final GestionnaireEspaces gestionnaireEspaces,
+            @NotNull final ObservableSet<Espace> espaces,
             @NotNull final Collection<Element> elements) {
+        espaces.addListener(new EspacesListener(espaces));
         this.gestionnaireEspaces = gestionnaireEspaces;
-        espaces.addListener(changementEspaces);
-        espaces.forEach((espace) -> {
-            ajouterGestionsSelection(espace);
-        });
         this.elements = elements;
-    }
-
-    /**
-     * L'événement d'actualisation de la liste des espaces.
-     */
-    private final ListChangeListener<Espace> changementEspaces = (@NotNull
-            final ListChangeListener.Change<? extends Espace> changements) -> {
-        while (changements.next()) {
-            changements.getAddedSubList().stream().forEach((espace) -> {
-                ajouterGestionsSelection(espace);
-            });
-            changements.getRemoved().stream().forEach((espace) -> {
-                retirerGestionsSelection(espace);
-            });
-        }
-    };
-
-    /**
-     * Ajoute des modules de gestion de sélection sur un espace défini.
-     *
-     * @param espace l'espace à gérer.
-     */
-    private void ajouterGestionsSelection(@NotNull final Espace espace) {
-        final GestionSurvol gestionSurvol = new GestionSurvol(espace);
-        espace.addEventFilter(MouseEvent.MOUSE_MOVED, gestionSurvol);
-        gestionsSurvol.put(espace, gestionSurvol);
-        final GestionSelection gestionSelection = new GestionSelection(espace);
-        espace.addEventFilter(MouseEvent.MOUSE_PRESSED, gestionSelection);
-        gestionsSelection.put(espace, gestionSelection);
-    }
-
-    /**
-     * Retire les modules de gestion de sélection d'un espace défini.
-     *
-     * @param espace l'espace qui n'est plus gérer par le gestionnaire de
-     * sélections.
-     */
-    private void retirerGestionsSelection(@NotNull final Espace espace) {
-        espace.removeEventFilter(MouseEvent.MOUSE_MOVED,
-                gestionsSurvol.remove(espace));
-        espace.removeEventFilter(MouseEvent.MOUSE_PRESSED,
-                gestionsSelection.remove(espace));
     }
 
     /**
@@ -189,14 +144,14 @@ public final class GestionnaireSelections {
      */
     public LinkedHashSet<Element> getElementsSurvoles() {
         final LinkedHashSet<Element> elementsSurvoles = new LinkedHashSet<>();
-        final LinkedHashSet<Forme> formesSurvolees 
+        final LinkedHashSet<Forme> formesSurvolees
                 = gestionnaireEspaces.espaceActif().formesSurvolees();
         for (final Forme forme : formesSurvolees) {
             elementsSurvoles.add(elementCorrespondant(forme));
         }
         return elementsSurvoles;
     }
-    
+
     /**
      * Détermine si le survol est vide.
      *
@@ -459,6 +414,40 @@ public final class GestionnaireSelections {
                 toutDeselectionner();
             }
         }
+    }
+
+    /**
+     * L'événement d'actualisation de l'ensemble des espaces. Ajoute et retire
+     * les gestions de souris le cas échéant.
+     */
+    private class EspacesListener extends SetChangeListener<Espace> {
+
+        /**
+         * {@inheritDoc}
+         */
+        public EspacesListener(@NotNull final ObservableSet<Espace> elements) {
+            super(elements);
+        }
+
+        @Override
+        public void onAdd(@NotNull final Espace espace) {
+            final GestionSurvol gestionSurvol = new GestionSurvol(espace);
+            espace.addEventFilter(MouseEvent.MOUSE_MOVED, gestionSurvol);
+            gestionsSurvol.put(espace, gestionSurvol);
+            final GestionSelection gestionSelection = new GestionSelection(
+                    espace);
+            espace.addEventFilter(MouseEvent.MOUSE_PRESSED, gestionSelection);
+            gestionsSelection.put(espace, gestionSelection);
+        }
+
+        @Override
+        public void onRemove(@NotNull final Espace espace) {
+            espace.removeEventFilter(MouseEvent.MOUSE_MOVED,
+                    gestionsSurvol.remove(espace));
+            espace.removeEventFilter(MouseEvent.MOUSE_PRESSED,
+                    gestionsSelection.remove(espace));
+        }
+
     }
 
 }

@@ -16,8 +16,10 @@
  */
 package org.graphysica.construction;
 
+import java.util.HashSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import org.graphysica.espace2d.Espace;
 
 /**
@@ -30,15 +32,15 @@ public final class Construction {
     /**
      * Les espaces de la construction.
      */
-    private final ObservableList<Espace> espaces
-            = FXCollections.observableArrayList();
+    private final ObservableSet<Espace> espaces
+            = FXCollections.observableSet(new HashSet<>());
 
     /**
      * L'ensemble des éléments de la construction. Comprend les corps physiques
      * et les objets mathématiques.
      */
-    private final ObservableList<Element> elements
-            = FXCollections.observableArrayList();
+    private final ObservableSet<Element> elements
+            = FXCollections.observableSet(new HashSet<>());
 
     /**
      * Le gestionnaire des commandes de la construction.
@@ -69,11 +71,11 @@ public final class Construction {
         espaces.add(new Espace(500, 500));
     }
 
-    public ObservableList<Espace> getEspaces() {
+    public ObservableSet<Espace> getEspaces() {
         return espaces;
     }
 
-    public ObservableList<Element> getElements() {
+    public ObservableSet<Element> getElements() {
         return elements;
     }
 

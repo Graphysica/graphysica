@@ -17,7 +17,7 @@
 package org.graphysica.vue.inspecteur;
 
 import com.sun.istack.internal.NotNull;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.graphysica.construction.Construction;
@@ -43,7 +43,7 @@ public class Inspecteur extends TabPane {
     /**
      * L'ensemble des éléments de la construction.
      */
-    private final ObservableList<Element> elements;
+    private final ObservableSet<Element> elements;
 
     /**
      * L'inspecteur des objets de la construction relevant de la mathématique.

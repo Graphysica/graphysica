@@ -17,11 +17,12 @@
 package org.graphysica.vue.inspecteur;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashSet;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import org.graphysica.construction.Element;
 import org.graphysica.construction.mathematiques.ObjetMathematique;
+import org.graphysica.util.SetChangeListener;
 
 /**
  * Un inspecteur de mathématique permet d'éditer les détails des objets
@@ -35,8 +36,8 @@ class InspecteurMathematique extends InspecteurElements {
      * L'ensemble des objets mathématiques parmi les éléments de la
      * construction.
      */
-    private final ObservableList<ObjetMathematique> objetsMathematiques
-            = FXCollections.observableArrayList();
+    private final ObservableSet<ObjetMathematique> objetsMathematiques
+            = FXCollections.observableSet(new HashSet<>());
 
     /**
      * Construit un inspecteur de mathématique sur un ensemble d'éléments de la
@@ -44,33 +45,39 @@ class InspecteurMathematique extends InspecteurElements {
      *
      * @param elements les éléments à inspecter de la construction.
      */
-    public InspecteurMathematique(ObservableList<Element> elements) {
+    public InspecteurMathematique(
+            @NotNull final ObservableSet<Element> elements) {
         super(elements);
-        elements.addListener(changementElements);
-        for (final Element element : elements) {
-            if (element instanceof ObjetMathematique) {
-                objetsMathematiques.add((ObjetMathematique) element);
-            }
-        }
+        elements.addListener(new ElementsListener(elements));
     }
 
     /**
      * L'événement de changement des éléments de la construction.
      */
-    private final ListChangeListener<Element> changementElements = (@NotNull
-            final ListChangeListener.Change<? extends Element> changements) -> {
-        while (changements.next()) {
-            changements.getAddedSubList().stream().forEach((element) -> {
-                if (element instanceof ObjetMathematique) {
-                    objetsMathematiques.add((ObjetMathematique) element);
-                }
-            });
-            changements.getRemoved().stream().forEach((element) -> {
-                if (element instanceof ObjetMathematique) {
-                    objetsMathematiques.remove((ObjetMathematique) element);
-                }
-            });
+    private class ElementsListener extends SetChangeListener<Element> {
+        
+        /**
+         * {@inheritDoc}
+         */
+        public ElementsListener(
+                @NotNull final ObservableSet<Element> elements) {
+            super(elements);
         }
-    };
+
+        @Override
+        public void onAdd(@NotNull final Element element) {
+            if (element instanceof ObjetMathematique) {
+                objetsMathematiques.add((ObjetMathematique) element);
+            }
+        }
+
+        @Override
+        public void onRemove(@NotNull final Element element) {
+            if (element instanceof ObjetMathematique) {
+                objetsMathematiques.remove((ObjetMathematique) element);
+            }
+        }
+        
+    }
 
 }

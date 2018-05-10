@@ -17,6 +17,7 @@
 package org.graphysica.construction.outil;
 
 import com.sun.istack.internal.NotNull;
+import java.util.Collection;
 import java.util.Set;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -157,7 +158,9 @@ public class OutilCreationDroite extends OutilCreationElement {
         droite.positionInterne2Property().unbindBidirectional(
                 gestionnaireOutils.getGestionnaireSelections()
                 .positionCurseurProperty());
-        gestionnaireOutils.getElements().removeAll(droite, point2);
+        final Collection<Element> elements = gestionnaireOutils.getElements();
+        elements.remove(droite);
+        elements.remove(point2);
     }
 
     @Override

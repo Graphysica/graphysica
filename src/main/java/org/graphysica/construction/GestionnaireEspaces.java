@@ -20,14 +20,14 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
+import org.graphysica.util.SetChangeListener;
 
 /**
  * Un gestionnaire d'espaces permet de dupliquer des espaces, de les supprimer
@@ -40,12 +40,12 @@ public class GestionnaireEspaces {
     /**
      * Les espaces de ce gestionnaire d'espaces.
      */
-    private final ObservableList<Espace> espaces;
+    private final ObservableSet<Espace> espaces;
 
     /**
      * Les éléments de ce gestionnaire d'espaces.
      */
-    private final ObservableList<Element> elements;
+    private final ObservableSet<Element> elements;
 
     /**
      * L'association des gestionnaires de navigation aux espaces.
@@ -70,65 +70,15 @@ public class GestionnaireEspaces {
      * @param espaces les espaces gérés.
      * @param elements les éléments gérés.
      */
-    GestionnaireEspaces(@NotNull final ObservableList<Espace> espaces,
-            @NotNull final ObservableList<Element> elements) {
+    GestionnaireEspaces(@NotNull final ObservableSet<Espace> espaces,
+            @NotNull final ObservableSet<Element> elements) {
         this.espaces = espaces;
         if (!espaces.isEmpty()) {
-            espaceActif = espaces.get(0);
+            espaceActif = espaces.iterator().next();
         }
-        espaces.forEach((espace) -> {
-            ajouterEspace(espace);
-        });
         this.elements = elements;
-        this.espaces.addListener(changementEspaces);
-        this.elements.addListener(changementElements);
-    }
-
-    /**
-     * L'événement d'actualisation de la liste des espaces.
-     */
-    private final ListChangeListener<Espace> changementEspaces = (@NotNull
-            final ListChangeListener.Change<? extends Espace> changements) -> {
-        while (changements.next()) {
-            changements.getAddedSubList().stream().forEach((espace) -> {
-                ajouterEspace(espace);
-            });
-            changements.getRemoved().stream().forEach((espace) -> {
-                retirerEspace(espace);
-            });
-        }
-    };
-
-    /**
-     * Ajoute un espace aux espaces de la construction.
-     *
-     * @param espace l'espace à ajouter.
-     */
-    private void ajouterEspace(@NotNull final Espace espace) {
-        final Navigation gestionNavigation = new Navigation(espace);
-        espace.addEventFilter(KeyEvent.KEY_PRESSED, new Navigation(espace));
-        gestionsNavigation.put(espace, gestionNavigation);
-        final GestionEntree gestionEntree = new GestionEntree(espace);
-        espace.addEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
-        gestionsEntree.put(espace, new GestionEntree(espace));
-        elements.forEach((element) -> {
-            espace.getFormes().addAll(element.creerFormes());
-        });
-    }
-
-    /**
-     * Retirer un espace des espaces de la construction.
-     *
-     * @param espace l'eapce à retirer.
-     */
-    private void retirerEspace(@NotNull final Espace espace) {
-        final Navigation gestionNavigation = gestionsNavigation.remove(espace);
-        espace.removeEventFilter(KeyEvent.KEY_PRESSED, gestionNavigation);
-        final GestionEntree gestionEntree = gestionsEntree.remove(espace);
-        espace.removeEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
-        elements.forEach((element) -> {
-            espace.getFormes().removeAll(element.getFormes());
-        });
+        this.espaces.addListener(new EspacesListener(this.espaces));
+        this.elements.addListener(new ElementsListener(this.elements));
     }
 
     /**
@@ -148,44 +98,6 @@ public class GestionnaireEspaces {
     }
 
     /**
-     * L'événement d'actualisation de la liste des éléments.
-     */
-    private final ListChangeListener<Element> changementElements = (@NotNull
-            final ListChangeListener.Change<? extends Element> changements) -> {
-        while (changements.next()) {
-            changements.getAddedSubList().stream().forEach((element) -> {
-                ajouterElement(element);
-            });
-            changements.getRemoved().stream().forEach((element) -> {
-                retirerElement(element);
-            });
-        }
-    };
-
-    /**
-     * Ajoute un élément aux espaces en y ajoutant ses formes. Chaque espace a
-     * sa propre version des formes de l'élément.
-     *
-     * @param element l'élément à ajouter.
-     */
-    private void ajouterElement(@NotNull final Element element) {
-        espaces.forEach((espace) -> {
-            espace.getFormes().addAll(element.creerFormes());
-        });
-    }
-
-    /**
-     * Retire un élément des espaces en retirant ses formes.
-     *
-     * @param element l'élément à retirer.
-     */
-    private void retirerElement(@NotNull final Element element) {
-        espaces.forEach((espace) -> {
-            espace.getFormes().removeAll(element.getFormes());
-        });
-    }
-
-    /**
      * Récupère l'espace modifié actuellement par l'utilisateur.
      *
      * @return l'espace actif d'édition de la construction.
@@ -193,7 +105,7 @@ public class GestionnaireEspaces {
     @NotNull
     public Espace espaceActif() {
         if (espaceActif == null && !espaces.isEmpty()) {
-            espaceActif = espaces.get(0);
+            espaceActif = espaces.iterator().next();
         }
         return espaceActif;
     }
@@ -215,10 +127,86 @@ public class GestionnaireEspaces {
     }
 
     /**
+     * L'événement d'actualisation de l'ensemble des éléments. Ajoute ou retire
+     * les formes des éléments le cas échéant.
+     */
+    private class ElementsListener extends SetChangeListener<Element> {
+
+        /**
+         * {@inheritDoc}
+         */
+        public ElementsListener(
+                @NotNull final ObservableSet<Element> elements) {
+            super(elements);
+        }
+
+        @Override
+        public void onAdd(@NotNull final Element element) {
+            espaces.forEach((espace) -> {
+                espace.getFormes().addAll(element.creerFormes());
+            });
+        }
+
+        @Override
+        public void onRemove(@NotNull final Element element) {
+            espaces.forEach((espace) -> {
+                espace.getFormes().removeAll(element.getFormes());
+            });
+        }
+
+    }
+
+    /**
+     * L'événement d'actualisation de l'ensemble des espaces. Ajoute les formes
+     * des éléments de la construction aux nouveaux espaces, et les retire et
+     * délit leurs propriétés des espaces retirés.
+     */
+    private class EspacesListener extends SetChangeListener<Espace> {
+
+        /**
+         * {@inheritDoc}
+         */
+        public EspacesListener(@NotNull final ObservableSet<Espace> espaces) {
+            super(espaces);
+        }
+
+        @Override
+        public void onAdd(@NotNull final Espace espace) {
+            final Navigation gestionNavigation = new Navigation(espace);
+            espace.addEventFilter(KeyEvent.KEY_PRESSED, new Navigation(espace));
+            gestionsNavigation.put(espace, gestionNavigation);
+            final GestionEntree gestionEntree = new GestionEntree(espace);
+            espace.addEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
+            gestionsEntree.put(espace, new GestionEntree(espace));
+            elements.forEach((element) -> {
+                espace.getFormes().addAll(element.creerFormes());
+            });
+        }
+
+        @Override
+        public void onRemove(@NotNull final Espace espace) {
+            final Navigation gestionNavigation = gestionsNavigation.remove(
+                    espace);
+            espace.removeEventFilter(KeyEvent.KEY_PRESSED, gestionNavigation);
+            final GestionEntree gestionEntree = gestionsEntree.remove(espace);
+            espace.removeEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
+            elements.forEach((element) -> {
+                espace.getFormes().removeAll(element.getFormes());
+                element.getFormes().stream().forEach((forme) -> {
+                    forme.getProprietes().stream().forEach((propriete) -> {
+                        propriete.unbind();
+                    });
+                });
+            });
+        }
+
+    }
+
+    /**
      * Une gestion d'entrée de curseur sur un espace actualise l'espace actif.
      */
     private class GestionEntree implements EventHandler<MouseEvent> {
-        
+
         /**
          * L'espace de cette gestion d'entrée d'espace.
          */
