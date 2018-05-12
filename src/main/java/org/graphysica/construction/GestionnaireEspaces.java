@@ -73,9 +73,6 @@ public class GestionnaireEspaces {
     GestionnaireEspaces(@NotNull final ObservableSet<Espace> espaces,
             @NotNull final ObservableSet<Element> elements) {
         this.espaces = espaces;
-        if (!espaces.isEmpty()) {
-            espaceActif = espaces.iterator().next();
-        }
         this.elements = elements;
         this.espaces.addListener(new EspacesListener(this.espaces));
         this.elements.addListener(new ElementsListener(this.elements));
@@ -85,7 +82,7 @@ public class GestionnaireEspaces {
      * Duplique l'espace actif.
      */
     public void dupliquerEspace() {
-        espaces.add(new Espace(espaceActif()));
+        espaces.add(new Espace());
     }
 
     /**
@@ -98,11 +95,13 @@ public class GestionnaireEspaces {
     }
 
     /**
-     * Récupère l'espace modifié actuellement par l'utilisateur.
+     * Récupère l'espace modifié actuellement par l'utilisateur. L'espace actif
+     * n'existe que dans un contexte où des espaces sont définis dans l'ensemble
+     * des espaces. Par conséquent, l'appel à cette méthode doit être restreinte
+     * aux événements sur des espaces définis de l'ensemble des espaces.
      *
      * @return l'espace actif d'édition de la construction.
      */
-    @NotNull
     public Espace espaceActif() {
         if (espaceActif == null && !espaces.isEmpty()) {
             espaceActif = espaces.iterator().next();
@@ -172,24 +171,51 @@ public class GestionnaireEspaces {
 
         @Override
         public void onAdd(@NotNull final Espace espace) {
+            ajouterEvenements(espace);
+        }
+
+        /**
+         * Ajoute les événements de navigation et de gestion d'entrée de la
+         * souris à l'espace spécifié.
+         *
+         * @param espace l'espace sur lequel ajouter les événements.
+         */
+        private void ajouterEvenements(@NotNull final Espace espace) {
             final Navigation gestionNavigation = new Navigation(espace);
             espace.addEventFilter(KeyEvent.KEY_PRESSED, new Navigation(espace));
             gestionsNavigation.put(espace, gestionNavigation);
             final GestionEntree gestionEntree = new GestionEntree(espace);
             espace.addEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
             gestionsEntree.put(espace, new GestionEntree(espace));
-            elements.forEach((element) -> {
-                espace.getFormes().addAll(element.creerFormes());
-            });
         }
 
         @Override
         public void onRemove(@NotNull final Espace espace) {
+            retirerEvenements(espace);
+            retirerFormes(espace);
+        }
+
+        /**
+         * Ajoute les événements de navigation et de gestion d'entrée de la
+         * souris de l'espace spécifié.
+         *
+         * @param espace l'espace duquel retirer les événements.
+         */
+        private void retirerEvenements(@NotNull final Espace espace) {
             final Navigation gestionNavigation = gestionsNavigation.remove(
                     espace);
             espace.removeEventFilter(KeyEvent.KEY_PRESSED, gestionNavigation);
             final GestionEntree gestionEntree = gestionsEntree.remove(espace);
             espace.removeEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
+        }
+
+        /**
+         * Retire les formes des éléments de l'espace spécifié et délie leurs
+         * propriétés d'actualisation.
+         *
+         * @param espace l'espace duquel retirer les formes.
+         */
+        private void retirerFormes(@NotNull final Espace espace) {
             elements.forEach((element) -> {
                 espace.getFormes().removeAll(element.getFormes());
                 element.getFormes().stream().forEach((forme) -> {
@@ -263,12 +289,12 @@ public class GestionnaireEspaces {
                     case ADD:
                     case EQUALS:
                     case PLUS:
-                        espace.zoomer(1);
+                        espace.zoomer();
                         break;
                     case SUBTRACT:
                     case UNDERSCORE:
                     case MINUS:
-                        espace.zoomer(-1);
+                        espace.dezoomer();
                         break;
                     case UP:
                         espace.defiler(new Vector2D(0, PAS));

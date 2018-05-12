@@ -19,8 +19,9 @@ package org.graphysica.vue;
 import com.sun.istack.internal.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.ObservableSet;
-import javafx.collections.SetChangeListener;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -28,6 +29,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import org.graphysica.construction.Construction;
 import org.graphysica.espace2d.Espace;
+import org.graphysica.util.SetChangeListener;
 import org.graphysica.vue.barreoutils.BarreOutils;
 import org.graphysica.vue.inspecteur.Inspecteur;
 
@@ -39,6 +41,16 @@ import org.graphysica.vue.inspecteur.Inspecteur;
  * @see Construction
  */
 public class AffichageConstruction extends BorderPane {
+
+    /**
+     * La largeur préférée des affichages de construction.
+     */
+    private static final double LARGEUR_PREFEREE = 1280;
+
+    /**
+     * La hauteur préférée des affichages de construction.
+     */
+    private static final double HAUTEUR_PREFEREE = 720;
 
     /**
      * La construction affichée.
@@ -69,6 +81,7 @@ public class AffichageConstruction extends BorderPane {
         final SplitPane centre = new SplitPane(inspecteur, affichageEspaces);
         centre.setDividerPositions(0.2);
         setCenter(centre);
+        setPrefSize(LARGEUR_PREFEREE, HAUTEUR_PREFEREE);
     }
 
     /**
@@ -76,7 +89,7 @@ public class AffichageConstruction extends BorderPane {
      * d'annulation et de réexécution de la commande.
      */
     private void ajouterEvenementsGestionCommandes() {
-        addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent evenement) -> {
+        addEventFilter(KeyEvent.KEY_PRESSED, (evenement) -> {
             if (evenement.isControlDown()) {
                 if (evenement.getCode() == KeyCode.Z) {
                     construction.getGestionnaireCommandes().annuler();
@@ -94,16 +107,6 @@ public class AffichageConstruction extends BorderPane {
     private class AffichageEspaces extends SplitPane {
 
         /**
-         * La largeur préférée des affichages d'espaces.
-         */
-        private static final double LARGEUR_PREFEREE = 800;
-
-        /**
-         * La hauteur préférée des affichages d'espaces.
-         */
-        private static final double HAUTEUR_PREFEREE = 600;
-
-        /**
          * L'association des espaces à leur panneau parent.
          */
         private final Map<Espace, Pane> panneaux = new HashMap<>();
@@ -114,12 +117,7 @@ public class AffichageConstruction extends BorderPane {
          */
         public AffichageEspaces() {
             final ObservableSet<Espace> espaces = construction.getEspaces();
-            espaces.addListener(changementEspaces);
-            espaces.forEach((espace) -> {
-                ajouter(espace);
-            });
-            setPrefWidth(LARGEUR_PREFEREE);
-            setPrefHeight(HAUTEUR_PREFEREE);
+            espaces.addListener(new EspacesListener(espaces));
         }
 
         /**
@@ -127,36 +125,64 @@ public class AffichageConstruction extends BorderPane {
          * construction. Permet d'ajouter à l'affichage des espaces un nouveau
          * panneau lié aux dimensions de l'espace dupliqué.
          */
-        private final SetChangeListener<Espace> changementEspaces = (@NotNull
-                final SetChangeListener.Change<? extends Espace> changement) -> {
-            if (changement.wasAdded()) {
-                ajouter(changement.getElementAdded());
-            } else if (changement.wasRemoved()) {
-                retirer(changement.getElementRemoved());
+        private class EspacesListener extends SetChangeListener<Espace> {
+
+            /**
+             * {@inheritDoc}
+             */
+            public EspacesListener(
+                    @NotNull final ObservableSet<Espace> espaces) {
+                super(espaces);
             }
-        };
 
-        /**
-         * Ajoute un espace à cet affichage d'espaces.
-         *
-         * @param espace l'espace à ajouter.
-         */
-        private void ajouter(@NotNull final Espace espace) {
-            final Pane panneau = new Pane(espace);
-            panneaux.put(espace, panneau);
-            espace.widthProperty().bind(panneau.widthProperty());
-            espace.heightProperty().bind(panneau.heightProperty());
-            getItems().add(panneau);
+            @Override
+            public void onAdd(@NotNull final Espace espace) {
+                final Pane panneau = new Pane(espace);
+                panneaux.put(espace, panneau);
+                espace.widthProperty().bind(panneau.widthProperty());
+                espace.heightProperty().bind(panneau.heightProperty());
+                getItems().add(panneau);
+                espace.widthProperty().addListener(
+                        new CentrerEspace(espace));
+                espace.heightProperty().addListener(
+                        new CentrerEspace(espace));
+            }
+
+            @Override
+            public void onRemove(@NotNull final Espace espace) {
+                getItems().remove(panneaux.remove(espace));
+            }
+
         }
 
+    }
+
+    /**
+     * Un événement ponctuel de recentrage d'un espace. Lorsque la propriété est
+     * invalidée, recentre l'espace et se soutrait à l'observation de la
+     * propriété.
+     */
+    private static final class CentrerEspace implements InvalidationListener {
+
         /**
-         * Retire un espace de cet affichage d'espaces.
-         *
-         * @param espace l'espace à retirer.
+         * L'espace à recentrer.
          */
-        private void retirer(@NotNull final Espace espace) {
-            getItems().remove(panneaux.remove(espace));
+        private final Espace espace;
+
+        /**
+         * Construit un événement de recentrage d'un espace défini.
+         * @param espace l'espace à recentrer.
+         */
+        public CentrerEspace(@NotNull final Espace espace) {
+            this.espace = espace;
         }
+
+        @Override
+        public void invalidated(@NotNull final Observable observable) {
+            espace.centrerOrigine();
+            observable.removeListener(this);
+        }
+
     }
 
 }

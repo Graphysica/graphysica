@@ -45,6 +45,11 @@ abstract class Axe extends Forme {
      * représentant l'axe.
      */
     private static final Taille TAILLE_GRADUATION = Taille.de("axegraduation");
+    
+    /**
+     * La marge séparant les étiquettes de graduations et l'axe.
+     */
+    protected static final int MARGE = 15;
 
     /**
      * L'espacement minimum des graduations de l'axe exprimée en pixels.

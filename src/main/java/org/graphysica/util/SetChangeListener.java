@@ -26,6 +26,7 @@ import javafx.collections.ObservableSet;
  * @author Marc-Antoine Ouimet
  * @param <E> le type d'élément de l'ensemble observable.
  */
+@SuppressWarnings("unchecked")
 public abstract class SetChangeListener<E>
         implements javafx.collections.SetChangeListener<E> {
 

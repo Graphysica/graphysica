@@ -16,9 +16,7 @@
  */
 package org.graphysica.espace2d;
 
-import com.sun.istack.internal.NotNull;
 import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.scene.canvas.Canvas;
 
 /**
@@ -39,10 +37,16 @@ abstract class ToileRedimensionnable extends Canvas
     /**
      * L'événement d'actualisation de la toile redimmensionable.
      */
-    protected final InvalidationListener evenementActualisation
-            = (@NotNull final Observable observable) -> {
-                actualiser();
-            };
+    protected final InvalidationListener evenementActualisation = (observable)
+            -> {
+        actualiser();
+    };
+
+    /**
+     * Construit une toile redimensionnable.
+     */
+    public ToileRedimensionnable() {
+    }
 
     /**
      * Construit une toile redimensionnable aux dimensions définies.
@@ -61,17 +65,17 @@ abstract class ToileRedimensionnable extends Canvas
     }
 
     @Override
-    public boolean isResizable() {
+    public final boolean isResizable() {
         return true;
     }
 
     @Override
-    public double prefHeight(final double hauteur) {
+    public final double prefHeight(final double hauteur) {
         return getHeight();
     }
 
     @Override
-    public double prefWidth(final double largeur) {
+    public final double prefWidth(final double largeur) {
         return getWidth();
     }
 

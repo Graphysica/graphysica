@@ -28,7 +28,7 @@ import org.graphysica.espace2d.Repere;
  *
  * @author Marc-Antoine Ouimet
  */
-interface Survolable extends Dessinable {
+interface Survolable extends Dessinable, Selectionnable {
 
     /**
      * Dessine normalement l'objet dans un contexte graphique d'espace spécifié.

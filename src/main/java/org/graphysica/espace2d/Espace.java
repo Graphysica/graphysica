@@ -24,11 +24,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
@@ -37,7 +35,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.AxeHorizontal;
@@ -94,7 +91,7 @@ public final class Espace extends ToileRedimensionnable
     /**
      * Le repère de l'espace.
      */
-    private final Repere repere;
+    private final Repere repere = new Repere();
 
     /**
      * La grille principale de l'espace.
@@ -119,11 +116,6 @@ public final class Espace extends ToileRedimensionnable
     private final AxeHorizontal axeHorizontal = new AxeHorizontal(100);
 
     /**
-     * L'ensemble des formes de repérage de cet espace.
-     */
-    private final Set<Forme> reperage = new HashSet<>();
-
-    /**
      * Le facteur de zoom utilisé pour zoomer la toile.
      */
     private static final double FACTEUR_ZOOM = 1.1;
@@ -145,33 +137,11 @@ public final class Espace extends ToileRedimensionnable
     private final ObjectProperty<PositionReelle> positionReelleCurseur
             = new SimpleObjectProperty<>(new PositionReelle(Vector2D.ZERO));
 
-    /**
-     * Construit un espace dont les dimensions virtuelles sont définies.
-     *
-     * @param largeur la largeur de l'espace exprimée en pixels.
-     * @param hauteur la hauteur de l'espace exprimée en pixels.
-     */
-    public Espace(final double largeur, final double hauteur) {
-        super(largeur, hauteur);
-        repere = new Repere(largeur, hauteur);
-        formes.addListener(new FormesListener());
-        formes.addListener(evenementActualisation);
+    {
         repere.echelleProperty().addListener(evenementActualisation);
         repere.origineVirtuelleProperty().addListener(evenementActualisation);
-        definirInteractionCurseur();
-    }
-
-    /**
-     * Construit un nouvel espace comprenant les formes d'un autre espace
-     * défini.
-     *
-     * @param espace l'espace à dupliquer.
-     */
-    public Espace(@NotNull final Espace espace) {
-        this(espace.getWidth(), espace.getHeight());
-    }
-
-    {
+        formes.addListener(new FormesListener());
+        formes.addListener(evenementActualisation);
         positionVirtuelleCurseur.addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
@@ -180,55 +150,55 @@ public final class Espace extends ToileRedimensionnable
                                 .reelle(repere)));
             }
         });
-        reperage.add(grilleSecondaire);
-        reperage.add(grillePrincipale);
-        reperage.add(axeVertical);
-        reperage.add(axeHorizontal);
-        reperage.forEach((forme) -> {
-            forme.getProprietes().forEach((propriete) -> {
-                propriete.addListener(evenementActualisation);
-            });
-        });
+        formes.add(grilleSecondaire);
+        formes.add(grillePrincipale);
+        formes.add(axeVertical);
+        formes.add(axeHorizontal);
+        definirInteractionCurseur();
     }
-
+    
     /**
      * Définit les interactions entre l'espace et le curseur.
      */
     private void definirInteractionCurseur() {
         final Cursor curseurParDefaut = Cursor.CROSSHAIR;
-        setOnMouseEntered((MouseEvent evenement) -> {
+        setOnMouseEntered((evenement) -> {
             requestFocus();
             setCursor(curseurParDefaut);
         });
-        setOnMouseMoved((MouseEvent evenement) -> {
+        setOnMouseMoved((evenement) -> {
             actualiserPositionsCurseur(evenement);
             if (formesSurvolees().isEmpty()) {
                 setCursor(curseurParDefaut);
             }
         });
-        setOnScroll((ScrollEvent evenement) -> {
+        setOnScroll((evenement) -> {
             zoomer(evenement.getDeltaY());
         });
-        setOnMousePressed((MouseEvent evenement) -> {
+        setOnMousePressed((evenement) -> {
             if (evenement.isMiddleButtonDown()) {
                 setCursor(Cursor.CLOSED_HAND);
             }
         });
-        setOnMouseReleased((MouseEvent evenement) -> {
-            setCursor(Cursor.CROSSHAIR);
-        });
-        setOnMouseDragged((MouseEvent evenement) -> {
+        setOnMouseDragged((evenement) -> {
             actualiserPositionsCurseur(evenement);
             if (evenement.isMiddleButtonDown()) {
                 defiler();
             }
         });
-        setOnMouseDragReleased((MouseEvent evenement) -> {
+        setOnMouseDragReleased((evenement) -> {
             final Vector2D origineVirtuelle = repere.getOrigineVirtuelle();
             repere.setOrigineVirtuelle(new Vector2D(
                     (int) origineVirtuelle.getX(),
                     (int) origineVirtuelle.getY()));
         });
+    }
+    
+    /**
+     * Positionne l'origine de l'espace en son centre.
+     */
+    public void centrerOrigine() {
+        repere.centrer(getWidth(), getHeight());
     }
 
     /**
@@ -242,7 +212,6 @@ public final class Espace extends ToileRedimensionnable
     @Override
     public void actualiser() {
         effacerAffichage();
-        dessinerFormes(reperage);
         dessinerFormes(formes);
     }
 
@@ -327,8 +296,7 @@ public final class Espace extends ToileRedimensionnable
      */
     private Map<Forme, Double> distancesFormes() {
         final LinkedHashSet<Forme> formesDistantes
-                = new LinkedHashSet<>(reperage);
-        formesDistantes.addAll(formes);
+                = new LinkedHashSet<>(formes);
         final Map<Forme, Double> distances = new HashMap<>();
         formesDistantes.stream().filter((forme) -> (forme.isSelectionne(
                 getPositionVirtuelleCurseur(), repere))).forEach((forme) -> {
@@ -346,24 +314,67 @@ public final class Espace extends ToileRedimensionnable
      *
      * @param defilementVertical le défilement vertical du zoom.
      */
-    public void zoomer(final double defilementVertical) {
-        if (defilementVertical != 0) {
-            final Vector2D translationOrigine = getPositionVirtuelleCurseur()
-                    .virtuelle(repere).subtract(repere.getOrigineVirtuelle());
-            repere.setOrigineVirtuelle(
-                    repere.getOrigineVirtuelle().add(translationOrigine));
-            double facteurZoom = FACTEUR_ZOOM;
-            if (defilementVertical < 0) {
-                facteurZoom = 1 / FACTEUR_ZOOM;
-            }
-            repere.setEchelle(repere.getEchelle().scalarMultiply(
-                    facteurZoom));
-            final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
-                    .subtract(translationOrigine.scalarMultiply(facteurZoom));
-            repere.setOrigineVirtuelle(
-                    new Vector2D((int) nouvelleOrigine.getX(),
-                            (int) nouvelleOrigine.getY()));
+    private void zoomer(final double defilementVertical) {
+        if (defilementVertical < 0) {
+            dezoomer();
+        } else if (defilementVertical > 0) {
+            zoomer();
         }
+    }
+
+    /**
+     * Zoome l'espace vers la position du curseur.
+     */
+    public void zoomer() {
+        zoomer(getPositionReelleCurseur());
+    }
+
+    /**
+     * Zoome l'espace vers une position cible.
+     *
+     * @param cible la cible du zoom.
+     */
+    public void zoomer(@NotNull final Position cible) {
+        zoomer(cible, FACTEUR_ZOOM);
+    }
+
+    /**
+     * Dézoome l'espace à partir de la position du curseur.
+     */
+    public void dezoomer() {
+        dezoomer(getPositionReelleCurseur());
+    }
+
+    /**
+     * Dézoome l'espace vers une position cible.
+     *
+     * @param cible la cible du dézoom.
+     */
+    public void dezoomer(@NotNull final Position cible) {
+        zoomer(cible, 1 / FACTEUR_ZOOM);
+    }
+
+    /**
+     * Zoome l'espace vers une position cible selon un facteur de zoom. Le
+     * facteur de zoom correspond au pourcentage d'agrandissement de l'espace,
+     * de telle sorte qu'un facteur plus grand que 1 correspond à un zoom et un
+     * facteur entre 0 et 1 exclusivement correspond à un dézoom.
+     *
+     * @param cible la position cible du zoom.
+     * @param facteurZoom le facteur de zoom.
+     */
+    private void zoomer(@NotNull final Position cible,
+            final double facteurZoom) {
+        final Vector2D translationOrigine = cible.virtuelle(repere)
+                .subtract(repere.getOrigineVirtuelle());
+        repere.setOrigineVirtuelle(
+                repere.getOrigineVirtuelle().add(translationOrigine));
+        repere.setEchelle(repere.getEchelle().scalarMultiply(facteurZoom));
+        final Vector2D nouvelleOrigine = repere.getOrigineVirtuelle()
+                .subtract(translationOrigine.scalarMultiply(facteurZoom));
+        repere.setOrigineVirtuelle(
+                new Vector2D((int) nouvelleOrigine.getX(),
+                        (int) nouvelleOrigine.getY()));
     }
 
     /**
@@ -488,7 +499,7 @@ public final class Espace extends ToileRedimensionnable
         return getPositionVirtuelleCurseur().reelle(repere)
                 .subtract(getPositionPrecedenteCurseur().reelle(repere));
     }
-
+    
     /**
      * L'événement d'actualisation de l'ensemble des formes de l'espace. Lie
      * l'événement d'actualisation de l'espace aux formes ajoutées à la liste,
@@ -496,7 +507,7 @@ public final class Espace extends ToileRedimensionnable
      * la liste.
      */
     private class FormesListener extends SetChangeListener<Forme> {
-        
+
         @Override
         public void onAdd(@NotNull final Forme forme) {
             forme.getProprietes().stream().forEach((propriete) -> {
