@@ -240,8 +240,7 @@ public final class GestionnaireSelections {
      * @return la propriété de position actuelle du curseur parmi les espaces.
      */
     public ObjectProperty<PositionReelle> positionCurseurProperty() {
-        return gestionnaireEspaces.espaceActif()
-                .positionReelleCurseurProperty();
+        return gestionnaireEspaces.positionCurseurProperty();
     }
 
     /**
@@ -449,5 +448,5 @@ public final class GestionnaireSelections {
         }
 
     }
-
+    
 }

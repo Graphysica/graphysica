@@ -20,6 +20,8 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableSet;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
@@ -27,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.espace2d.forme.Forme;
+import org.graphysica.espace2d.position.PositionReelle;
 import org.graphysica.util.SetChangeListener;
 
 /**
@@ -36,6 +39,12 @@ import org.graphysica.util.SetChangeListener;
  * @author Marc-Antoine Ouimet
  */
 public class GestionnaireEspaces {
+    
+    /**
+     * La position du curseur à travers les espaces.
+     */
+    private final ObjectProperty<PositionReelle> positionCurseur 
+            = new SimpleObjectProperty<>();
 
     /**
      * Les espaces de ce gestionnaire d'espaces.
@@ -123,6 +132,10 @@ public class GestionnaireEspaces {
             }
         }
         return null;
+    }
+    
+    public ObjectProperty<PositionReelle> positionCurseurProperty() {
+        return positionCurseur;
     }
 
     /**
@@ -249,7 +262,9 @@ public class GestionnaireEspaces {
 
         @Override
         public void handle(@NotNull final MouseEvent evenement) {
+            positionCurseur.unbind();
             espaceActif = espace;
+            positionCurseur.bind(espaceActif.positionReelleCurseurProperty());
         }
 
     }
