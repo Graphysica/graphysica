@@ -25,6 +25,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.construction.outil.Outil;
+import org.graphysica.construction.outil.OutilDeplacementElement;
 import org.graphysica.util.SetChangeListener;
 
 /**
@@ -100,6 +101,10 @@ public final class GestionnaireOutils {
                 ancienOutil.interrompre();
             }
         });
+    }
+    
+    {
+        setOutilActif(new OutilDeplacementElement(this));
     }
 
     /**

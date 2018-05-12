@@ -19,7 +19,6 @@ package org.graphysica.vue.barreoutils;
 import com.sun.istack.internal.NotNull;
 import javafx.scene.control.ToolBar;
 import org.graphysica.construction.GestionnaireOutils;
-import org.graphysica.construction.outil.OutilDeplacementElement;
 
 /**
  * Une barre d'outils permet de sélectionner des outils pour interagir avec la
@@ -41,15 +40,14 @@ public final class BarreOutils extends ToolBar {
      */
     public BarreOutils(@NotNull final GestionnaireOutils gestionnaireOutils) {
         this.gestionnaireOutils = gestionnaireOutils;
-        gestionnaireOutils.setOutilActif(new OutilDeplacementElement(
-                gestionnaireOutils));
         assembler();
     }
-
+    
     /**
      * Assemble la barre d'outils.
      */
     private void assembler() {
+        getStyleClass().add("barre-outils");
         getItems().addAll(new GroupeSelection(gestionnaireOutils),
                 new GroupePrimitif(gestionnaireOutils),
                 new GroupeLignes(gestionnaireOutils));
