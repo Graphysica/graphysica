@@ -17,7 +17,7 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import java.awt.image.BufferedImage;
+import java.awt.Toolkit;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
@@ -26,18 +26,17 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
 import org.graphysica.espace2d.Repere;
 import static org.graphysica.espace2d.position.Type.VIRTUELLE;
+import org.jfree.fx.FXGraphics2D;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
+import org.scilab.forge.jlatexmath.TeXIcon;
 
 /**
  * Une étiquette permet d'afficher du texte en format TeX à une position
@@ -59,18 +58,18 @@ public class Etiquette extends Forme {
     private final StringProperty texte = new SimpleStringProperty();
 
     /**
-     * L'image de la formule TeX.
+     * L'icône de la formule TeX.
      */
-    private Image imageFormule;
+    private TeXIcon icone;
 
     /**
-     * L'événement de reconstruction de l'image de la formule. L'image de la
-     * formule TeX doit être reconstruite si la couleur de l'étiquette, la
-     * taille de caractère du texte ou le texte lui-même est modifié.
+     * L'événement de reconstruction de l'icône de la formule. L'icône de la
+     * formule TeX doit être reconstruite si la taille de caractère du texte ou
+     * le texte lui-même est modifié.
      */
-    private final InvalidationListener reconstruireImage
+    private final InvalidationListener reconstruireIcone
             = (@NotNull final Observable observable) -> {
-                construireImage();
+                construireIcone();
             };
 
     /**
@@ -139,7 +138,8 @@ public class Etiquette extends Forme {
     }
 
     static {
-        TeXFormula.setDefaultDPI();
+        TeXFormula.setDPITarget(
+                Toolkit.getDefaultToolkit().getScreenResolution() * 10);
     }
 
     {
@@ -147,22 +147,22 @@ public class Etiquette extends Forme {
         proprietes.add(tailleCaractere);
         proprietes.add(positionAncrage);
         proprietes.add(positionRelative);
-        texte.addListener(reconstruireImage);
-        tailleCaractere.addListener(reconstruireImage);
-        couleurProperty().addListener(reconstruireImage);
+        texte.addListener(reconstruireIcone);
+        tailleCaractere.addListener(reconstruireIcone);
     }
 
     @Override
     public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
-        if (imageFormule == null) {
-            construireImage();
+        if (icone == null) {
+            construireIcone();
         }
-        final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
-        final Vector2D position = getPositionAncrage().deplacer(
-                getPositionRelative(), VIRTUELLE, repere).virtuelle(repere);
-        contexteGraphique.drawImage(imageFormule, (int) (position.getX()),
-                (int) (position.getY()));
+        final Vector2D position = coinSuperieurGauche(repere).virtuelle(repere);
+        final FXGraphics2D graphismes = new FXGraphics2D(
+                toile.getGraphicsContext2D());
+        toile.getGraphicsContext2D().setFill(getCouleur());
+        icone.getBox().draw(graphismes,
+                (int) (position.getX()), (int) (position.getY() + getHauteur()));
         if (isEnSurvol()) {
             dessinerSurvol(toile, repere);
         }
@@ -181,25 +181,12 @@ public class Etiquette extends Forme {
     }
 
     /**
-     * Construit l'image de la formule TeX à partir du texte.
+     * Construit l'icône de la formule TeX à partir du texte.
      */
-    private void construireImage() {
-        imageFormule = SwingFXUtils.toFXImage(
-                (BufferedImage) new TeXFormula(getTexte()).createBufferedImage(
-                        TeXConstants.STYLE_TEXT, getTailleCaractere(),
-                        couleur(), null), null);
-    }
-
-    /**
-     * Convertit une couleur de javafx.scene.paint.Color vers java.awt.Color.
-     *
-     * @return la couleur convertie.
-     */
-    private java.awt.Color couleur() {
-        final Color couleur = getCouleur();
-        return new java.awt.Color((float) couleur.getRed(),
-                (float) couleur.getGreen(), (float) couleur.getBlue(),
-                (float) couleur.getOpacity());
+    private void construireIcone() {
+        final TeXFormula formule = new TeXFormula(getTexte());
+        icone = formule.createTeXIcon(TeXConstants.STYLE_DISPLAY,
+                getTailleCaractere());
     }
 
     @Override
@@ -280,7 +267,7 @@ public class Etiquette extends Forme {
     private String getTexte() {
         return texte.getValue();
     }
-    
+
     private void setTexte(@NotNull final String texte) {
         this.texte.setValue(texte);
     }
@@ -316,17 +303,17 @@ public class Etiquette extends Forme {
     private Position getPositionAncrage() {
         return positionAncrage.getValue();
     }
-    
+
     void setPositionAncrage(@NotNull final Position positionAncrage) {
         this.positionAncrage.setValue(positionAncrage);
     }
 
     public final double getLargeur() {
-        return imageFormule.getWidth();
+        return icone.getBox().getWidth();
     }
 
     public final double getHauteur() {
-        return imageFormule.getHeight();
+        return icone.getBox().getHeight();
     }
 
 }
