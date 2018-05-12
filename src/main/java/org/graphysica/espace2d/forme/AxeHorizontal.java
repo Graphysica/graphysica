@@ -17,7 +17,6 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import javafx.scene.canvas.Canvas;
@@ -136,14 +135,15 @@ public class AxeHorizontal extends Axe {
             etiquette.setPositionAncrage(new PositionReelle(
                     new Vector2D(valeur, positionReelleAxe(toile, repere))));
             if (positionVirtuelle >= toile.getHeight()
-                    - etiquette.getHauteur()) {
+                    - etiquette.getHauteur() - 2 * MARGE) {
                 etiquette.setPositionRelative(new Vector2D(
                         -etiquette.getLargeur() / 2,
                         toile.getHeight() - positionVirtuelle
-                        - etiquette.getHauteur()));
+                        - etiquette.getHauteur() - MARGE));
             } else {
                 etiquette.setPositionRelative(new Vector2D(
-                        -etiquette.getLargeur() / 2, 0));
+                        -etiquette.getLargeur() / 2, 
+                        MARGE));
             }
         }
     }
