@@ -25,47 +25,47 @@ import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.Element;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.commande.CreerElement;
-import org.graphysica.construction.mathematiques.DroiteParallele;
+import org.graphysica.construction.mathematiques.DroitePerpendiculaire;
 import org.graphysica.construction.mathematiques.Ligne;
 import org.graphysica.construction.mathematiques.Point;
 import org.graphysica.construction.mathematiques.PointConcret;
 
 /**
- * Un outil de création de droite parallèle permet de créer une droite parallèle
- * à une droite et passant par un point.
+ * Un outil de création de droite perpendiculaire permet de créer une droite
+ * perpendiculaire à une droite et passant par un point.
  *
  * @author Marc-Antoine Ouimet
  */
-public class OutilCreationDroiteParallele extends OutilCreationElement {
+public class OutilCreationDroitePerpendiculaire extends OutilCreationElement {
 
     /**
-     * La droite parallèle créée par cet outil de création de droite.
+     * La droite perpendiculaire créée par cet outil de création de droite.
      */
-    private DroiteParallele droite;
+    private DroitePerpendiculaire droite;
 
     /**
-     * Le point compris dans la droite parallèle.
+     * Le point compris dans la droite perpendiculaire.
      */
     private Point point;
 
     /**
-     * La ligne parallèle à la droite.
+     * La ligne perpendiculaire à la droite.
      */
     private Ligne ligne;
 
     /**
-     * Si la droite parallèle est en prévisualisation.
+     * Si la droite perpendiculaire est en prévisualisation.
      */
     private boolean enPrevisualisation = false;
 
     /**
-     * Construit un outil de création de droite parallèle au gestionnaire
+     * Construit un outil de création de droite perpendiculaire au gestionnaire
      * d'outils défini.
      *
      * @param gestionnaireOutils le gestionnaire d'outils de cet outil de
-     * création de droite parallèle.
+     * création de droite perpendiculaire.
      */
-    public OutilCreationDroiteParallele(
+    public OutilCreationDroitePerpendiculaire(
             @NotNull final GestionnaireOutils gestionnaireOutils) {
         super(gestionnaireOutils);
     }
@@ -94,11 +94,12 @@ public class OutilCreationDroiteParallele extends OutilCreationElement {
 
     @Override
     public Outil dupliquer() {
-        return new OutilCreationDroiteParallele(gestionnaireOutils);
+        return new OutilCreationDroitePerpendiculaire(gestionnaireOutils);
     }
 
     /**
-     * Récupère la ligne à utiliser pour la création de la droite parallèle.
+     * Récupère la ligne à utiliser pour la création de la droite
+     * perpendiculaire.
      *
      * @return la ligne actuellement en survol.
      */
@@ -129,9 +130,9 @@ public class OutilCreationDroiteParallele extends OutilCreationElement {
     }
 
     /**
-     * Détermine le point à utiliser pour la création de la droite parallèle.
-     * Crée un point à l'emplacement réel du curseur si aucun autre point n'est
-     * sélectionné par l'utilisateur.
+     * Détermine le point à utiliser pour la création de la droite
+     * perpendiculaire. Crée un point à l'emplacement réel du curseur si aucun
+     * autre point n'est sélectionné par l'utilisateur.
      *
      * @return le point déterminé par l'utilisateur.
      */
@@ -147,10 +148,10 @@ public class OutilCreationDroiteParallele extends OutilCreationElement {
     }
 
     /**
-     * Prévisualise la droite parallèle à créer.
+     * Prévisualise la droite perpendiculaire à créer.
      */
     private void previsualiserDroiteParallele() {
-        droite = new DroiteParallele(ligne, gestionnaireOutils
+        droite = new DroitePerpendiculaire(ligne, gestionnaireOutils
                 .getGestionnaireSelections().positionCurseurProperty());
         gestionnaireOutils.getElements().add(droite);
         enPrevisualisation = true;
@@ -160,8 +161,8 @@ public class OutilCreationDroiteParallele extends OutilCreationElement {
     }
 
     /**
-     * Crée la droite passant par le point {@code point} et parallèle à la ligne
-     * {@code ligne}.
+     * Crée la droite passant par le point {@code point} et perpendiculaire à la
+     * ligne {@code ligne}.
      */
     private void creerDroiteParallele() {
         droite.positionInterne1Property().unbind();
