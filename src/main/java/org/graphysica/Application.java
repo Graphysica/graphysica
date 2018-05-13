@@ -52,7 +52,8 @@ public final class Application extends javafx.application.Application {
     @Override
     public void start(@NotNull final Stage stage) throws Exception {
         final Scene scene = new Scene(new AffichageConstruction(construction));
-        scene.getStylesheets().add("/styles/styles.css");
+        scene.getStylesheets().add(getClass().getResource(
+                "/styles/styles.css").toExternalForm());
         stage.setTitle("Graphysica");
         stage.getIcons().add(new Image(getClass().getResourceAsStream(
                 "/images/graphysica-icone.png")));
