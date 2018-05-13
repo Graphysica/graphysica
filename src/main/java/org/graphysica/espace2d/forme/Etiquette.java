@@ -17,7 +17,6 @@
 package org.graphysica.espace2d.forme;
 
 import com.sun.istack.internal.NotNull;
-import java.awt.Toolkit;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
@@ -28,6 +27,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
@@ -36,6 +36,7 @@ import static org.graphysica.espace2d.position.Type.VIRTUELLE;
 import org.jfree.fx.FXGraphics2D;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
+import org.scilab.forge.jlatexmath.TeXFormula.TeXIconBuilder;
 import org.scilab.forge.jlatexmath.TeXIcon;
 
 /**
@@ -75,7 +76,7 @@ public class Etiquette extends Forme {
     /**
      * La taille des caractères de cette étiquette exprimée en points.
      */
-    private final IntegerProperty tailleCaractere = new SimpleIntegerProperty(
+    private final IntegerProperty tailleCaracteres = new SimpleIntegerProperty(
             TAILLE_CARACTERE_PAR_DEFAUT);
 
     /**
@@ -92,6 +93,21 @@ public class Etiquette extends Forme {
             = new SimpleObjectProperty<>(new Vector2D(5, -25));
 
     /**
+     * Le dernier contexte graphique de dessin de cette étiquette. Il est
+     * modifié lorsqu'un nouvel appel de dessin de cette étiquette est effectué
+     * à partir d'un autre contexte graphique.
+     */
+    private GraphicsContext dernierContexteGraphique;
+
+    /**
+     * Le contexte graphique adapté du {@code dernierContexteGraphique}. Il est
+     * modifié si {@code dernierContexteGraphique} est modifié. Il permet
+     * d'empêcher qu'un contexte graphique adaptif à Swing soit instancié à
+     * chaque dessin de l'étiquette.
+     */
+    private FXGraphics2D contexteGraphique;
+
+    /**
      * Construit une étiquette dont le texte est défini.
      *
      * @param texte le texte de l'étiquette.
@@ -104,11 +120,13 @@ public class Etiquette extends Forme {
      * Construit une étiquette dont le texte et la taille sont définis.
      *
      * @param texte le texte de l'étiquette.
-     * @param taille la taille du texte de l'étiquette, exprimée en points.
+     * @param tailleCaracters la taille des caractères du texte de l'étiquette,
+     * exprimée en points.
      */
-    Etiquette(@NotNull final String texte, final int taille) {
+    Etiquette(@NotNull final String texte,
+            @NotNull final IntegerProperty tailleCaracters) {
         this(texte);
-        setTailleCaractere(taille);
+        this.tailleCaracteres.bind(tailleCaracters);
     }
 
     /**
@@ -128,41 +146,52 @@ public class Etiquette extends Forme {
      *
      * @param texte le texte de l'étiquette.
      * @param positionAncrage la position d'ancrage de l'étiquette.
-     * @param taille la taille du texte de l'étiquette, exprimée en points.
+     * @param tailleCaracters la taille des caractères du texte de l'étiquette,
+     * exprimée en points.
      */
     public Etiquette(@NotNull final StringProperty texte,
             @NotNull final ObjectProperty<? extends Position> positionAncrage,
-            final int taille) {
+            @NotNull final IntegerProperty tailleCaracters) {
         this(texte, positionAncrage);
-        setTailleCaractere(taille);
+        this.tailleCaracteres.bind(tailleCaracters);
     }
 
     static {
-        TeXFormula.setDPITarget(
-                Toolkit.getDefaultToolkit().getScreenResolution() * 10);
+        TeXFormula.setDefaultDPI();
     }
 
     {
         proprietes.add(texte);
-        proprietes.add(tailleCaractere);
+        proprietes.add(tailleCaracteres);
         proprietes.add(positionAncrage);
         proprietes.add(positionRelative);
         texte.addListener(reconstruireIcone);
-        tailleCaractere.addListener(reconstruireIcone);
+        tailleCaracteres.addListener(reconstruireIcone);
+    }
+
+    /**
+     * Actualise le contexte graphique de dessin de cette étiquette.
+     *
+     * @param toile la toile de prochain dessin de cette étiquette.
+     */
+    private void actualiserContexteGraphique(@NotNull final Canvas toile) {
+        if (contexteGraphique == null
+                || dernierContexteGraphique != toile.getGraphicsContext2D()) {
+            contexteGraphique = new FXGraphics2D(toile.getGraphicsContext2D());
+        }
     }
 
     @Override
     public void dessinerNormal(@NotNull final Canvas toile,
             @NotNull final Repere repere) {
+        actualiserContexteGraphique(toile);
         if (icone == null) {
             construireIcone();
         }
         final Vector2D position = coinSuperieurGauche(repere).virtuelle(repere);
-        final FXGraphics2D graphismes = new FXGraphics2D(
-                toile.getGraphicsContext2D());
-        toile.getGraphicsContext2D().setFill(getCouleur());
-        icone.getBox().draw(graphismes,
-                (int) (position.getX()), (int) (position.getY() + getHauteur()));
+        contexteGraphique.setColor(couleur());
+        icone.paintIcon(null, contexteGraphique,
+                (int) (position.getX()), (int) (position.getY()));
         if (isEnSurvol()) {
             dessinerSurvol(toile, repere);
         }
@@ -185,8 +214,23 @@ public class Etiquette extends Forme {
      */
     private void construireIcone() {
         final TeXFormula formule = new TeXFormula(getTexte());
-        icone = formule.createTeXIcon(TeXConstants.STYLE_DISPLAY,
-                getTailleCaractere());
+        icone = formule.new TeXIconBuilder()
+                .setStyle(TeXConstants.STYLE_DISPLAY)
+                .setSize(getTailleCaractere())
+                .setWidth(TeXConstants.UNIT_POINT, 100, TeXConstants.ALIGN_LEFT)
+                .setIsMaxWidth(true).build();
+    }
+
+    /**
+     * Convertit une couleur de javafx.scene.paint.Color vers java.awt.Color.
+     *
+     * @return la couleur convertie.
+     */
+    private java.awt.Color couleur() {
+        final Color couleur = getCouleur();
+        return new java.awt.Color((float) couleur.getRed(),
+                (float) couleur.getGreen(), (float) couleur.getBlue(),
+                (float) couleur.getOpacity());
     }
 
     @Override
@@ -277,18 +321,18 @@ public class Etiquette extends Forme {
     }
 
     private int getTailleCaractere() {
-        return tailleCaractere.getValue();
+        return tailleCaracteres.getValue();
     }
 
     public final void setTailleCaractere(int tailleCaractere) {
         if (tailleCaractere <= 0) {
             tailleCaractere = TAILLE_CARACTERE_PAR_DEFAUT;
         }
-        this.tailleCaractere.setValue(tailleCaractere);
+        this.tailleCaracteres.setValue(tailleCaractere);
     }
 
     public final IntegerProperty tailleCaractereProperty() {
-        return tailleCaractere;
+        return tailleCaracteres;
     }
 
     private Vector2D getPositionRelative() {
@@ -309,11 +353,11 @@ public class Etiquette extends Forme {
     }
 
     public final double getLargeur() {
-        return icone.getBox().getWidth();
+        return icone.getIconWidth();
     }
 
     public final double getHauteur() {
-        return icone.getBox().getHeight();
+        return icone.getIconHeight();
     }
 
 }

@@ -217,7 +217,7 @@ abstract class Axe extends Forme {
         for (final double valeur : valeurs) {
             if (!etiquettes.containsKey(valeur)) {
                 final Etiquette etiquette = new Etiquette(String.format(format,
-                        valeur), getTailleCaracteres());
+                        valeur), tailleCaracteres);
                 etiquettes.put(valeur, etiquette);
             }
         }
