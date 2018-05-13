@@ -59,6 +59,12 @@ final class MenuAffichage extends Menu {
             = new CheckMenuItem("Deuxième espace");
 
     /**
+     * Le menu d'affichage du troisième espace de la construction.
+     */
+    private final CheckMenuItem afficherTroisiemeEspace
+            = new CheckMenuItem("Troisième espace");
+
+    /**
      * Construit un menu d'affichage sur une construction définie.
      *
      * @param construction la construction gérée.
@@ -78,28 +84,43 @@ final class MenuAffichage extends Menu {
                 new KeyCodeCombination(KeyCode.F1, KeyCombination.SHIFT_DOWN));
         afficherDeuxiemeEspace.acceleratorProperty().setValue(
                 new KeyCodeCombination(KeyCode.F2, KeyCombination.SHIFT_DOWN));
-        afficherDeuxiemeEspace.setOnAction(new AfficherDeuxiemeEspace());
+        afficherDeuxiemeEspace.setOnAction(
+                new AfficherAutreEspace(afficherDeuxiemeEspace));
+        afficherTroisiemeEspace.acceleratorProperty().setValue(
+                new KeyCodeCombination(KeyCode.F3, KeyCombination.SHIFT_DOWN));
+        afficherTroisiemeEspace.setOnAction(
+                new AfficherAutreEspace(afficherTroisiemeEspace));
         afficherInspecteur.setSelected(true);
-        getItems().addAll(afficherInspecteur, afficherDeuxiemeEspace);
+        getItems().addAll(afficherInspecteur, afficherDeuxiemeEspace, 
+                afficherTroisiemeEspace);
     }
 
     /**
-     * L'événement d'affichage du deuxième espace de la construction.
+     * L'événement d'affichage d'un autre espace de la construction.
      */
-    private class AfficherDeuxiemeEspace implements EventHandler<ActionEvent> {
+    private class AfficherAutreEspace implements EventHandler<ActionEvent> {
 
+        /**
+         * Le menu d'affichage de l'autre espace;
+         */
+        private final CheckMenuItem menu;
+        
         /**
          * L'espace ajouté.
          */
         private Espace espace;
 
+        public AfficherAutreEspace(@NotNull final CheckMenuItem menu) {
+            this.menu = menu;
+        }
+        
         @Override
         public void handle(@NotNull final ActionEvent evenement) {
-            if (afficherDeuxiemeEspace.isSelected()) {
-                espace = new Espace();
-                construction.getEspaces().add(espace);
+            if (menu.isSelected()) {
+                espace = construction.getGestionnaireEspaces()
+                        .dupliquerEspace();
             } else {
-                construction.getEspaces().remove(espace);
+                construction.getGestionnaireEspaces().supprimerEspace(espace);
             }
         }
 

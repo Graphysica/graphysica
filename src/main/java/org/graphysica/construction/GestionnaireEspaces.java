@@ -39,11 +39,11 @@ import org.graphysica.util.SetChangeListener;
  * @author Marc-Antoine Ouimet
  */
 public class GestionnaireEspaces {
-    
+
     /**
      * La position du curseur à travers les espaces.
      */
-    private final ObjectProperty<PositionReelle> positionCurseur 
+    private final ObjectProperty<PositionReelle> positionCurseur
             = new SimpleObjectProperty<>();
 
     /**
@@ -89,9 +89,13 @@ public class GestionnaireEspaces {
 
     /**
      * Duplique l'espace actif.
+     *
+     * @return l'espace dupliqué.
      */
-    public void dupliquerEspace() {
-        espaces.add(new Espace());
+    public Espace dupliquerEspace() {
+        final Espace espace = new Espace();
+        espaces.add(espace);
+        return espace;
     }
 
     /**
@@ -133,7 +137,7 @@ public class GestionnaireEspaces {
         }
         return null;
     }
-    
+
     public ObjectProperty<PositionReelle> positionCurseurProperty() {
         return positionCurseur;
     }
@@ -205,6 +209,7 @@ public class GestionnaireEspaces {
 
         /**
          * Crée et ajoute les formes des éléments au nouvel espace.
+         *
          * @param espace le nouvel espace.
          */
         private void ajouterFormes(@NotNull final Espace espace) {
