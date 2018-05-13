@@ -68,7 +68,8 @@ public final class Application extends javafx.application.Application {
                 "/images/graphysica-icone.png")));
         stage.setScene(scene);
         stage.show();
-        Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+        Thread.currentThread().setUncaughtExceptionHandler((thread, throwable)
+                -> {
             final Alert alerteException = new AlerteException(throwable);
             alerteException.setTitle("Exceptions inattendues");
             alerteException.setContentText(
