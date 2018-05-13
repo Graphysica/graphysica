@@ -141,8 +141,7 @@ abstract class Axe extends Forme {
      */
     protected String formatValeurs(@NotNull final Repere repere) {
         final double espacementMinimalReel = espacementMinimalReel(repere);
-        final int exposant = (int) (Math.log(espacementMinimalReel)
-                / Math.log(Repere.PUISSANCE));
+        final int exposant = (int) (Math.log(espacementMinimalReel));
         if (exposant >= 6) {
             return "%2.1e";
         } else if (exposant >= 0) {
