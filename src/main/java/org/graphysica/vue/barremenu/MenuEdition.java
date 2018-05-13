@@ -107,12 +107,12 @@ final class MenuEdition extends Menu {
         toutSelectionner.setOnAction(new ToutSelectionner());
         toutDeselectionner.acceleratorProperty().setValue(
                 new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN,
-                        KeyCombination.ALT_DOWN));
+                        KeyCombination.SHIFT_DOWN));
         toutDeselectionner.setOnAction(new ToutDeselectionner());
         getItems().addAll(proprietes, new SeparatorMenuItem(),
                 annuler, refaire, new SeparatorMenuItem(),
                 copier, coller, new SeparatorMenuItem(),
-                toutSelectionner);
+                toutSelectionner, toutDeselectionner);
     }
 
     /**

@@ -59,6 +59,22 @@ public class AffichageConstruction extends BorderPane {
     private final Construction construction;
 
     /**
+     * L'inspecteur des éléments de la construction.
+     */
+    private final Inspecteur inspecteur;
+
+    /**
+     * Le séparateur principal de l'affichage de construction. Sépare
+     * l'inspecteur des espaces.
+     */
+    private final SplitPane separateurPrincipal = new SplitPane();
+
+    /**
+     * Le séparateur des espaces de l'affichage de construction.
+     */
+    private final SplitPane separateurEspaces;
+
+    /**
      * Construit et assemble un affichage de construction sur une construction
      * définie.
      *
@@ -66,6 +82,8 @@ public class AffichageConstruction extends BorderPane {
      */
     public AffichageConstruction(@NotNull final Construction construction) {
         this.construction = construction;
+        separateurEspaces = new AffichageEspaces();
+        inspecteur = new Inspecteur(construction);
         assembler();
     }
 
@@ -73,15 +91,14 @@ public class AffichageConstruction extends BorderPane {
      * Assemble l'affichage de la construction.
      */
     private void assembler() {
-        final MenuBar barreMenu = new BarreMenu(construction);
+        final MenuBar barreMenu = new BarreMenu(construction, inspecteur);
         final BarreOutils barreOutils = new BarreOutils(
                 construction.getGestionnaireOutils());
         setTop(new VBox(barreMenu, barreOutils));
-        final Inspecteur inspecteur = new Inspecteur(construction);
-        final AffichageEspaces affichageEspaces = new AffichageEspaces();
-        final SplitPane centre = new SplitPane(inspecteur, affichageEspaces);
-        centre.setDividerPositions(0.2);
-        setCenter(centre);
+        separateurPrincipal.getItems().addAll(inspecteur, separateurEspaces);
+        separateurPrincipal.setDividerPositions(0.2);
+        inspecteur.afficheProperty().addListener(new AfficherInspecteur());
+        setCenter(separateurPrincipal);
         setPrefSize(LARGEUR_PREFEREE, HAUTEUR_PREFEREE);
     }
 
@@ -156,6 +173,7 @@ public class AffichageConstruction extends BorderPane {
 
         /**
          * Construit un événement de recentrage d'un espace défini.
+         *
          * @param espace l'espace à recentrer.
          */
         public CentrerEspace(@NotNull final Espace espace) {
@@ -166,6 +184,25 @@ public class AffichageConstruction extends BorderPane {
         public void invalidated(@NotNull final Observable observable) {
             espace.centrerOrigine();
             observable.removeListener(this);
+        }
+
+    }
+
+    /**
+     * L'événement d'affichage de l'inspecteur d'éléments. Ajoute ou retire
+     * l'inspecteur le cas échéant de son état d'affichage.
+     */
+    private final class AfficherInspecteur
+            implements InvalidationListener {
+
+        @Override
+        public void invalidated(@NotNull final Observable observable) {
+            if (inspecteur.isAffiche()) {
+                separateurPrincipal.getItems().add(0, inspecteur);
+                separateurPrincipal.setDividerPositions(0.2);
+            } else {
+                separateurPrincipal.getItems().remove(inspecteur);
+            }
         }
 
     }

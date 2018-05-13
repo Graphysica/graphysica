@@ -19,6 +19,7 @@ package org.graphysica.vue.barremenu;
 import com.sun.istack.internal.NotNull;
 import javafx.scene.control.MenuBar;
 import org.graphysica.construction.Construction;
+import org.graphysica.vue.inspecteur.Inspecteur;
 
 /**
  * Une barre de menu permet d'éditer une construction.
@@ -29,20 +30,16 @@ import org.graphysica.construction.Construction;
 public final class BarreMenu extends MenuBar {
 
     /**
-     * La construction de la barre de menu.
-     */
-    private final Construction construction;
-
-    /**
      * Construit une barre de menu sur une construction définie.
      *
      * @param construction la construction gérée.
+     * @param inspecteur l'inspecteur des éléments de la construction.
      */
-    public BarreMenu(@NotNull final Construction construction) {
-        this.construction = construction;
+    public BarreMenu(@NotNull final Construction construction, 
+            @NotNull final Inspecteur inspecteur) {
         getMenus().addAll(new MenuFichier(construction),
                 new MenuEdition(construction),
-                new MenuAffichage(construction),
+                new MenuAffichage(construction, inspecteur),
                 new MenuAide(construction));
     }
 

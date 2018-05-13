@@ -26,6 +26,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import org.graphysica.construction.Construction;
 import org.graphysica.espace2d.Espace;
+import org.graphysica.vue.inspecteur.Inspecteur;
 
 /**
  * Le menu d'affichage des fenêtres de la construction.
@@ -39,36 +40,47 @@ final class MenuAffichage extends Menu {
      * La construction du menu.
      */
     private final Construction construction;
-
+    
+    /**
+     * L'inspecteur des éléments de la construction.
+     */
+    private final Inspecteur inspecteur;
+    
     /**
      * Le menu d'affichage de l'inspecteur d'éléments.
      */
-    private final CheckMenuItem inspecteur = new CheckMenuItem("Inspecteur");
+    private final CheckMenuItem afficherInspecteur 
+            = new CheckMenuItem("Inspecteur");
 
     /**
      * Le menu d'affichage du deuxième espace de la construction.
      */
-    private final CheckMenuItem deuxiemeEspace
+    private final CheckMenuItem afficherDeuxiemeEspace
             = new CheckMenuItem("Deuxième espace");
 
     /**
      * Construit un menu d'affichage sur une construction définie.
      *
      * @param construction la construction gérée.
+     * @param inspecteur l'inspecteur des éléments de la construction.
      */
-    public MenuAffichage(@NotNull final Construction construction) {
+    public MenuAffichage(@NotNull final Construction construction, 
+            @NotNull final Inspecteur inspecteur) {
         this.construction = construction;
+        this.inspecteur = inspecteur;
+        afficherInspecteur.selectedProperty()
+                .bindBidirectional(inspecteur.afficheProperty());
     }
 
     {
         setText("Affichage");
-        inspecteur.acceleratorProperty().setValue(
-                new KeyCodeCombination(KeyCode.F1, KeyCombination.ALT_DOWN));
-        deuxiemeEspace.acceleratorProperty().setValue(
-                new KeyCodeCombination(KeyCode.F2, KeyCombination.ALT_DOWN));
-        deuxiemeEspace.setOnAction(new AfficherDeuxiemeEspace());
-        inspecteur.setSelected(true);
-        getItems().addAll(inspecteur, deuxiemeEspace);
+        afficherInspecteur.acceleratorProperty().setValue(
+                new KeyCodeCombination(KeyCode.F1, KeyCombination.SHIFT_DOWN));
+        afficherDeuxiemeEspace.acceleratorProperty().setValue(
+                new KeyCodeCombination(KeyCode.F2, KeyCombination.SHIFT_DOWN));
+        afficherDeuxiemeEspace.setOnAction(new AfficherDeuxiemeEspace());
+        afficherInspecteur.setSelected(true);
+        getItems().addAll(afficherInspecteur, afficherDeuxiemeEspace);
     }
 
     /**
@@ -83,7 +95,7 @@ final class MenuAffichage extends Menu {
 
         @Override
         public void handle(@NotNull final ActionEvent evenement) {
-            if (deuxiemeEspace.isSelected()) {
+            if (afficherDeuxiemeEspace.isSelected()) {
                 espace = new Espace();
                 construction.getEspaces().add(espace);
             } else {
