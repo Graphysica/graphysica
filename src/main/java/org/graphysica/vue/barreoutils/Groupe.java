@@ -32,6 +32,7 @@ import org.graphysica.util.ToggleSplitMenuButton;
  *
  * @author Marc-Antoine Ouimet
  */
+@SuppressWarnings("unchecked")
 abstract class Groupe extends ToggleSplitMenuButton {
 
     /**
@@ -67,6 +68,7 @@ abstract class Groupe extends ToggleSplitMenuButton {
      */
     protected void definirDernierOutil(@NotNull final Item item) {
         dernierOutilUtilise = item.getOutil().dupliquer();
+        setGraphic(item.affichageImage());
     }
 
     /**
@@ -79,9 +81,11 @@ abstract class Groupe extends ToggleSplitMenuButton {
             if (item instanceof Item) {
                 final Item itemOutil = (Item) item;
                 itemOutil.setOnAction(new SelectionItem(itemOutil));
-                if (getItems().size() == 1) {
-                    definirDernierOutil(itemOutil);
-                    setGraphic(itemOutil.affichageImage());
+                final MenuItem premierItem = getItems().get(0);
+                if (premierItem instanceof Item) {
+                    final Item premierItemOutil = (Item) premierItem;
+                    definirDernierOutil(premierItemOutil);
+                    setGraphic(premierItemOutil.affichageImage());
                 }
             }
         }

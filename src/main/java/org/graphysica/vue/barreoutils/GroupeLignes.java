@@ -19,6 +19,7 @@ package org.graphysica.vue.barreoutils;
 import com.sun.istack.internal.NotNull;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.outil.OutilCreationDroite;
+import org.graphysica.construction.outil.OutilCreationSegmentDroite;
 
 /**
  * Le groupe d'outils de création de lignes.
@@ -37,7 +38,10 @@ final class GroupeLignes extends Groupe {
     {
         final Item outilDroite = new Item("droite", "Droite",
                 new OutilCreationDroite(gestionnaireOutils));
-        getItems().addAll(outilDroite);
+        final Item outilSegmentDroite = new Item("segment-droite", 
+                "Segment de droite",
+                new OutilCreationSegmentDroite(gestionnaireOutils));
+        getItems().addAll(outilDroite, outilSegmentDroite);
     }
 
 }

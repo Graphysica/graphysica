@@ -87,9 +87,9 @@ public class DroitePerpendiculaire extends Ligne {
         dependances.add(ligne);
         dependances.add(point);
         this.point = point;
-        positionExterne1.bindBidirectional(ligne.positionInterne1Property());
-        positionExterne2.bindBidirectional(ligne.positionInterne2Property());
-        positionInterne1.bindBidirectional(point.positionInterneProperty());
+        positionExterne1.bind(ligne.positionInterne1Property());
+        positionExterne2.bind(ligne.positionInterne2Property());
+        positionInterne1.bind(point.positionInterneProperty());
     }
 
     {

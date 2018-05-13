@@ -24,45 +24,46 @@ import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.Element;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.commande.CreerElement;
-import org.graphysica.construction.mathematiques.Droite;
 import org.graphysica.construction.mathematiques.Point;
 import org.graphysica.construction.mathematiques.PointConcret;
+import org.graphysica.construction.mathematiques.SegmentDroite;
 
 /**
- * Un outil de création de droite permet de créer une droite.
+ * Un outil de création de segment de droite permet de créer un segment de
+ * droite.
  *
  * @author Marc-Antoine Ouimet
- * @author Victor Babin
  */
-public class OutilCreationDroite extends OutilCreationElement {
+public class OutilCreationSegmentDroite extends OutilCreationElement {
 
     /**
-     * Le premier point de création de la droite.
+     * Le premier point de création du segment de droite.
      */
     private Point point1;
 
     /**
-     * Le deuxième point de création de la droite.
+     * Le deuxième point de création du segment de droite.
      */
     private Point point2;
 
     /**
-     * La droite créée par cet outil de création de droite.
+     * La droite créée par cet outil de création du segment de droite
      */
-    private Droite droite;
+    private SegmentDroite segmentDroite;
 
     /**
-     * Si la droite est en prévisualisation.
+     * Si le segment de droite est en prévisualisation.
      */
     private boolean enPrevisualisation = false;
 
     /**
-     * Construit un outil de création de droite au gestionnaire d'outils défini.
+     * Construit un outil de création de segment de droite au gestionnaire
+     * d'outils défini.
      *
      * @param gestionnaireOutils le gestionnaire d'outils de cet outil de
-     * création de droite.
+     * création de segment de droite.
      */
-    public OutilCreationDroite(
+    public OutilCreationSegmentDroite(
             @NotNull final GestionnaireOutils gestionnaireOutils) {
         super(gestionnaireOutils);
     }
@@ -77,13 +78,13 @@ public class OutilCreationDroite extends OutilCreationElement {
                     point1 = determinerPoint();
                 }
             } else if (!enPrevisualisation) {
-                previsualiserDroite();
+                previsualiserSegmentDroite();
             } else if (evenement.getButton() == MouseButton.PRIMARY
                     && evenement.getEventType()
                     == MouseEvent.MOUSE_RELEASED) {
                 aProchaineEtape = false;
                 point2 = determinerPoint();
-                creerDroite();
+                creerSegmentDroite();
                 gestionnaireOutils.finOutil();
             }
         }
@@ -91,7 +92,7 @@ public class OutilCreationDroite extends OutilCreationElement {
 
     @Override
     public Outil dupliquer() {
-        return new OutilCreationDroite(gestionnaireOutils);
+        return new OutilCreationSegmentDroite(gestionnaireOutils);
     }
 
     /**
@@ -109,8 +110,8 @@ public class OutilCreationDroite extends OutilCreationElement {
     }
 
     /**
-     * Détermine le point à utiliser pour la création de la droite. Crée un
-     * point à l'emplacement réel du curseur si aucun autre point n'est
+     * Détermine le point à utiliser pour la création du segment de droite. Crée
+     * un point à l'emplacement réel du curseur si aucun autre point n'est
      * sélectionné par l'utilisateur.
      *
      * @return le point déterminé par l'utilisateur.
@@ -127,35 +128,37 @@ public class OutilCreationDroite extends OutilCreationElement {
     }
 
     /**
-     * Prévisualise la droite à créer.
+     * Prévisualise le segment de droite à créer.
      */
-    private void previsualiserDroite() {
-        droite = new Droite(point1, gestionnaireOutils
+    private void previsualiserSegmentDroite() {
+        segmentDroite = new SegmentDroite(point1, gestionnaireOutils
                 .getGestionnaireSelections().positionCurseurProperty());
-        gestionnaireOutils.getElements().add(droite);
+        gestionnaireOutils.getElements().add(segmentDroite);
         enPrevisualisation = true;
-        droite.getFormes().stream().forEach((forme) -> {
+        segmentDroite.getFormes().stream().forEach((forme) -> {
             forme.setEnPrevisualisation(true);
         });
     }
 
     /**
-     * Crée la droite passant par les points {@code point1} et {@code point2}.
+     * Crée le segment de droite passant par les points {@code point1} et
+     * {@code point2}.
      */
-    private void creerDroite() {
-        droite.positionInterne2Property().unbind();
-        droite.positionInterne2Property().bind(
+    private void creerSegmentDroite() {
+        segmentDroite.positionInterne2Property().unbind();
+        segmentDroite.positionInterne2Property().bind(
                 point2.positionInterneProperty());
-        droite.ajouter(point2);
+        segmentDroite.ajouter(point2);
         gestionnaireOutils.getGestionnaireCommandes().ajouter(
-                new CreerElement(gestionnaireOutils.getElements(), droite));
+                new CreerElement(gestionnaireOutils.getElements(),
+                        segmentDroite));
     }
 
     @Override
     public void interrompre() {
-        droite.positionInterne2Property().unbind();
+        segmentDroite.positionInterne2Property().unbind();
         final Collection<Element> elements = gestionnaireOutils.getElements();
-        elements.remove(droite);
+        elements.remove(segmentDroite);
         elements.remove(point2);
     }
 
