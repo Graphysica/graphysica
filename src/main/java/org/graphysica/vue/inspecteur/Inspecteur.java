@@ -17,6 +17,8 @@
 package org.graphysica.vue.inspecteur;
 
 import com.sun.istack.internal.NotNull;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableSet;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -28,7 +30,7 @@ import org.graphysica.construction.Element;
  *
  * @author Marc-Antoine Ouimet
  */
-public class Inspecteur extends TabPane {
+public final class Inspecteur extends TabPane {
     
     /**
      * La largeur préférée des inspecteurs.
@@ -39,6 +41,11 @@ public class Inspecteur extends TabPane {
      * La construction inspectée par cet inspecteur.
      */
     private final Construction construction;
+    
+    /**
+     * La propriété d'affichage de cet inspecteur.
+     */
+    private final BooleanProperty affiche = new SimpleBooleanProperty(true);
 
     /**
      * L'ensemble des éléments de la construction.
@@ -74,4 +81,16 @@ public class Inspecteur extends TabPane {
         setPrefWidth(LARGEUR_PREFEREE);
     }
 
+    public final boolean isAffiche() {
+        return affiche.getValue();
+    }
+    
+    public final void setAffiche(final boolean affiche) {
+        this.affiche.setValue(affiche);
+    }
+    
+    public final BooleanProperty afficheProperty() {
+        return affiche;
+    }
+    
 }
