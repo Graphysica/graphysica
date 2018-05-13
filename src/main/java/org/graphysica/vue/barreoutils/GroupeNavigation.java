@@ -18,7 +18,9 @@ package org.graphysica.vue.barreoutils;
 
 import com.sun.istack.internal.NotNull;
 import org.graphysica.construction.GestionnaireOutils;
+import org.graphysica.construction.outil.OutilAgrandissement;
 import org.graphysica.construction.outil.OutilDefilement;
+import org.graphysica.construction.outil.OutilReduction;
 
 /**
  * Le groupe des outils de navigation des espaces.
@@ -38,7 +40,13 @@ final class GroupeNavigation extends Groupe {
     {
         final Item outilDefilement = new Item("defiler", "Défiler l'espace",
                 new OutilDefilement(gestionnaireOutils));
-        getItems().addAll(outilDefilement);
+        final Item outilAgrandissement = new Item("agrandissement", 
+                "Agrandir l'espace",
+                new OutilAgrandissement(gestionnaireOutils));
+        final Item outilReduction = new Item("reduction", 
+                "Réduire l'espace",
+                new OutilReduction(gestionnaireOutils));
+        getItems().addAll(outilDefilement, outilAgrandissement, outilReduction);
     }
 
 }

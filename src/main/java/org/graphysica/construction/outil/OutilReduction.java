@@ -22,25 +22,25 @@ import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.GestionnaireOutils;
 
 /**
- * Un outil de défilement permet de défiler dans l'espace.
+ * Un outil de réduction ponctuelle permet de dézoomer une fois de l'espace.
  *
  * @author Marc-Antoine Ouimet
  */
-public class OutilDefilement extends Outil {
+public class OutilReduction extends Outil {
     
     /**
-     * Indique si l'outil est en défilement.
+     * Indique si l'outil est en réduction.
      */
-    private boolean enDefilement = false;
+    private boolean enReduction = false;
 
     /**
-     * Construit un outil de défilement d'espace au gestionnaire d'outils
+     * Construit un outil de réduction d'espace au gestionnaire d'outils
      * défini.
      *
-     * @param gestionnaireOutils le gestionnaire d'outils de cet outil de
-     * défilement d'espace.
+     * @param gestionnaireOutils le gestionnaire d'outils de cet outil
+     * d'agrandissement d'espace.
      */
-    public OutilDefilement(
+    public OutilReduction(
             @NotNull final GestionnaireOutils gestionnaireOutils) {
         super(gestionnaireOutils);
     }
@@ -49,14 +49,11 @@ public class OutilDefilement extends Outil {
     public void gerer(@NotNull final MouseEvent evenement) {
         if (evenement.getButton() == MouseButton.PRIMARY) {
             if (evenement.getEventType() == MouseEvent.MOUSE_PRESSED) {
-                enDefilement = true;
-            } else if (evenement.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                if (enDefilement) {
-                    gestionnaireOutils.getGestionnaireEspaces().espaceActif()
-                            .defiler();
-                }
+                enReduction = true;
+                gestionnaireOutils.getGestionnaireEspaces().espaceActif()
+                        .dezoomer();
             } else if (evenement.getEventType() == MouseEvent.MOUSE_RELEASED) {
-                enDefilement = false;
+                enReduction = false;
                 gestionnaireOutils.finOutil();
             }
         }
@@ -64,17 +61,16 @@ public class OutilDefilement extends Outil {
 
     @Override
     public boolean isEnCours() {
-        return enDefilement;
+        return enReduction;
     }
 
     @Override
     public void interrompre() {
-        enDefilement = false;
     }
 
     @Override
     public Outil dupliquer() {
-        return new OutilDefilement(gestionnaireOutils);
+        return new OutilReduction(gestionnaireOutils);
     }
 
 }
