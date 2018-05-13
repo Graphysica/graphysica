@@ -56,7 +56,8 @@ public final class BarreOutils extends ToolBar {
     private void assembler() {
         getItems().addAll(new GroupeSelection(gestionnaireOutils),
                 new GroupePrimitif(gestionnaireOutils),
-                new GroupeLignes(gestionnaireOutils));
+                new GroupeLignes(gestionnaireOutils),
+                new GroupeNavigation(gestionnaireOutils));
     }
 
     /**

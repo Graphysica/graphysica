@@ -390,7 +390,7 @@ public final class Espace extends ToileRedimensionnable
     /**
      * Défile l'espace selon le déplacement virtuel du curseur.
      */
-    private void defiler() {
+    public void defiler() {
         defiler(getDeplacementVirtuelCurseur());
     }
 

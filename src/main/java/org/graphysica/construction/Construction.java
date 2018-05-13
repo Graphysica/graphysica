@@ -63,7 +63,7 @@ public final class Construction {
      * Le gestionnaire des outils de la construction.
      */
     private transient final GestionnaireOutils gestionnaireOutils
-            = new GestionnaireOutils(gestionnaireCommandes,
+            = new GestionnaireOutils(gestionnaireEspaces, gestionnaireCommandes,
                     gestionnaireSelections, espaces, elements);
 
     public ObservableSet<Espace> getEspaces() {
