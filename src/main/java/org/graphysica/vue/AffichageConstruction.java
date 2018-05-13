@@ -22,14 +22,15 @@ import java.util.Map;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableSet;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import org.graphysica.construction.Construction;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.util.SetChangeListener;
+import org.graphysica.vue.barremenu.BarreMenu;
 import org.graphysica.vue.barreoutils.BarreOutils;
 import org.graphysica.vue.inspecteur.Inspecteur;
 
@@ -65,7 +66,6 @@ public class AffichageConstruction extends BorderPane {
      */
     public AffichageConstruction(@NotNull final Construction construction) {
         this.construction = construction;
-        ajouterEvenementsGestionCommandes();
         assembler();
     }
 
@@ -73,31 +73,16 @@ public class AffichageConstruction extends BorderPane {
      * Assemble l'affichage de la construction.
      */
     private void assembler() {
+        final MenuBar barreMenu = new BarreMenu(construction);
         final BarreOutils barreOutils = new BarreOutils(
                 construction.getGestionnaireOutils());
+        setTop(new VBox(barreMenu, barreOutils));
         final Inspecteur inspecteur = new Inspecteur(construction);
         final AffichageEspaces affichageEspaces = new AffichageEspaces();
-        setTop(barreOutils);
         final SplitPane centre = new SplitPane(inspecteur, affichageEspaces);
         centre.setDividerPositions(0.2);
         setCenter(centre);
         setPrefSize(LARGEUR_PREFEREE, HAUTEUR_PREFEREE);
-    }
-
-    /**
-     * Ajoute les événemnets de gestion de commandes, à savoir les actions
-     * d'annulation et de réexécution de la commande.
-     */
-    private void ajouterEvenementsGestionCommandes() {
-        addEventFilter(KeyEvent.KEY_PRESSED, (evenement) -> {
-            if (evenement.isControlDown()) {
-                if (evenement.getCode() == KeyCode.Z) {
-                    construction.getGestionnaireCommandes().annuler();
-                } else if (evenement.getCode() == KeyCode.Y) {
-                    construction.getGestionnaireCommandes().refaire();
-                }
-            }
-        });
     }
 
     /**
