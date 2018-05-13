@@ -26,7 +26,6 @@ import javafx.collections.ObservableSet;
  * @author Marc-Antoine Ouimet
  * @param <E> le type d'élément de l'ensemble observable.
  */
-@SuppressWarnings("unchecked")
 public abstract class SetChangeListener<E>
         implements javafx.collections.SetChangeListener<E> {
 
@@ -49,11 +48,11 @@ public abstract class SetChangeListener<E>
     }
 
     @Override
-    public void onChanged(@NotNull final Change changement) {
+    public final void onChanged(@NotNull final Change<? extends E> changement) {
         if (changement.wasAdded()) {
-            onAdd((E) changement.getElementAdded());
+            onAdd(changement.getElementAdded());
         } else if (changement.wasRemoved()) {
-            onRemove((E) changement.getElementRemoved());
+            onRemove(changement.getElementRemoved());
         }
     }
 

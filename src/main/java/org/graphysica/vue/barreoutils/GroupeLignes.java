@@ -19,24 +19,39 @@ package org.graphysica.vue.barreoutils;
 import com.sun.istack.internal.NotNull;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.outil.OutilCreationDroite;
+import org.graphysica.construction.outil.OutilCreationDroiteParallele;
+import org.graphysica.construction.outil.OutilCreationDroitePerpendiculaire;
+import org.graphysica.construction.outil.OutilCreationSegmentDroite;
 
 /**
  * Le groupe d'outils de création de lignes.
  *
  * @author Marc-Antoine Ouimet
  */
-class GroupeLignes extends Groupe {
+final class GroupeLignes extends Groupe {
 
+    /**
+     * {@inheritDoc}
+     */
     public GroupeLignes(@NotNull final GestionnaireOutils gestionnaireOutils) {
         super(gestionnaireOutils);
     }
 
     {
-        final Item outilDroite = new Item("droite", "Droite", 
+        final Item outilDroite = new Item("droite", "Droite",
                 new OutilCreationDroite(gestionnaireOutils));
-        getItems().addAll(outilDroite);
-        definirDernierOutil(outilDroite);
-        setGraphic(outilDroite.affichageImage());
+        final Item outilDroiteParallele = new Item("droite-parallele",
+                "Droite parallèle",
+                new OutilCreationDroiteParallele(gestionnaireOutils));
+        final Item outilDroitePerpendiculaire = new Item(
+                "droite-perpendiculaire",
+                "Droite perpendiculaire",
+                new OutilCreationDroitePerpendiculaire(gestionnaireOutils));
+        final Item outilSegmentDroite = new Item("segment-droite",
+                "Segment de droite",
+                new OutilCreationSegmentDroite(gestionnaireOutils));
+        getItems().addAll(outilDroite, outilDroiteParallele,
+                outilDroitePerpendiculaire, outilSegmentDroite);
     }
 
 }

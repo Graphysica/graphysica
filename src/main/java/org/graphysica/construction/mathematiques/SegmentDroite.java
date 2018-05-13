@@ -19,7 +19,9 @@ package org.graphysica.construction.mathematiques;
 import com.sun.istack.internal.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import javafx.beans.property.ObjectProperty;
 import org.graphysica.espace2d.forme.Forme;
+import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Un segment de droite est un espace linéaire défini entre deux points.
@@ -41,8 +43,23 @@ public class SegmentDroite extends Ligne {
             @NotNull final Point point2) {
         dependances.add(point1);
         dependances.add(point2);
-        positionInterne1.bindBidirectional(point1.positionInterneProperty());
-        positionInterne2.bindBidirectional(point2.positionInterneProperty());
+        positionInterne1.bind(point1.positionInterneProperty());
+        positionInterne2.bind(point2.positionInterneProperty());
+    }
+
+    /**
+     * Construit un segment de droite passant par un point et une position
+     * spécifiée.
+     *
+     * @param point1 le premier point à l'extrémité de ce segment de droite.
+     * @param position2 la deuxième position à l'extrémité de ce segment de
+     * droite.
+     */
+    public SegmentDroite(@NotNull final Point point1,
+            @NotNull final ObjectProperty<PositionReelle> position2) {
+        dependances.add(point1);
+        positionInterne1.bind(point1.positionInterneProperty());
+        positionInterne2.bind(position2);
     }
 
     @Override

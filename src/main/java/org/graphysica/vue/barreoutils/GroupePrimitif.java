@@ -25,18 +25,20 @@ import org.graphysica.construction.outil.OutilCreationPoint;
  *
  * @author Marc-Antoine Ouimet
  */
-class GroupePrimitif extends Groupe {
+final class GroupePrimitif extends Groupe {
 
-    public GroupePrimitif(@NotNull final GestionnaireOutils gestionnaireOutils) {
+    /**
+     * {@inheritDoc}
+     */
+    public GroupePrimitif(
+            @NotNull final GestionnaireOutils gestionnaireOutils) {
         super(gestionnaireOutils);
     }
 
     {
-        final Item outilPoint = new Item("point", "Point", 
+        final Item outilPoint = new Item("point", "Point",
                 new OutilCreationPoint(gestionnaireOutils));
         getItems().addAll(outilPoint);
-        definirDernierOutil(outilPoint);
-        setGraphic(outilPoint.affichageImage());
     }
 
 }

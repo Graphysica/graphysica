@@ -25,6 +25,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.construction.outil.Outil;
+import org.graphysica.construction.outil.OutilDeplacementElement;
 import org.graphysica.util.SetChangeListener;
 
 /**
@@ -36,6 +37,12 @@ import org.graphysica.util.SetChangeListener;
  * @author Marc-Antoine Ouimet
  */
 public final class GestionnaireOutils {
+
+    /**
+     * Le gestionnaire des espaces de la construction gérée par ce gestionnaire
+     * d'outils.
+     */
+    private final GestionnaireEspaces gestionnaireEspaces;
 
     /**
      * Le gestionnaire de commandes de la construction gérée par ce gestionnaire
@@ -78,6 +85,8 @@ public final class GestionnaireOutils {
     /**
      * Construit un gestionnaire d'outils aux composantes définies.
      *
+     * @param gestionnaireEspaces le gestionnaire des espaces sur la
+     * construction.
      * @param gestionnaireCommandes le gestionnaire des commandes sur la
      * construction.
      * @param gestionnaireSelections le gestionnaire des sélections sur les
@@ -86,11 +95,13 @@ public final class GestionnaireOutils {
      * @param elements les éléments de la construcion.
      */
     GestionnaireOutils(
+            @NotNull final GestionnaireEspaces gestionnaireEspaces,
             @NotNull final GestionnaireCommandes gestionnaireCommandes,
             @NotNull final GestionnaireSelections gestionnaireSelections,
             @NotNull final ObservableSet<Espace> espaces,
             @NotNull final ObservableSet<Element> elements) {
         espaces.addListener(new EspacesListener(espaces));
+        this.gestionnaireEspaces = gestionnaireEspaces;
         this.gestionnaireCommandes = gestionnaireCommandes;
         this.gestionnaireSelections = gestionnaireSelections;
         this.elements = elements;
@@ -100,6 +111,20 @@ public final class GestionnaireOutils {
                 ancienOutil.interrompre();
             }
         });
+    }
+
+    {
+        setOutilActif(new OutilDeplacementElement(this));
+    }
+
+    /**
+     * Interrompt l'outil actif.
+     */
+    public void interrompre() {
+        if (getOutilActif().isEnCours()) {
+            getOutilActif().interrompre();
+            finOutil();
+        }
     }
 
     /**
@@ -138,6 +163,10 @@ public final class GestionnaireOutils {
         return outilActif;
     }
 
+    public GestionnaireEspaces getGestionnaireEspaces() {
+        return gestionnaireEspaces;
+    }
+    
     public GestionnaireSelections getGestionnaireSelections() {
         return gestionnaireSelections;
     }

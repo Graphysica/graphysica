@@ -17,22 +17,23 @@
 package org.graphysica.vue.barreoutils;
 
 import com.sun.istack.internal.NotNull;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.outil.Outil;
+import org.graphysica.util.ListChangeListener;
+import org.graphysica.util.ToggleSplitMenuButton;
 
 /**
  * Un groupe permet de regrouper des items d'outil selon des catégories
- * d'utilisation. 
+ * d'utilisation.
  *
  * @author Marc-Antoine Ouimet
  */
-class Groupe extends MenuButton {
+@SuppressWarnings("unchecked")
+abstract class Groupe extends ToggleSplitMenuButton {
 
     /**
      * Le gestionnaire d'outils de ce groupe d'outils.
@@ -49,44 +50,18 @@ class Groupe extends MenuButton {
      * Crée un groupe ayant un item d'outil défini.
      *
      * @param gestionnaireOutils le gestionnaire d'outils.
-     * @param item l'item initial du groupe.
      */
     public Groupe(@NotNull final GestionnaireOutils gestionnaireOutils) {
         this.gestionnaireOutils = gestionnaireOutils;
-        getItems().addListener(changementItems);
+        getItems().addListener(new ItemsListener());
     }
 
     {
-        addEventFilter(MouseEvent.MOUSE_CLICKED, new ClicGroupe());
+        setOnAction(new ClicGroupe());
     }
 
     /**
-     * L'événement d'actualisation de la liste des items du groupe.
-     */
-    private final ListChangeListener<MenuItem> changementItems = (@NotNull
-            final ListChangeListener.Change<? extends MenuItem> changements)
-            -> {
-        while (changements.next()) {
-            changements.getAddedSubList().stream().forEach((item) -> {
-                ajouter(item);
-            });
-        }
-    };
-
-    /**
-     * Ajoute un item au groupe.
-     *
-     * @param item l'item à ajouter.
-     */
-    private void ajouter(@NotNull final MenuItem item) {
-        if (item instanceof Item) {
-            final Item itemOutil = (Item) item;
-            itemOutil.setOnAction(new SelectionItem(itemOutil));
-        }
-    }
-
-    /**
-     * Définit le dernier outil utilisé par ce groupe.
+     * Définit le dernier outil utilisé dans ce groupe.
      *
      * @param item le dernier item ayant été utilisé dans ce groupe.
      */
@@ -96,13 +71,38 @@ class Groupe extends MenuButton {
     }
 
     /**
+     * L'événement d'actualisation de la liste des items du groupe.
+     */
+    private class ItemsListener extends ListChangeListener<MenuItem> {
+
+        @Override
+        public void onAdd(@NotNull final MenuItem item) {
+            if (item instanceof Item) {
+                final Item itemOutil = (Item) item;
+                itemOutil.setOnAction(new SelectionItem(itemOutil));
+                final MenuItem premierItem = getItems().get(0);
+                if (premierItem instanceof Item) {
+                    final Item premierItemOutil = (Item) premierItem;
+                    definirDernierOutil(premierItemOutil);
+                    setGraphic(premierItemOutil.affichageImage());
+                }
+            }
+        }
+
+        @Override
+        public void onRemove(@NotNull final MenuItem element) {
+        }
+
+    }
+
+    /**
      * Un clic sur le groupe définit l'outil actif comme étant le dernier outil
      * ayant été utilisé dans le groupe.
      */
-    private class ClicGroupe implements EventHandler<MouseEvent> {
+    private class ClicGroupe implements EventHandler {
 
         @Override
-        public void handle(@NotNull final MouseEvent evenement) {
+        public void handle(@NotNull final Event evenement) {
             gestionnaireOutils.setOutilActif(dernierOutilUtilise.dupliquer());
         }
 

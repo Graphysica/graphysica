@@ -141,8 +141,7 @@ abstract class Axe extends Forme {
      */
     protected String formatValeurs(@NotNull final Repere repere) {
         final double espacementMinimalReel = espacementMinimalReel(repere);
-        final int exposant = (int) (Math.log(espacementMinimalReel)
-                / Math.log(Repere.PUISSANCE));
+        final int exposant = (int) (Math.log(espacementMinimalReel));
         if (exposant >= 6) {
             return "%2.1e";
         } else if (exposant >= 0) {
@@ -176,6 +175,7 @@ abstract class Axe extends Forme {
      * Récupère un ensemble des valeurs de graduation sans le zéro. Le zéro
      * correspond au minimum absolu des valeurs de graduation.
      *
+     * @param repere le repère d'affichage de cet axe.
      * @param valeurs l'ensemble des valeurs représentées par les étiquettes.
      * @return les valeurs de graduation sans le zéro.
      */
@@ -217,7 +217,7 @@ abstract class Axe extends Forme {
         for (final double valeur : valeurs) {
             if (!etiquettes.containsKey(valeur)) {
                 final Etiquette etiquette = new Etiquette(String.format(format,
-                        valeur), getTailleCaracteres());
+                        valeur), tailleCaracteres);
                 etiquettes.put(valeur, etiquette);
             }
         }

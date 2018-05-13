@@ -19,7 +19,6 @@ package org.graphysica.construction.outil;
 import com.sun.istack.internal.NotNull;
 import java.util.Collection;
 import java.util.Set;
-import javafx.beans.property.ObjectProperty;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.graphysica.construction.Element;
@@ -28,7 +27,6 @@ import org.graphysica.construction.commande.CreerElement;
 import org.graphysica.construction.mathematiques.Droite;
 import org.graphysica.construction.mathematiques.Point;
 import org.graphysica.construction.mathematiques.PointConcret;
-import org.graphysica.espace2d.position.PositionReelle;
 
 /**
  * Un outil de création de droite permet de créer une droite.
@@ -42,12 +40,6 @@ public class OutilCreationDroite extends OutilCreationElement {
      * Le premier point de création de la droite.
      */
     private Point point1;
-
-    /**
-     * La position du point 2, liée au curseur de la souris au moment de la
-     * création de la prévisualisation de la droite.
-     */
-    private ObjectProperty<PositionReelle> positionPoint2;
 
     /**
      * Le deuxième point de création de la droite.
@@ -138,8 +130,6 @@ public class OutilCreationDroite extends OutilCreationElement {
      * Prévisualise la droite à créer.
      */
     private void previsualiserDroite() {
-        positionPoint2 = gestionnaireOutils
-                .getGestionnaireSelections().positionCurseurProperty();
         droite = new Droite(point1, gestionnaireOutils
                 .getGestionnaireSelections().positionCurseurProperty());
         gestionnaireOutils.getElements().add(droite);
@@ -153,8 +143,8 @@ public class OutilCreationDroite extends OutilCreationElement {
      * Crée la droite passant par les points {@code point1} et {@code point2}.
      */
     private void creerDroite() {
-        droite.positionInterne2Property().unbindBidirectional(positionPoint2);
-        droite.positionInterne2Property().bindBidirectional(
+        droite.positionInterne2Property().unbind();
+        droite.positionInterne2Property().bind(
                 point2.positionInterneProperty());
         droite.ajouter(point2);
         gestionnaireOutils.getGestionnaireCommandes().ajouter(
@@ -163,9 +153,7 @@ public class OutilCreationDroite extends OutilCreationElement {
 
     @Override
     public void interrompre() {
-        droite.positionInterne2Property().unbindBidirectional(
-                gestionnaireOutils.getGestionnaireSelections()
-                .positionCurseurProperty());
+        droite.positionInterne2Property().unbind();
         final Collection<Element> elements = gestionnaireOutils.getElements();
         elements.remove(droite);
         elements.remove(point2);

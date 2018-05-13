@@ -41,8 +41,8 @@ public class Droite extends Ligne {
             @NotNull final Point point2) {
         dependances.add(point1);
         dependances.add(point2);
-        positionInterne1.bindBidirectional(point1.positionInterneProperty());
-        positionInterne2.bindBidirectional(point2.positionInterneProperty());
+        positionInterne1.bind(point1.positionInterneProperty());
+        positionInterne2.bind(point2.positionInterneProperty());
     }
 
     /**
@@ -54,8 +54,8 @@ public class Droite extends Ligne {
     public Droite(@NotNull final Point point1,
             @NotNull final ObjectProperty<PositionReelle> position2) {
         dependances.add(point1);
-        positionInterne1.bindBidirectional(point1.positionInterneProperty());
-        positionInterne2.bindBidirectional(position2);
+        positionInterne1.bind(point1.positionInterneProperty());
+        positionInterne2.bind(position2);
     }
     
     @Override

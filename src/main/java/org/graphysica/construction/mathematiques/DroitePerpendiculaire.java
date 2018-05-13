@@ -63,7 +63,7 @@ public class DroitePerpendiculaire extends Ligne {
     private final InvalidationListener evenementActualisation
             = (@NotNull final Observable observable) -> {
                 final Vector2D distanceParallele = positionExterne1.getValue()
-                        .distance(positionExterne2.getValue());
+                .distance(positionExterne2.getValue());
                 final Vector2D distancePerpendiculaire = new Vector2D(
                         -distanceParallele.getY(), distanceParallele.getX());
                 positionInterne2.setValue(positionInterne1.getValue().deplacer(
@@ -73,23 +73,38 @@ public class DroitePerpendiculaire extends Ligne {
     /**
      * Le point par lequel traverse cette droite perpendiculaire.
      */
-    private final Point point;
+    private Point point;
 
     /**
      * Construit une droite perpendiculaire à une ligne et passant par un point
      * défini.
      *
      * @param ligne la ligne avec laquelle cette droite sera perpendiculaire.
-     * @param point un point compris dans la droite parallèle.
+     * @param point un point compris dans la droite perpendiculaire.
      */
     public DroitePerpendiculaire(@NotNull final Ligne ligne,
             @NotNull final Point point) {
         dependances.add(ligne);
         dependances.add(point);
         this.point = point;
-        positionExterne1.bindBidirectional(ligne.positionInterne1Property());
-        positionExterne2.bindBidirectional(ligne.positionInterne2Property());
-        positionInterne1.bindBidirectional(point.positionInterneProperty());
+        positionExterne1.bind(ligne.positionInterne1Property());
+        positionExterne2.bind(ligne.positionInterne2Property());
+        positionInterne1.bind(point.positionInterneProperty());
+    }
+
+    /**
+     * Construit une droite perpendiculaire à une ligne et passant par un point
+     * défini.
+     *
+     * @param ligne la ligne avec laquelle cette droite sera perpendiculaire.
+     * @param position la position comprise dans cette droite perpendiculaire.
+     */
+    public DroitePerpendiculaire(@NotNull final Ligne ligne,
+            @NotNull final ObjectProperty<PositionReelle> position) {
+        dependances.add(ligne);
+        positionExterne1.bind(ligne.positionInterne1Property());
+        positionExterne2.bind(ligne.positionInterne2Property());
+        positionInterne1.bind(position);
     }
 
     {
@@ -112,6 +127,13 @@ public class DroitePerpendiculaire extends Ligne {
         formes.add(forme);
         ajouterForme(forme);
         return formes;
+    }
+
+    public final void setPoint(@NotNull final Point point) {
+        retirer(this.point);
+        ajouter(point);
+        this.point = point;
+        positionInterne1.bind(point.positionInterneProperty());
     }
 
 }

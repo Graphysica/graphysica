@@ -1,6 +1,8 @@
 * {
     -fx-font-family: Roboto;
 }
-.barre-outils {
-    
+.split-menu-button:selected > .label, .split-menu-button:selected:focused > .label {
+    -fx-background-color:
+        -fx-shadow-highlight-color,
+        derive(-fx-focus-color, 70%);
 }

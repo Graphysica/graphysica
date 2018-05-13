@@ -21,11 +21,11 @@ package org.graphysica.construction.commande;
  *
  * @author Marc-Antoine Ouimet
  */
-public interface Executable {
+interface Executable {
 
     /**
      * Exécute l'action.
      */
-    public void executer();
+    void executer();
 
 }
