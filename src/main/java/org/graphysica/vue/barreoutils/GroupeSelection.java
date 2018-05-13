@@ -25,18 +25,20 @@ import org.graphysica.construction.outil.OutilDeplacementElement;
  *
  * @author Marc-Antoine Ouimet
  */
-class GroupeSelection extends Groupe {
+final class GroupeSelection extends Groupe {
 
-    public GroupeSelection(@NotNull final GestionnaireOutils gestionnaireOutils) {
+    /**
+     * {@inheritDoc}
+     */
+    public GroupeSelection(
+            @NotNull final GestionnaireOutils gestionnaireOutils) {
         super(gestionnaireOutils);
     }
 
     {
-        final Item outilDeplacement = new Item("deplacer", "Déplacer", 
+        final Item outilDeplacement = new Item("deplacer", "Déplacer",
                 new OutilDeplacementElement(gestionnaireOutils));
         getItems().addAll(outilDeplacement);
-        definirDernierOutil(outilDeplacement);
-        setGraphic(outilDeplacement.affichageImage());
     }
 
 }

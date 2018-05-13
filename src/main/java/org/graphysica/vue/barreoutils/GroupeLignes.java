@@ -25,18 +25,19 @@ import org.graphysica.construction.outil.OutilCreationDroite;
  *
  * @author Marc-Antoine Ouimet
  */
-class GroupeLignes extends Groupe {
+final class GroupeLignes extends Groupe {
 
+    /**
+     * {@inheritDoc}
+     */
     public GroupeLignes(@NotNull final GestionnaireOutils gestionnaireOutils) {
         super(gestionnaireOutils);
     }
 
     {
-        final Item outilDroite = new Item("droite", "Droite", 
+        final Item outilDroite = new Item("droite", "Droite",
                 new OutilCreationDroite(gestionnaireOutils));
         getItems().addAll(outilDroite);
-        definirDernierOutil(outilDroite);
-        setGraphic(outilDroite.affichageImage());
     }
 
 }
