@@ -175,6 +175,7 @@ abstract class Axe extends Forme {
      * Récupère un ensemble des valeurs de graduation sans le zéro. Le zéro
      * correspond au minimum absolu des valeurs de graduation.
      *
+     * @param repere le repère d'affichage de cet axe.
      * @param valeurs l'ensemble des valeurs représentées par les étiquettes.
      * @return les valeurs de graduation sans le zéro.
      */

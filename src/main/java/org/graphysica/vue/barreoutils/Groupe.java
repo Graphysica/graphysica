@@ -50,7 +50,6 @@ abstract class Groupe extends ToggleSplitMenuButton {
      * Crée un groupe ayant un item d'outil défini.
      *
      * @param gestionnaireOutils le gestionnaire d'outils.
-     * @param item l'item initial du groupe.
      */
     public Groupe(@NotNull final GestionnaireOutils gestionnaireOutils) {
         this.gestionnaireOutils = gestionnaireOutils;

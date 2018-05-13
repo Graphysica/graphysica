@@ -15,14 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * La une composante graphique d'édition d'espace euclidien en deux
- * dimensions. Ce package encapsule les comportements de détection de
- * sélection, de navigation et de représentation d'un plan cartésien.
- * <img alt="Diagramme UML" src="./doc-files/org.graphysica.espace2d.png">
- * L'implémentation d'espace euclidien en deux dimensions assure un comportement
- * approprié d'actualisation selon les interactions sur les formes qu'il
- * représente. Elle assure aussi la possibilité d'interaction avec ces formes en
- * suppléant une méthode de détermination des formes en survol par
- * l'utilisateur.
+ * L'application à son lancement.
  */
-package org.graphysica.espace2d;
+package org.graphysica;
