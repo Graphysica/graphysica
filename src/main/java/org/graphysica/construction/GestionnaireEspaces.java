@@ -185,6 +185,7 @@ public class GestionnaireEspaces {
         @Override
         public void onAdd(@NotNull final Espace espace) {
             ajouterEvenements(espace);
+            ajouterFormes(espace);
         }
 
         /**
@@ -200,6 +201,16 @@ public class GestionnaireEspaces {
             final GestionEntree gestionEntree = new GestionEntree(espace);
             espace.addEventFilter(MouseEvent.MOUSE_ENTERED, gestionEntree);
             gestionsEntree.put(espace, new GestionEntree(espace));
+        }
+
+        /**
+         * Crée et ajoute les formes des éléments au nouvel espace.
+         * @param espace le nouvel espace.
+         */
+        private void ajouterFormes(@NotNull final Espace espace) {
+            elements.stream().forEach((element) -> {
+                espace.getFormes().addAll(element.creerFormes());
+            });
         }
 
         @Override
