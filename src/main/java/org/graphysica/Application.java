@@ -3,19 +3,27 @@ package org.graphysica;
 import com.sun.istack.internal.NotNull;
 import static javafx.application.Application.launch;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.graphysica.construction.Construction;
 import org.graphysica.espace2d.Espace;
 import org.graphysica.vue.AffichageConstruction;
+import org.graphysica.vue.AlerteException;
 
 /**
- * Initialise et lance l'application Graphysica.
- * 
+ * Initialise et lance l'application Graphysica. Qu'une seule application
+ * devrait être lancée afin que la référence en singleton soit maintenue.
+ *
  * @author Marc-Antoine Ouimet
  * @author Victor Babin
  */
 public final class Application extends javafx.application.Application {
+
+    /**
+     * L'instance de l'application.
+     */
+    private static Application instance;
 
     /**
      * L'ensemble des chemins vers les polices à charger.
@@ -41,6 +49,7 @@ public final class Application extends javafx.application.Application {
     }
 
     {
+        instance = this;
         construction.getEspaces().add(new Espace());
     }
 
@@ -59,6 +68,13 @@ public final class Application extends javafx.application.Application {
                 "/images/graphysica-icone.png")));
         stage.setScene(scene);
         stage.show();
+        Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+            final Alert alerteException = new AlerteException(throwable);
+            alerteException.setTitle("Exceptions inattendues");
+            alerteException.setContentText(
+                    "Des exceptions non gérées sont survenues.");
+            alerteException.showAndWait();
+        });
     }
 
     /**
@@ -72,6 +88,10 @@ public final class Application extends javafx.application.Application {
             javafx.scene.text.Font.loadFont(
                     classe.getResourceAsStream(police), 12);
         }
+    }
+
+    public static Application getInstance() {
+        return instance;
     }
 
 }
