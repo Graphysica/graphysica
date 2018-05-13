@@ -30,7 +30,7 @@ import org.graphysica.util.SetChangeListener;
  *
  * @author Marc-Antoine Ouimet
  */
-class InspecteurMathematique extends InspecteurElements {
+final class InspecteurMathematique extends InspecteurElements {
 
     /**
      * L'ensemble des objets mathématiques parmi les éléments de la

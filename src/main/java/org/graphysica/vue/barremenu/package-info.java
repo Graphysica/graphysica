@@ -14,18 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.construction.commande;
-
 /**
- * Les classes implémentant cette inferface peuvent être exécutées.
- *
- * @author Marc-Antoine Ouimet
+ * La barre de menu permet d'accéder à des fonctionnalités de haut niveau sur la
+ * construction et le logiciel. La barre de menu permet notamment d'interagir 
+ * avec les gestionnaires de commandes, de sélection et d'espaces d'une 
+ * construction.
  */
-interface Executable {
-
-    /**
-     * Exécute l'action.
-     */
-    void executer();
-
-}
+package org.graphysica.vue.barremenu;

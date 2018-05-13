@@ -22,7 +22,7 @@ package org.graphysica.construction.commande;
  *
  * @author Marc-Antoine Ouimet
  */
-public interface Annulable {
+interface Annulable {
 
     /**
      * Annule la dernière action effectuée.

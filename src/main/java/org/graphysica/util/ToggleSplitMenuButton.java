@@ -1,4 +1,4 @@
-package org.graphysica.vue;
+package org.graphysica.util;
 
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.BooleanProperty;

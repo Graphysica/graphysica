@@ -24,7 +24,7 @@ import javafx.scene.control.MenuItem;
 import org.graphysica.construction.GestionnaireOutils;
 import org.graphysica.construction.outil.Outil;
 import org.graphysica.util.ListChangeListener;
-import org.graphysica.vue.ToggleSplitMenuButton;
+import org.graphysica.util.ToggleSplitMenuButton;
 
 /**
  * Un groupe permet de regrouper des items d'outil selon des catégories

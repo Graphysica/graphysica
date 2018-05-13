@@ -14,18 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.construction.commande;
-
 /**
- * Les classes implémentant cette inferface peuvent être exécutées.
- *
- * @author Marc-Antoine Ouimet
+ * L'ensemble des classes utilitaires du logiciel. Comprend des objets abstraits 
+ * collés aux librairies dont le projet est dépendant.
  */
-interface Executable {
-
-    /**
-     * Exécute l'action.
-     */
-    void executer();
-
-}
+package org.graphysica.util;

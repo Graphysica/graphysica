@@ -14,18 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.construction.commande;
-
 /**
- * Les classes implémentant cette inferface peuvent être exécutées.
- *
- * @author Marc-Antoine Ouimet
+ * Les inspecteurs d'éléments permettent de lister les éléments d'une 
+ * construction. Ils peuvent présenter des contrôles d'édition des éléments.
  */
-interface Executable {
-
-    /**
-     * Exécute l'action.
-     */
-    void executer();
-
-}
+package org.graphysica.vue.inspecteur;

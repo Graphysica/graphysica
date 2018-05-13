@@ -14,18 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graphysica.construction.commande;
-
 /**
- * Les classes implémentant cette inferface peuvent être exécutées.
- *
- * @author Marc-Antoine Ouimet
+ * Le modèle de représentation des éléments mathématiques d'une construction.
  */
-interface Executable {
-
-    /**
-     * Exécute l'action.
-     */
-    void executer();
-
-}
+package org.graphysica.construction.mathematiques;

@@ -30,7 +30,7 @@ import org.graphysica.util.SetChangeListener;
  *
  * @author Marc-Antoine Ouimet
  */
-class InspecteurPhysiques extends InspecteurElements {
+final class InspecteurPhysiques extends InspecteurElements {
 
     /**
      * L'ensemble des corps physiques parmi les éléments de la construction.
