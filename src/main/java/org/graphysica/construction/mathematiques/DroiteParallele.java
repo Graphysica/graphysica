@@ -127,8 +127,10 @@ public class DroiteParallele extends Ligne {
     }
 
     public final void setPoint(@NotNull final Point point) {
+        retirer(this.point);
+        ajouter(point);
         this.point = point;
-        positionInterne1.bindBidirectional(point.positionInterneProperty());
+        positionInterne1.bind(point.positionInterneProperty());
     }
     
 }
