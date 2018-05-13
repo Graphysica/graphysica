@@ -17,10 +17,13 @@
 package org.graphysica.vue.barremenu;
 
 import com.sun.istack.internal.NotNull;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
+import org.graphysica.Application;
 import org.graphysica.construction.Construction;
 
 /**
@@ -30,6 +33,24 @@ import org.graphysica.construction.Construction;
  * @author Marc-Antoine Ouimet
  */
 final class MenuAide extends Menu {
+
+    /**
+     * L'URL vers le manuel du logiciel.
+     */
+    private static final String URL_MANUEL
+            = "https://github.com/Graphysica/graphysica/wiki";
+
+    /**
+     * L'URL vers la licence du logiciel.
+     */
+    private static final String URL_LICENCE
+            = "https://www.gnu.org/licenses/gpl-3.0.fr.html";
+
+    /**
+     * L'URL vers l'à propos du logiciel.
+     */
+    private static final String URL_A_PROPOS
+            = "https://github.com/Graphysica/graphysica";
 
     /**
      * La construction du menu.
@@ -62,9 +83,37 @@ final class MenuAide extends Menu {
 
     {
         setText("Aide");
+        manuel.setOnAction(new OuvrirLien(URL_MANUEL));
+        aPropos.setOnAction(new OuvrirLien(URL_A_PROPOS));
+        licence.setOnAction(new OuvrirLien(URL_LICENCE));
         manuel.acceleratorProperty().setValue(
                 new KeyCodeCombination(KeyCode.F1));
         getItems().addAll(manuel, licence, aPropos);
+    }
+
+    /**
+     * L'événement d'ouverture d'un lien à partir du fureteur de l'utilisateur.
+     */
+    private static class OuvrirLien implements EventHandler<ActionEvent> {
+        
+        /**
+         * L'URL à visiter.
+         */
+        private final String url;
+
+        /**
+         * Construit un événement d'ouverture de lien vers un lien défini.
+         * @param url le lien à ouvrir.
+         */
+        public OuvrirLien(@NotNull final String url) {
+            this.url = url;
+        }
+        
+        @Override
+        public void handle(@NotNull final ActionEvent evenement) {
+            Application.getInstance().getHostServices().showDocument(url);
+        }
+
     }
 
 }
