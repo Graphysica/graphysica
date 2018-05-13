@@ -20,6 +20,7 @@ import com.sun.istack.internal.NotNull;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableSet;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.graphysica.construction.Construction;
@@ -31,7 +32,7 @@ import org.graphysica.construction.Element;
  * @author Marc-Antoine Ouimet
  */
 public final class Inspecteur extends TabPane {
-    
+
     /**
      * La largeur préférée des inspecteurs.
      */
@@ -41,7 +42,7 @@ public final class Inspecteur extends TabPane {
      * La construction inspectée par cet inspecteur.
      */
     private final Construction construction;
-    
+
     /**
      * La propriété d'affichage de cet inspecteur.
      */
@@ -71,26 +72,41 @@ public final class Inspecteur extends TabPane {
         this.construction = construction;
         elements = construction.getElements();
         inspecteurMathematique = new InspecteurMathematique(elements);
-        inspecteurPhysique = new InspecteurPhysiques(elements);
-        final Tab ongletMathematique = new Tab("Mathématique", 
-                inspecteurMathematique);
+        final ScrollPane panneauMathematiques = panneauDeroulantVertical();
+        panneauMathematiques.setContent(inspecteurMathematique);
+        final Tab ongletMathematique = new Tab("Mathématique",
+                panneauMathematiques);
         ongletMathematique.setClosable(false);
-        final Tab ongletPhysique = new Tab("Physique", inspecteurPhysique);
+        inspecteurPhysique = new InspecteurPhysiques(elements);
+        final ScrollPane panneauPhysiques = panneauDeroulantVertical();
+        panneauPhysiques.setContent(inspecteurPhysique);
+        final Tab ongletPhysique = new Tab("Physique", panneauPhysiques);
         ongletPhysique.setClosable(false);
         getTabs().addAll(ongletMathematique, ongletPhysique);
         setPrefWidth(LARGEUR_PREFEREE);
     }
 
+    /**
+     * Construit un panneau déroulant strictement vertical.
+     *
+     * @return le panneau construit.
+     */
+    private static ScrollPane panneauDeroulantVertical() {
+        final ScrollPane panneau = new ScrollPane();
+        panneau.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        return panneau;
+    }
+
     public final boolean isAffiche() {
         return affiche.getValue();
     }
-    
+
     public final void setAffiche(final boolean affiche) {
         this.affiche.setValue(affiche);
     }
-    
+
     public final BooleanProperty afficheProperty() {
         return affiche;
     }
-    
+
 }
