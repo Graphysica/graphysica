@@ -106,6 +106,16 @@ public final class GestionnaireOutils {
     {
         setOutilActif(new OutilDeplacementElement(this));
     }
+    
+    /**
+     * Interrompt l'outil actif.
+     */
+    public void interrompre() {
+        if (getOutilActif().isEnCours()) {
+            getOutilActif().interrompre();
+            finOutil();
+        }
+    }
 
     /**
      * Met fin à l'utilisation de l'outil actif en le dupliquant.

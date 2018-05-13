@@ -123,6 +123,7 @@ final class MenuEdition extends Menu {
 
         @Override
         public void handle(@NotNull final ActionEvent evenement) {
+            construction.getGestionnaireOutils().interrompre();
             construction.getGestionnaireCommandes().annuler();
         }
 
@@ -136,6 +137,7 @@ final class MenuEdition extends Menu {
 
         @Override
         public void handle(@NotNull final ActionEvent evenement) {
+            construction.getGestionnaireOutils().interrompre();
             construction.getGestionnaireCommandes().refaire();
         }
 
@@ -148,6 +150,7 @@ final class MenuEdition extends Menu {
 
         @Override
         public void handle(@NotNull final ActionEvent evenement) {
+            construction.getGestionnaireOutils().interrompre();
             construction.getGestionnaireSelections().toutSelectionner();
         }
 
@@ -160,6 +163,7 @@ final class MenuEdition extends Menu {
 
         @Override
         public void handle(@NotNull final ActionEvent evenement) {
+            construction.getGestionnaireOutils().interrompre();
             construction.getGestionnaireSelections().toutDeselectionner();
         }
 
