@@ -22,6 +22,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.forme.Forme;
 
@@ -31,6 +33,11 @@ import org.graphysica.espace2d.forme.Forme;
  * @author Marc-Antoine Ouimet
  */
 public abstract class Element implements Deplaceable {
+
+    /**
+     * Le module d'étiquettage des éléments.
+     */
+    private static final Etiquettage ETIQUETTAGE = new Etiquettage();
 
     /**
      * La propriété d'affichage de cet élément à l'écran.
@@ -52,6 +59,12 @@ public abstract class Element implements Deplaceable {
      * Le nombre d'éléments qui ont été construits.
      */
     private static final AtomicInteger ELEMENTS = new AtomicInteger(0);
+
+    /**
+     * L'étiquette de l'élément.
+     */
+    protected StringProperty etiquette = new SimpleStringProperty(
+            ETIQUETTAGE.prochaineEtiquette());
 
     /**
      * Le numéro d'identification de l'élément.
@@ -142,13 +155,47 @@ public abstract class Element implements Deplaceable {
     public boolean isLie() {
         return false;
     }
-    
+
     public Set<Element> getDependances() {
         return dependances;
     }
 
     public final BooleanProperty afficheProperty() {
         return affiche;
+    }
+
+    /**
+     * Un module d'édiquettage permet de générer un nombre indéterminé
+     * d'étiquettes ordonnées.
+     */
+    private static class Etiquettage {
+
+        /**
+         * Le compteur en indice des étiquettes.
+         */
+        private int compteur = 0;
+
+        /**
+         * La lettre de l'étiquette.
+         */
+        private char lettre = 'A';
+
+        /**
+         * Crée la prochaine étiquette.
+         *
+         * @return le texte de l'étiquette.
+         */
+        public String prochaineEtiquette() {
+            final String etiquette = lettre + "_{" + compteur + "}";
+            if (lettre == 'Z') {
+                lettre = 'A';
+                compteur++;
+            } else {
+                lettre++;
+            }
+            return etiquette;
+        }
+
     }
 
 }

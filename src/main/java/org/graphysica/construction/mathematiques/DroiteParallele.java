@@ -123,6 +123,7 @@ public class DroiteParallele extends Ligne {
                         positionInterne2);
         formes.add(forme);
         ajouterForme(forme);
+        formes.addAll(super.creerFormes());
         return formes;
     }
 

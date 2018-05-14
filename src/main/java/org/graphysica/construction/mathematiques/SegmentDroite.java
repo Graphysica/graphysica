@@ -70,6 +70,7 @@ public class SegmentDroite extends Ligne {
                         positionInterne1, positionInterne2);
         formes.add(forme);
         ajouterForme(forme);
+        formes.addAll(super.creerFormes());
         return formes;
     }
 

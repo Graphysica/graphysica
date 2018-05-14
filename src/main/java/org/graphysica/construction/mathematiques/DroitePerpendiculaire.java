@@ -126,6 +126,7 @@ public class DroitePerpendiculaire extends Ligne {
                         positionInterne2);
         formes.add(forme);
         ajouterForme(forme);
+        formes.addAll(super.creerFormes());
         return formes;
     }
 

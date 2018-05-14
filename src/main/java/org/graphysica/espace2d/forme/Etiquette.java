@@ -155,6 +155,69 @@ public class Etiquette extends Forme {
         this(texte, positionAncrage);
         this.tailleCaracteres.bind(tailleCaracters);
     }
+    
+    /**
+     * Construit une étiquette ancrée à une position d'ancrage définie.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param positionAncrage la position d'ancrage de l'étiquette.
+     * @param couleur la couleur du texte de l'étiquette.
+     */
+    public Etiquette(@NotNull final StringProperty texte,
+            @NotNull final ObjectProperty<? extends Position> positionAncrage,
+            @NotNull final ObjectProperty<Color> couleur) {
+        this(texte, positionAncrage);
+        couleurProperty().bind(couleur);
+    }
+    
+    /**
+     * Construit une étiquette ancrée à une position d'ancrage définie.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param positionAncrage la position d'ancrage de l'étiquette.
+     * @param positionRelative la position relative de l'étiquette.
+     * @param couleur la couleur du texte de l'étiquette.
+     */
+    public Etiquette(@NotNull final StringProperty texte,
+            @NotNull final ObjectProperty<? extends Position> positionAncrage,
+            @NotNull final Vector2D positionRelative,
+            @NotNull final ObjectProperty<Color> couleur) {
+        this(texte, positionAncrage);
+        setPositionRelative(positionRelative);
+        couleurProperty().bind(couleur);
+    }
+    
+    /**
+     * Construit une étiquette ancrée à une position d'ancrage définie.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param positionAncrage la position d'ancrage de l'étiquette.
+     * @param positionRelative la position relative de l'étiquette.
+     */
+    public Etiquette(@NotNull final StringProperty texte,
+            @NotNull final ObjectProperty<? extends Position> positionAncrage,
+            @NotNull final Vector2D positionRelative) {
+        this(texte, positionAncrage);
+        setPositionRelative(positionRelative);
+    }
+    
+    /**
+     * Construit une étiquette ancrée à une position d'ancrage définie.
+     *
+     * @param texte le texte de l'étiquette.
+     * @param positionAncrage la position d'ancrage de l'étiquette.
+     * @param tailleCaracters la taille des caractères du texte de l'étiquette,
+     * exprimée en points.
+     * @param couleur la couleur du texte de l'étiquette.
+     */
+    public Etiquette(@NotNull final StringProperty texte,
+            @NotNull final ObjectProperty<? extends Position> positionAncrage,
+            @NotNull final IntegerProperty tailleCaracters,
+            @NotNull final ObjectProperty<Color> couleur) {
+        this(texte, positionAncrage);
+        this.tailleCaracteres.bind(tailleCaracters);
+        couleurProperty().bind(couleur);
+    }
 
     static {
         TeXFormula.setDefaultDPI();
@@ -177,6 +240,7 @@ public class Etiquette extends Forme {
     private void actualiserContexteGraphique(@NotNull final Canvas toile) {
         if (contexteGraphique == null
                 || dernierContexteGraphique != toile.getGraphicsContext2D()) {
+            toile.getGraphicsContext2D().setFill(getCouleur());
             contexteGraphique = new FXGraphics2D(toile.getGraphicsContext2D());
         }
     }
@@ -203,10 +267,10 @@ public class Etiquette extends Forme {
         final Vector2D coinSuperieurGauche = coinSuperieurGauche(repere)
                 .virtuelle(repere);
         final GraphicsContext contexteGraphique = toile.getGraphicsContext2D();
-        contexteGraphique.setStroke(getCouleur());
+        contexteGraphique.setStroke(getCouleur().deriveColor(0, 0, 0, 0.1));
         contexteGraphique.setLineWidth(1);
-        contexteGraphique.strokeRect(coinSuperieurGauche.getX(),
-                coinSuperieurGauche.getY(), getLargeur(), getHauteur());
+        contexteGraphique.strokeRoundRect(coinSuperieurGauche.getX(),
+                coinSuperieurGauche.getY(), getLargeur(), getHauteur(), 5, 5);
     }
 
     /**

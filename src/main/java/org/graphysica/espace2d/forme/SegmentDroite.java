@@ -19,6 +19,7 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
@@ -41,6 +42,21 @@ public class SegmentDroite extends Ligne {
             @NotNull final ObjectProperty<? extends Position> position1,
             @NotNull final ObjectProperty<? extends Position> position2) {
         super(position1, position2);
+    }
+
+    /**
+     * Construit un segment de droite reliant deux positions.
+     *
+     * @param position1 la première position du segment de droite.
+     * @param position2 la deuxième position du segment de droite.
+     * @param couleur la couleur du segment de droite.
+     */
+    public SegmentDroite(
+            @NotNull final ObjectProperty<? extends Position> position1,
+            @NotNull final ObjectProperty<? extends Position> position2,
+            @NotNull final ObjectProperty<Color> couleur) {
+        this(position1, position2);
+        couleurProperty().bind(couleur);
     }
 
     @Override
