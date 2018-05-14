@@ -19,6 +19,7 @@ package org.graphysica.espace2d.forme;
 import com.sun.istack.internal.NotNull;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Segment;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.graphysica.espace2d.position.Position;
@@ -41,6 +42,20 @@ public final class Droite extends Ligne {
     public Droite(@NotNull final ObjectProperty<? extends Position> position1,
             @NotNull final ObjectProperty<? extends Position> position2) {
         super(position1, position2);
+    }
+
+    /**
+     * Construit une droite passant par deux position définies.
+     *
+     * @param position1 la première position.
+     * @param position2 la deuxième position.
+     * @param couleur la couleur de la droite.
+     */
+    public Droite(@NotNull final ObjectProperty<? extends Position> position1,
+            @NotNull final ObjectProperty<? extends Position> position2,
+            @NotNull final ObjectProperty<Color> couleur) {
+        this(position1, position2);
+        couleurProperty().bind(couleur);
     }
 
     /**
@@ -85,7 +100,7 @@ public final class Droite extends Ligne {
                     new Vector2D(xQ, toile.getHeight())); // Q
         }
     }
-    
+
     @Override
     public double distance(@NotNull final Position curseur,
             @NotNull final Repere repere) {

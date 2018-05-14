@@ -17,9 +17,16 @@
 package org.graphysica.vue.inspecteur;
 
 import com.sun.istack.internal.NotNull;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.VBox;
 import org.graphysica.construction.Element;
 import org.graphysica.construction.mathematiques.ObjetMathematique;
 import org.graphysica.util.SetChangeListener;
@@ -48,6 +55,8 @@ final class InspecteurMathematique extends InspecteurElements {
     public InspecteurMathematique(
             @NotNull final ObservableSet<Element> elements) {
         super(elements);
+        objetsMathematiques.addListener(new ObjetsMathematiquesListener(
+                objetsMathematiques));
         elements.addListener(new ElementsListener(elements));
     }
 
@@ -55,7 +64,7 @@ final class InspecteurMathematique extends InspecteurElements {
      * L'événement de changement des éléments de la construction.
      */
     private class ElementsListener extends SetChangeListener<Element> {
-        
+
         /**
          * {@inheritDoc}
          */
@@ -77,7 +86,78 @@ final class InspecteurMathematique extends InspecteurElements {
                 objetsMathematiques.remove((ObjetMathematique) element);
             }
         }
-        
+
+    }
+
+    /**
+     * L'événement de changement des objets mathématiques de l'inspecteur.
+     */
+    private class ObjetsMathematiquesListener
+            extends SetChangeListener<ObjetMathematique> {
+
+        /**
+         * L'association des panneaux d'information aux objets mathématiques.
+         */
+        private final Map<ObjetMathematique, Node> informations
+                = new HashMap<>();
+
+        /**
+         * {@inheritDoc}
+         */
+        public ObjetsMathematiquesListener(
+                @NotNull final ObservableSet<ObjetMathematique> elements) {
+            super(elements);
+        }
+
+        @Override
+        public void onAdd(@NotNull final ObjetMathematique element) {
+            final Node panneau = panneauInformations(element);
+            informations.put(element, panneau);
+            getChildren().add(panneau);
+        }
+
+        /**
+         * Crée un panneau d'informations d'un élément défini.
+         *
+         * @param element l'élément représenté.
+         * @return la panneau d'informations généré.
+         */
+        private Node panneauInformations(
+                @NotNull final ObjetMathematique element) {
+            final TitledPane panneau = new TitledPane();
+            panneau.setAnimated(false);
+            panneau.setExpanded(false);
+            panneau.setText("Élément #" + element.getId());
+            panneau.setContent(contenuInformations(element));
+            return panneau;
+        }
+
+        /**
+         * Crée le contenu d'un panneau d'informations d'un élément défini.
+         *
+         * @param element l'élément représenté.
+         * @return le contenu des contrôles d'édition des informations de
+         * l'élément.
+         */
+        private VBox contenuInformations(
+                @NotNull final ObjetMathematique element) {
+            final VBox contenu = new VBox();
+            final CheckBox affiche = new CheckBox("Affiché");
+            affiche.selectedProperty().bindBidirectional(
+                    element.afficheProperty());
+            contenu.getChildren().add(affiche);
+            final ColorPicker couleur = new ColorPicker();
+            couleur.valueProperty().bindBidirectional(
+                    element.couleurProperty());
+            contenu.getChildren().add(couleur);
+            return contenu;
+        }
+
+        @Override
+        public void onRemove(@NotNull final ObjetMathematique element) {
+            getChildren().remove(informations.remove(element));
+        }
+
     }
 
 }

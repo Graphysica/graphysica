@@ -18,6 +18,7 @@ package org.graphysica.vue.inspecteur;
 
 import com.sun.istack.internal.NotNull;
 import javafx.collections.ObservableSet;
+import javafx.geometry.Orientation;
 import javafx.scene.layout.VBox;
 import org.graphysica.construction.Element;
 
@@ -42,6 +43,7 @@ abstract class InspecteurElements extends VBox {
      */
     public InspecteurElements(@NotNull final ObservableSet<Element> elements) {
         this.elements = elements;
+        setFillWidth(true);
     }
 
 }

@@ -23,6 +23,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.graphysica.espace2d.forme.Etiquette;
 import org.graphysica.espace2d.forme.Forme;
 import org.graphysica.espace2d.forme.Taille;
 import org.graphysica.espace2d.position.PositionReelle;
@@ -45,13 +46,8 @@ public abstract class Point extends ObjetMathematique {
      */
     protected final Taille taille = Taille.de("point");
 
-    /**
-     * La couleur par défaut des points.
-     */
-    protected static final Color COULEUR_PAR_DEFAUT = Color.BLUE;
-
     {
-        couleurProperty().setValue(COULEUR_PAR_DEFAUT);
+        couleurProperty().setValue(Color.BLUE);
     }
 
     @Override
@@ -63,6 +59,10 @@ public abstract class Point extends ObjetMathematique {
                         tailleProperty());
         formes.add(forme);
         ajouterForme(forme);
+        final Etiquette etiquette = new Etiquette(this.etiquette, 
+                positionInterne);
+        formes.add(etiquette);
+        ajouterForme(etiquette);
         return formes;
     }
 

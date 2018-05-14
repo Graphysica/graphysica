@@ -36,7 +36,8 @@ public abstract class ObjetMathematique extends Element
     /**
      * La couleur de cet objet mathématique.
      */
-    private final ObjectProperty<Color> couleur = new SimpleObjectProperty<>();
+    private final ObjectProperty<Color> couleur = new SimpleObjectProperty<>(
+            Color.BLACK);
 
     public final ObjectProperty<Color> couleurProperty() {
         return couleur;
