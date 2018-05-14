@@ -44,8 +44,8 @@ public class CreerElement extends CommandeAnnulable {
     private final Set<Element> elements;
 
     /**
-     * Construit une commande de création d'éléments sur un ensemble d'éléments
-     * de constructions défini.
+     * Construit une commande de création d'éléments sur un ensemble défini d'éléments
+     * de constructions.
      *
      * @param construction les éléments de la construction sur laquelle créer
      * les éléments.
