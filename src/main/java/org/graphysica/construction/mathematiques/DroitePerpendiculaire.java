@@ -123,7 +123,7 @@ public class DroitePerpendiculaire extends Ligne {
         final Set<Forme> formes = new HashSet<>();
         final org.graphysica.espace2d.forme.Droite forme
                 = new org.graphysica.espace2d.forme.Droite(positionInterne1,
-                        positionInterne2);
+                        positionInterne2, couleurProperty());
         formes.add(forme);
         ajouterForme(forme);
         formes.addAll(super.creerFormes());

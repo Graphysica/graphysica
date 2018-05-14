@@ -67,7 +67,7 @@ public class SegmentDroite extends Ligne {
         final Set<Forme> formes = new HashSet<>();
         final org.graphysica.espace2d.forme.SegmentDroite forme
                 = new org.graphysica.espace2d.forme.SegmentDroite(
-                        positionInterne1, positionInterne2);
+                        positionInterne1, positionInterne2, couleurProperty());
         formes.add(forme);
         ajouterForme(forme);
         formes.addAll(super.creerFormes());
