@@ -142,6 +142,10 @@ public abstract class Element implements Deplaceable {
     public boolean isLie() {
         return false;
     }
+    
+    public Set<Element> getDependances() {
+        return dependances;
+    }
 
     public final BooleanProperty afficheProperty() {
         return affiche;
