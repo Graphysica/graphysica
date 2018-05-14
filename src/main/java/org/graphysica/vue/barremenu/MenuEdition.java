@@ -26,6 +26,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import org.graphysica.construction.Construction;
+import org.graphysica.construction.commande.SupprimerElement;
 
 /**
  * Le menu d'édition permet d'éditer les éléments et les commandes de la
@@ -58,6 +59,11 @@ final class MenuEdition extends Menu {
      */
     private final MenuItem refaire = new MenuItem("Refaire");
 
+    /**
+     * Le menu de suppression des éléments sélectionnés.
+     */
+    private final MenuItem supprimer = new MenuItem("Supprimer");
+    
     /**
      * Le menu de copie des éléments sélectionnés.
      */
@@ -98,6 +104,9 @@ final class MenuEdition extends Menu {
         refaire.acceleratorProperty().setValue(
                 new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN));
         refaire.setOnAction(new Refaire());
+        supprimer.setOnAction(new Supprimer());
+        supprimer.acceleratorProperty().setValue(
+                new KeyCodeCombination(KeyCode.DELETE));
         copier.acceleratorProperty().setValue(
                 new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
         coller.acceleratorProperty().setValue(
@@ -111,8 +120,24 @@ final class MenuEdition extends Menu {
         toutDeselectionner.setOnAction(new ToutDeselectionner());
         getItems().addAll(proprietes, new SeparatorMenuItem(),
                 annuler, refaire, new SeparatorMenuItem(),
-                copier, coller, new SeparatorMenuItem(),
+                supprimer, copier, coller, new SeparatorMenuItem(),
                 toutSelectionner, toutDeselectionner);
+    }
+
+    /**
+     * L'événement de suppression des éléments sélectionnés.
+     */
+    private class Supprimer implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(@NotNull final ActionEvent evenement) {
+            final SupprimerElement commande = new SupprimerElement(
+                    construction.getElements(),
+                    construction.getGestionnaireSelections()
+                            .getElementsSelectionnes());
+            construction.getGestionnaireCommandes().executer(commande);
+        }
+
     }
 
     /**
