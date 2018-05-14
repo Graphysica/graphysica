@@ -61,7 +61,7 @@ public final class Inspecteur extends TabPane {
     /**
      * L'inspecteur des objets de la construction relevant de la physique.
      */
-    private final InspecteurPhysiques inspecteurPhysique;
+    private final InspecteurPhysique inspecteurPhysique;
 
     /**
      * Construit un inspecteur d'éléments sur une construction définie.
@@ -77,7 +77,7 @@ public final class Inspecteur extends TabPane {
         final Tab ongletMathematique = new Tab("Mathématique",
                 panneauMathematiques);
         ongletMathematique.setClosable(false);
-        inspecteurPhysique = new InspecteurPhysiques(elements);
+        inspecteurPhysique = new InspecteurPhysique(elements);
         final ScrollPane panneauPhysiques = panneauDeroulantVertical();
         panneauPhysiques.setContent(inspecteurPhysique);
         final Tab ongletPhysique = new Tab("Physique", panneauPhysiques);
@@ -93,7 +93,7 @@ public final class Inspecteur extends TabPane {
      */
     private static ScrollPane panneauDeroulantVertical() {
         final ScrollPane panneau = new ScrollPane();
-        panneau.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        panneau.setFitToWidth(true);
         return panneau;
     }
 
